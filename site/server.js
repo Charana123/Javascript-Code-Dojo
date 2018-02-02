@@ -1,11 +1,21 @@
+const secretsPath = "secrets/";
+const https = require("https");
 var port = 8080;
 var verbose = true;
 
 var http = require("http");
 var fs = require("fs");
+var tls = require("tls");
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
+
+
+const options = {
+    key: fs.readFileSync(secretsPath + "key.pem"),
+    cert: fs.readFileSync(secretsPath + "cert.pem"),
+};
 start();
+
 
 // Start the http service. Accept only requests from localhost, for security.
 function start() {
@@ -13,9 +23,9 @@ function start() {
     types = defineTypes();
     banned = [];
     banUpperCase("./public/", "");
-    var service = http.createServer(handle);
+    var service = https.createServer(options, handle);
     service.listen(port, "localhost");
-    var address = "http://localhost";
+    var address = "https://localhost";
     if (port != 80) address = address + ":" + port;
     console.log("Server running at", address);
 }
