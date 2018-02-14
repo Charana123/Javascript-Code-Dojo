@@ -21,7 +21,11 @@ h2 { font-size: 28px; }
 
 h3 { font-size: 24px; }
 
-h4 { font-size: 20px; }
+h4 { font-size: 24px; }
+
+biglist { font-weight: normal; margin: 0; padding: 10px 0; color: #779999; font-size: 24px}
+
+
 
 h5, h6 { font-size: 17px; }
 
@@ -143,4 +147,15 @@ li#llogin a:active {
 li#lsignup a:hover,
 li#lsignup a:active {
     background-position: 0 -3px;
+}
+
+a.button {
+    color: #779999;
+    font-size: 32px;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    padding: 0;
+    background: none;
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>Learn JavaScript!</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="author" content="Joshua Van Leeuwen and Charana Nandasena" />
+        <meta name="copyright" content="Copyright Goes Here" />
+        <meta name="description" content="A website to learn JavaScript!" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
+    </head>
+    <body onload="startGame()">
+        <div id="header">
+            <h1>Learn JavaScript!</h1>
+        </div>
+        <div id="navigation">
+            <ul>
+                <li id="lhome"><a href="index.html">Home</a></li>
+                <li id="lchallenges"><a href="challenges.html">Challenges</a></li>
+                <li id="lforum"><a href="forum.html">Forum</a></li>
+                <li id="lgames"><a href="games.html">Games</a></li>
+                <li id="llongin"><a href="login.html">Log In</a></li>
+                <li id="lsignup"><a href="sign-up.html">Sign Up</a></li>
+            </ul>
+        </div>
+        <div>
+            <div id="divGameStage">
+                <canvas class=" sketch" height="450" width="450"></canvas>
+            </div>
+
+            <script src="games/tetris/libraries/p5.js" type="text/javascript"></script>
+
+            <script src="games/tetris/libraries/p5.dom.js" type="text/javascript"></script>
+            <script src="games/tetris/libraries/p5.sound.js" type="text/javascript"></script>
+
+            <script src="games/tetris/sketch.js" type="text/javascript"></script>
+            <script src="games/tetris/square.js" type="text/javascript"></script>
+            <script src="games/tetris/lineShape.js" type="text/javascript"></script>
+            <script src="games/tetris/tShape.js" type="text/javascript"></script>
+            <script src="games/tetris/boxShape.js" type="text/javascript"></script>
+            <script src="games/tetris/zShape.js" type="text/javascript"></script>
+            <script src="games/tetris/sShape.js" type="text/javascript"></script>
+            <script src="games/tetris/lShape.js" type="text/javascript"></script>
+            <script src="games/tetris/lOpShape.js" type="text/javascript"></script>
+            <script src="games/tetris/board.js" type="text/javascript"></script>
+        </div>
+        <div id="wrapper">
+            <div id="content">
+                <button type="button">
+                    <a href="games.html" class="button">Back!</a>
+                </button>
+            </div>
+        </div>
+    </body>
+</html>
+
