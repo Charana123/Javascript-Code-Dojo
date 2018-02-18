@@ -7,6 +7,10 @@ const selectAll = "SELECT * FROM ";
 const insertInto = "INSERT INTO ";
 const deleteFrom = "DELETE FROM ";
 
+module.exports = {
+    newDatabase: newDatabase
+};
+
 // Database _init_ function
 function getDatabase(fileName) {
     return new sqlite3.Database(fileName, (err) => {
@@ -32,85 +36,79 @@ function insertUserString(email, username, password) {
         "', '" + username + "', '"  + password + "');";
 }
 
-function getUserByUsernameString(username) {
-    return selectAll + "users WHERE username = '" + username + "';";
+function getRowsByFieldString(table, field, value) {
+    return selectAll + table + " WHERE " + field + " = '" + value + "';";
 }
 
 // Our database module with API
-var database = (function() {
-    var db = getDatabase(dbName);
+function newDatabase() {
+    return (function() {
+        var db = getDatabase(dbName);
 
-    var rowById = function getRowById(db, table, id) {
-        return new Promise(function(resolve, reject) {
-            db.get(getRowByIdString(table, id), function(err, row) {
-                if (err) {
-                    reject("failed to read " + id + " from table " + table + " in database: " + err.message);
-                }
-                resolve(row);
+        var rowById = function getRowById(db, table, id) {
+            return new Promise(function(resolve, reject) {
+                db.get(getRowByIdString(table, id), function(err, row) {
+                    if (err) {
+                        reject("failed to read " + id + " from table " + table + " in database: " + err.message);
+                    }
+                    resolve(row);
+                });
             });
-        });
-    };
+        };
 
-    var deleteRow = function deleteRow(table, id) {
-        return new Promise(function deleteRow(db, table, id) {
-            db.all(deleteRowString(table, id), function (err, row) {
-                if (err) {
-                    reject("failed to delete " + id + " from " + table + ": " + err.message);
-                }
-                resolve(id);
+        var deleteRow = function deleteRow(db, table, id) {
+            return new Promise(function deleteRow(db, table, id) {
+                db.all(deleteRowString(table, id), function (err, row) {
+                    if (err) {
+                        reject("failed to delete " + id + " from " + table + ": " + err.message);
+                    }
+                    resolve(id);
+                });
             });
-        });
-    };
+        };
 
-    var userById = function(db, username) {
-        return new Promise(function(resolve, reject) {
-            db.all(getUserByUsernameString(username), [], (err, user) => {
-                if (err) {
-                    reject("failed to find user " + username + ": " + err.message);
-                }
-                resolve(user);
+        var rowsByField = function(db, table, field, value) {
+            return new Promise(function(resolve, reject) {
+                db.all(getRowsByFieldString(table, field, value), [], (err, user) => {
+                    if (err) {
+                        reject("failed to find user " + username + ": " + err.message);
+                    }
+                    resolve(user);
+                });
             });
-        });
-    };
+        };
 
-    var newUser = function(db, email, username, password) {
-        return new Promise(function(resolve, reject) {
-            db.all(insertUserString(email, username, password), function (err, user) {
-                if (err) {
-                    reject("failed to create user " + username + ": " + err.message);
-                }
-                resolve(username);
+        var newUser = function(db, email, username, password) {
+            return new Promise(function(resolve, reject) {
+                db.all(insertUserString(email, username, password), [], (err, user) => {
+                    if (err) {
+                        reject("failed to create user " + username + ": " + err.message);
+                    }
+                    resolve(username);
+                });
             });
-        });
-    };
+        };
 
-    return{
-        close:function() {
-            db.close((err) => {
-                if (err) {
-                    return console.error(err.message);
-                }
-            });
-        },
-        rowById:function(table, id) {
-            return rowById(db, table, id);
-        },
-        deleteById:function(table, id) {
-            return deleteRow;
-        },
-        newUser:function(email, username, password) {
-            return newUser;
-        },
-        userById:function(username) {
-            return userById(db, username);
+        return{
+            close:function() {
+                db.close((err) => {
+                    if (err) {
+                        return console.error(err.message);
+                    }
+                });
+            },
+            rowById:function(table, id) {
+                return rowById(db, table, id);
+            },
+            deleteById:function(table, id) {
+                return deleteRow(db, table, id);
+            },
+            rowsByField:function(table, field, value) {
+                return rowsByField(db, table, field, value);
+            }
+            newUser:function(email, username, password) {
+                return newUser(db, email, username, password);
+            },
         }
-    }
-}());
-
-database.userById("foo").then(function(user) {
-    console.log(user);
-}, function(err) {
-    console.log(err);
-});
-
-database.close();
+    }());
+};
