@@ -3,13 +3,14 @@ var verbose = true;
 
 var http = require("http");
 var fs = require("fs");
+var ejs = require("ejs")
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
 start();
 
 // Start the http service. Accept only requests from localhost, for security.
 function start() {
-    if (! checkSite()) return;
+    if (!checkSite()) return;
     types = defineTypes();
     banned = [];
     banUpperCase("./public/", "");
@@ -20,13 +21,13 @@ function start() {
     console.log("Server running at", address);
 }
 
-// Check that the site folder and index page exist.
+// Check that the public folder and index.html page exist.
 function checkSite() {
     var path = "./public";
     var ok = fs.existsSync(path);
     if (ok) path = "./public/index.html";
     if (ok) ok = fs.existsSync(path);
-    if (! ok) console.log("Can't find", path);
+    if (!ok) console.log("Can't find", path);
     return ok;
 }
 
@@ -38,6 +39,49 @@ function handle(request, response) {
     var type = findType(url);
     if (type == null) return fail(response, BadType, "File type unsupported");
     var file = "./public" + url;
+    
+    //give file with .html extension to promise
+    //promise will check if extension is .html and check for .ejs version
+    //if .html version doesn't exist or extension is not .html 
+    //fallback on default readFile handler
+    var readFileEJS = function(file){
+        return new Promise(function(resolve, reject){
+            var lastIndex = file.lastIndexOf(".")
+            var extension = file.substring(lastIndex + 1)
+            if(extension === "html"){
+                ejsFile = file.substring(0, lastIndex) + ".ejs";
+                fs.readFile(ejsFile, function(err, content){
+                    if(err) reject(err)
+                    else resolve(content)
+                })
+            }
+            else reject(new Error("Resource not HTTP file"))
+        })
+    }
+    var readFile = function(err){
+        return new Promise(function(resolve, reject){
+            fs.readFile(file, function(err, content){
+                if(err) reject(err)
+                else resolve(content)
+            })
+        })
+    }
+    var resolveEJS = function(content){
+        
+    }
+    var resolveHTML = function(content){
+
+    }
+    var err = function(err){
+        fail(response, NotFound, "File not found");
+    }
+    // if (err) return fail(response, NotFound, "File not found");
+    // var typeHeader = { "Content-Type": type };
+    // response.writeHead(OK, typeHeader);
+    // response.write(content);
+    // response.end();
+
+    //readFile returns  
     fs.readFile(file, ready);
     function ready(err, content) { deliver(response, type, err, content); }
 }
@@ -90,8 +134,10 @@ function banUpperCase(root, folder) {
         banUpperCase(root, file);
     }
 }
+
 function defineTypes() {
     var types = {
+        ejs : "application/xhtml+xml",
         html : "application/xhtml+xml",
         css  : "text/css",
         js   : "application/javascript",

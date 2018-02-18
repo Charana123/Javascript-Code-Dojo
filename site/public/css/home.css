@@ -12,26 +12,16 @@ a:link {
 }
 
 /* Html Elements */
-
 h1, h2, h3, h4, h5, h6 { font-weight: normal; margin: 0; padding: 10px 0; color: #779999 }
-
 h1 { font-size: 32px; }
-
 h2 { font-size: 28px; }
-
 h3 { font-size: 24px; }
-
 h4 { font-size: 24px; }
-
+h5, h6 { font-size: 17px; }
 biglist { font-weight: normal; margin: 0; padding: 10px 0; color: #779999; font-size: 24px}
 
 
-
-h5, h6 { font-size: 17px; }
-
-
 /* Structure */
-
 body
 {
     margin: 0;
@@ -47,16 +37,6 @@ body
     clear: both;
     border-top: 10px solid #222222;
     background: #222222 url(images/navigation_hover.gif) top left repeat;
-}
-
-#navigation
-{
-    float: left;
-    width: 100%;
-    clear: both;
-    color: #333333;
-    border-bottom: 5px solid #222222;
-    background: #999999 url(images/navigation_bg.gif) top left repeat; 
 }
 
 #wrapper
@@ -94,17 +74,48 @@ body
 
 #header h1 { padding: 40px; }
 
-/* Navigation */
+/* ==== Sidebar ============================================================ */
+/* ==== Navigation ============================================================ */
+.sidebar {
+    float: left;
+    width: 100%;
+    color: #000000;
+    background-color: #999999;
+}
 
-#navigation ul { float: left; list-style-type: none; margin: 0; padding: 0; background: none; border-width: 0; }
+.sidebar ul { 
+    float: left; 
+    list-style-type: none; 
+    margin: 0; 
+    padding: 0; 
+    background: none; 
+    border-width: 0; 
+}
 
-#navigation li { float: left; }
-
-#navigation a {
+.sidebar li { 
     float: left;
     display: block;
-    padding: 5px 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    padding-left: 10px;
 }
+
+#forum-name { width: 150px; }
+#forum-description { width: 500px; }
+#forum-questions { width: 100px }
+
+/* ==== Navigation ============================================================ */
+#navigation
+{
+    float: left;
+    width: 100%;
+    clear: both;
+    color: #333333;
+    border-bottom: 5px solid #222222;
+    background: #999999 url(images/navigation_bg.gif) top left repeat; 
+}
+
+#navigation a { float: left; }
 
 #navigation a:link,
 #navigation a:visited
@@ -120,7 +131,8 @@ body
     background: #333333 url(images/navigation_hover.gif) top left repeat;
 }
 
-li#lhome a:hover,
+/* ==== Elements ============================================================ */
+/* li#lhome a:hover,
 li#lhome a:active {
     background-position: 0 -3px;
 }
@@ -148,7 +160,7 @@ li#llogin a:active {
 li#lsignup a:hover,
 li#lsignup a:active {
     background-position: 0 -3px;
-}
+} */
 
 a.button {
     color: #779999;
