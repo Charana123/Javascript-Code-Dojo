@@ -33,7 +33,15 @@ function checkSite() {
 
 // Serve a request by delivering a file.
 function handle(request, response) {
+    //get the URL with type or no type, if no type add .html type
+    //
     var url = request.url.toLowerCase();
+    if(url == "/forum"){
+        return forum;
+    }
+
+
+
     if (url.endsWith("/")) url = url + "index.html";
     if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
     var type = findType(url);
@@ -67,7 +75,7 @@ function handle(request, response) {
         })
     }
     var resolveEJS = function(content){
-        
+        ejs.render()
     }
     var resolveHTML = function(content){
 
