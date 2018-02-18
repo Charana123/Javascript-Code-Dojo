@@ -71,7 +71,7 @@ function newDatabase() {
             return new Promise(function(resolve, reject) {
                 db.all(getRowsByFieldString(table, field, value), [], (err, user) => {
                     if (err) {
-                        reject("failed to find user " + username + ": " + err.message);
+                        reject("failed to find " + field + ":" + value + ": " + err.message);
                     }
                     resolve(user);
                 });
@@ -105,7 +105,7 @@ function newDatabase() {
             },
             rowsByField:function(table, field, value) {
                 return rowsByField(db, table, field, value);
-            }
+            },
             newUser:function(email, username, password) {
                 return newUser(db, email, username, password);
             },

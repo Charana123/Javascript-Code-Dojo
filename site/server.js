@@ -189,3 +189,7 @@ function defineTypes() {
     }
     return types;
 }
+
+function hello() {
+    console.log("Hello");
+}
