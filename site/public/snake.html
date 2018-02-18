@@ -7,9 +7,8 @@
         <meta name="copyright" content="Copyright Goes Here" />
         <meta name="description" content="A website to learn JavaScript!" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
-        <link rel="stylesheet" type="text/css" media="screen" href="css/login.css" />
     </head>
-    <body id="babout">
+    <body onload="startGame()">
         <div id="header">
             <h1>Learn JavaScript!</h1>
         </div>
@@ -23,27 +22,18 @@
                 <li id="lsignup"><a href="sign-up.html">Sign Up</a></li>
             </ul>
         </div>
+        <div>
+            <div id="divGameStage">
+                <canvas class=" sketch" height="450" width="450"></canvas>
+            </div>
+            <script type='text/javascript' src='games/snake.js'></script>
+        </div>
         <div id="wrapper">
-            <h4>Login In</h4>
-            <form>
-                <div class="container">
-                    <label ><b>Email</b></label>
-                    <input type="text" placeholder="Enter Email"></input>
-
-                    <label><b>Password</b></label>
-                    <input type="password" placeholder="Enter Password" name="psw"></input>
-
-                    <button type="submit">Login</button>
-                    <label>
-                        <input type="checkbox" checked="checked" name="remember">Remember me</input>
-                    </label>
-                </div>
-
-                <div class="container" style="background-color:#f1f1f1">
-                    <button type="button" class="cancelbtn">Cancel</button>
-                    <span class="psw"><a href="#">Forgot password?</a></span>
-                </div>
-            </form>
+                <div id="content">
+                    <button type="button">
+                        <a href="games.html" class="button">Back!</a>
+                    </button>
+            </div>
         </div>
     </body>
 </html>

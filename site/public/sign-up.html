@@ -1,9 +1,53 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title> Title </title>
-	</head>
-	<body>
-		<h1> Sign Up </h1>
-	</body>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>Learn JavaScript!</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="author" content="Joshua Van Leeuwen and Charana Nandasena" />
+        <meta name="copyright" content="Copyright Goes Here" />
+        <meta name="description" content="A website to learn JavaScript!" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/login.css" />
+    </head>
+    <body id="babout">
+        <div id="header">
+            <h1>Learn JavaScript!</h1>
+        </div>
+        <div id="navigation">
+            <ul>
+                <li id="lhome"><a href="index.html">Home</a></li>
+                <li id="lchallenges"><a href="challenges.html">Challenges</a></li>
+                <li id="lforum"><a href="forum.html">Forum</a></li>
+                <li id="lgames"><a href="games.html">Games</a></li>
+                <li id="llongin"><a href="login.html">Log In</a></li>
+                <li id="lsignup"><a href="sign-up.html">Sign Up</a></li>
+            </ul>
+        </div>
+        <div id="wrapper">
+            <h4>Sign Up</h4>
+
+            <form>
+                <div class="container">
+                    <label><b>Email</b></label>
+                    <input type="text" placeholder="Enter Email" name="uname"></input>
+
+                    <label><b>Password</b></label>
+                    <input type="password" placeholder="Enter Password" name="psw"></input>
+
+                    <label><b>Re-Enter Password</b></label>
+                    <input type="password" placeholder="Re-Enter Enter Password" name="psw2"></input>
+
+                    <button type="submit">Sign Up</button>
+                    <label>
+                        <input type="checkbox" checked="checked" name="remember">Remember me</input>
+                    </label>
+                </div>
+
+                <div class="container" style="background-color:#f1f1f1">
+                    <button type="button" class="cancelbtn">Cancel</button>
+                    <span class="psw"><a href="login.html">Already have an account?</a></span>
+                </div>
+            </form>
+        </div>
+    </body>
 </html>

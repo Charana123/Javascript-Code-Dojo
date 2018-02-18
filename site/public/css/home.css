@@ -1,0 +1,162 @@
+html
+{
+    margin: 0;
+    padding: 0;
+    color: #aaaaaa;
+    background-color: #333333;
+    font: normal 12px "Droid Sans", "Droid Sans", Verdana, Georgia, Sans-Serif;
+}
+
+a:link {
+    text-decoration: none; color: #000000;
+}
+
+/* Html Elements */
+
+h1, h2, h3, h4, h5, h6 { font-weight: normal; margin: 0; padding: 10px 0; color: #779999 }
+
+h1 { font-size: 32px; }
+
+h2 { font-size: 28px; }
+
+h3 { font-size: 24px; }
+
+h4 { font-size: 24px; }
+
+biglist { font-weight: normal; margin: 0; padding: 10px 0; color: #779999; font-size: 24px}
+
+
+
+h5, h6 { font-size: 17px; }
+
+
+/* Structure */
+
+body
+{
+    margin: 0;
+    float: left;
+    width: 100%;
+    font-size: 20px;
+}
+
+#header
+{
+    float: left;
+    width: 100%;
+    clear: both;
+    border-top: 10px solid #222222;
+    background: #222222 url(images/navigation_hover.gif) top left repeat;
+}
+
+#navigation
+{
+    float: left;
+    width: 100%;
+    clear: both;
+    color: #333333;
+    border-bottom: 5px solid #222222;
+    background: #999999 url(images/navigation_bg.gif) top left repeat; 
+}
+
+#wrapper
+{
+    clear: both;
+    float: left;
+    width: 100%;
+    margin: 10px 0;
+    background: transparent url(images/hr_dotted.gif) 60% 0 repeat-y; 
+}
+
+#content-wrapper
+{
+    width: 60%;
+    float: left;
+}
+
+#content
+{
+    float: left;
+    padding: 0 20px;
+}
+
+#sidebar-wrapper {
+    width: 40%;
+    float: left;
+}
+
+#sidebar {
+    float: left;
+    padding: 0 20px;
+}
+
+/* Header */
+
+#header h1 { padding: 40px; }
+
+/* Navigation */
+
+#navigation ul { float: left; list-style-type: none; margin: 0; padding: 0; background: none; border-width: 0; }
+
+#navigation li { float: left; }
+
+#navigation a {
+    float: left;
+    display: block;
+    padding: 5px 10px;
+}
+
+#navigation a:link,
+#navigation a:visited
+{
+    color: #002244;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#navigation a:hover,
+#navigation a:active {
+    color: #7799CC;
+    background: #333333 url(images/navigation_hover.gif) top left repeat;
+}
+
+li#lhome a:hover,
+li#lhome a:active {
+    background-position: 0 -3px;
+}
+
+li#lchallenges a:hover,
+li#lchallenges a:active {
+    background-position: 0 1px;
+}
+
+li#lforum a:hover,
+li#lforum a:active {
+    background-position: 0 2px;
+}
+
+li#lgames a:hover,
+li#lgames a:active {
+    background-position: 0 -1px;
+}
+
+li#llogin a:hover,
+li#llogin a:active {
+    background-position: 0 -2px;
+}
+
+li#lsignup a:hover,
+li#lsignup a:active {
+    background-position: 0 -3px;
+}
+
+a.button {
+    color: #779999;
+    font-size: 32px;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    padding: 0;
+    background: none;
+}
