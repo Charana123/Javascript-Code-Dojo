@@ -26,21 +26,21 @@
         <div id="wrapper">
             <h4>Sign Up</h4>
 
-            <form>
+            <form id="signupForm">
                 <div class="container">
                     <label><b>Email</b></label>
-                    <input type="text" placeholder="Enter Email" name="uname"></input>
+                    <input type="text" placeholder="Enter Email" name="email"></input>
+
+                    <label><b>Username</b></label>
+                    <input type="text" placeholder="Enter Username" name="uname"></input>
 
                     <label><b>Password</b></label>
-                    <input type="password" placeholder="Enter Password" name="psw"></input>
+                    <input type="password" placeholder="Enter Password" name="psw1"></input>
 
                     <label><b>Re-Enter Password</b></label>
                     <input type="password" placeholder="Re-Enter Enter Password" name="psw2"></input>
 
-                    <button type="submit">Sign Up</button>
-                    <label>
-                        <input type="checkbox" checked="checked" name="remember">Remember me</input>
-                    </label>
+                    <button type="button" onclick="submitSignUp()" value="Submit">Sign Up</button>
                 </div>
 
                 <div class="container" style="background-color:#f1f1f1">
@@ -48,6 +48,15 @@
                     <span class="psw"><a href="login.html">Already have an account?</a></span>
                 </div>
             </form>
+            <script type="text/javascript">
+                    function submitSignUp() {
+                        var x = document.getElementById("signupForm");
+                        console.log(x.elements[0].value);
+                        console.log(x.elements[1].value);
+                        console.log(x.elements[2].value);
+                        console.log(x.elements[3].value);
+                    }
+            </script>
         </div>
     </body>
 </html>

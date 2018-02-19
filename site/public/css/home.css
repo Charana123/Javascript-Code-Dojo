@@ -36,7 +36,7 @@ body
     width: 100%;
     clear: both;
     border-top: 10px solid #222222;
-    background: #222222 url(images/navigation_hover.gif) top left repeat;
+    background: #222222 top left repeat;
 }
 
 #wrapper
@@ -45,7 +45,7 @@ body
     float: left;
     width: 100%;
     margin: 10px 0;
-    background: transparent url(images/hr_dotted.gif) 60% 0 repeat-y; 
+    background: transparent 60% 0 repeat-y; 
 }
 
 #content-wrapper
@@ -133,7 +133,7 @@ body
 #navigation a:active,
 {
     color: #7799CC;
-    background: #333333 url(images/navigation_hover.gif) top left repeat;
+    background: #333333 top left repeat;
 }
 
 /* ==== SELECT ==================================================== */
