@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <title>Learn JavaScript!</title>
+  <meta name="author" content="Joshua Van Leeuwen and Charana Nandasena" />
+  <meta name="copyright" content="Copyright Goes Here" />
+  <meta name="description" content="A website to learn JavaScript!" />
+  <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
+</head>
+
+<body>
+<div id="header">
+    <h1>Learn JavaScript!</h1>
+</div>
+<div class="sidebar" id="navigation" > <!-- style="position: fixed;" -->
+  <ul>
+    <li id="lhome"><a href="index.html">Home</a></li>
+    <li id="lchallenges"><a href="challenges.html">Challenges</a></li>
+    <li id="lforum"><a href="forum.html">Forum</a></li>
+    <li id="lgames"><a href="games.html">Games</a></li>
+    <li id="llongin"><a href="login.html">Log In</a></li>
+    <li id="lsignup"><a href="sign-up.html">Sign Up</a></li>
+  </ul>
+</div>
+
+<!-- SAD -->
+<!-- <div id="wrapper">
+  <div id="content-wrapper">
+    <div id="content">
+      <h4>Here is where the forum will go.</h4>
+    </div>
+  </div>
+</div> -->
+
+<div class="sidebar" id="navigation" >
+  <div id="select-container">
+    <select id="category-select" >
+      <option value="general" > General </option>
+      <option value="challenge1" > Challenge1 </option>
+    </select>
+  </div>
+  <ul>
+    <li id="lnew"><a href="new">New</a></li>
+    <li id="ltop"><a href="top">Top</a></li>
+    <li id="lhot"><a href="hot">Hot</a></li>
+  </ul>
+</div>
+
+<div class="sidebar">
+    <ul>
+      <li id="question-title"> Title </li>
+      <li id="question-category"> Questions </li>
+      <li id="question-comments"> Comments </li>
+      <li id="question-views"> Views </li>
+      <li id="question-activity"> Activity </li>
+    </ul>
+</div>
+<div class="sidebar">
+    <ul>
+      <li id="question-title"> <%= question_title %> </li>
+      <li id="question-category"> <%= question_category %> </li>
+      <li id="question-comments"> <%= question_comments %> </li>
+      <li id="question-views"> <%= question_views %> </li>
+      <li id="question-activity"> <%= question_activity %> </li>
+    </ul>
+</div>
+<div class="sidebar">
+    <ul>
+      <li id="question-title"> Software Engineering </li>
+      <li id="question-category"> Learning </li>
+      <li id="question-comments"> 20 </li>
+      <li id="question-views"> 245 </li>
+      <li id="question-activity"> 15th Jan 2018 </li>
+    </ul>
+</div>
+
+<script type="text/javascript">
+  var category_select = document.getElementById("category-select")
+  category_select.onchange = function(){
+    location.href = "/" + category_select.options[category_select.selectedIndex].value;
+  }
+</script>
+
+
+</body>
+</html>
+

@@ -3,13 +3,14 @@ var verbose = true;
 
 var http = require("http");
 var fs = require("fs");
+var ejs = require("ejs")
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
 start();
 
 // Start the http service. Accept only requests from localhost, for security.
 function start() {
-    if (! checkSite()) return;
+    if (!checkSite()) return;
     types = defineTypes();
     banned = [];
     banUpperCase("./public/", "");
@@ -20,26 +21,94 @@ function start() {
     console.log("Server running at", address);
 }
 
-// Check that the site folder and index page exist.
+// Check that the public folder and index.html page exist.
 function checkSite() {
     var path = "./public";
     var ok = fs.existsSync(path);
     if (ok) path = "./public/index.html";
     if (ok) ok = fs.existsSync(path);
-    if (! ok) console.log("Can't find", path);
+    if (!ok) console.log("Can't find", path);
     return ok;
+}
+
+var readFileEJS = function(EJSfile){
+    return new Promise(function(resolve, reject){
+        fs.readFile(EJSfile, "utf-8", function(err, content){
+            if(err) reject(err)
+            else resolve(content)
+        })
+    })
+}
+
+var getAllPostsData = function(){
+    var forum_data = { question_title: "HTTP - Writing a server", question_category: "Coding/Projects",
+        question_comments: "35", question_views: "2", question_activity: "26d" }
+    return forum_data
+}
+
+var getTopPostsData = function(){
+    return getAllPostsData()
+}
+
+var getNewPostsData = function(){
+    return getAllPostsData()
+}
+
+var getHotPostsData = function(){
+    return getAllPostsData()
+}
+
+function resolveEJSFile(uri, data, response){
+    var EJSfile = "./public" + uri + ".ejs";
+    readFileEJS(EJSfile)
+        .then(function(content){
+            var contentHTML = ejs.render(content, data)
+            var type = types["ejs"]
+            deliver(response, type, contentHTML)
+        })
+        .catch(function(err){
+            fail(response, NotFound, err.message);
+        })
+}
+
+var readFile = function(file){
+    return new Promise(function(resolve, reject){
+        fs.readFile(file, function(err, content){
+            if(err) reject(err)
+            else resolve(content)
+        })
+    })
 }
 
 // Serve a request by delivering a file.
 function handle(request, response) {
     var url = request.url.toLowerCase();
+    console.log(url)
+    if(url.lastIndexOf(".") == -1 && url != "/"){
+        if(url === "/forum") resolveEJSFile(url, getAllPostsData(), response)
+        if(url === "/top") resolveEJSFile("/forum", getTopPostsData(), response)
+        if(url === "/new") resolveEJSFile("/forum", getNewPostsData(), response)
+        if(url === "/hot") resolveEJSFile("/forum", getHotPostsData(), response)
+
+        if(url === "/general") resolveEJSFile("/forum", getAllPostsData(), response)
+        if(url === "/challenge1") resolveEJSFile("/forum", getAllPostsData(), response)
+        return
+    }
+
     if (url.endsWith("/")) url = url + "index.html";
     if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
     var type = findType(url);
     if (type == null) return fail(response, BadType, "File type unsupported");
     var file = "./public" + url;
-    fs.readFile(file, ready);
-    function ready(err, content) { deliver(response, type, err, content); }
+
+    readFile(file)
+        .then(function(content){
+            deliver(response, type, content);
+        })
+        .catch(function(err){
+            console.log(file)
+            if (err) return fail(response, NotFound, "File not found");
+        })
 }
 
 // Forbid any resources which shouldn't be delivered to the browser.
@@ -59,8 +128,7 @@ function findType(url) {
 }
 
 // Deliver the file that has been read in to the browser.
-function deliver(response, type, err, content) {
-    if (err) return fail(response, NotFound, "File not found");
+function deliver(response, type, content) {
     var typeHeader = { "Content-Type": type };
     response.writeHead(OK, typeHeader);
     response.write(content);
@@ -90,8 +158,10 @@ function banUpperCase(root, folder) {
         banUpperCase(root, file);
     }
 }
+
 function defineTypes() {
     var types = {
+        ejs : "application/xhtml+xml",
         html : "application/xhtml+xml",
         css  : "text/css",
         js   : "application/javascript",
