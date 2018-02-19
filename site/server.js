@@ -31,16 +31,57 @@ function checkSite() {
     return ok;
 }
 
+var readFileEJS = function(EJSfile){
+    return new Promise(function(resolve, reject){
+        fs.readFile(EJSfile, "utf-8", function(err, content){
+            if(err) reject(err)
+            else resolve(content)
+        })
+    })
+}
+
+var getForumData = function(){
+    var forum_data = { forum_name: "General", forum_description: "General Forum", forum_questions: "0"  }
+    return forum_data;
+}
+
+var getGeneralForumData = function(){
+    var general_forum_data = { thread_votes: "3", thread_comments: "8",
+        thread_author: "Charana Nandasena", thread_date: "5th January 2018" }
+    return general_forum_data;
+}
+
+function resolveEJSFile(uri, data, response){
+    var EJSfile = "./public" + uri + ".ejs";
+    readFileEJS(EJSfile)
+        .then(function(content){
+            var contentHTML = ejs.render(content, data)
+            var type = types["ejs"]
+            deliver(response, type, contentHTML)
+        })
+        .catch(function(err){
+            fail(response, NotFound, err.message);
+        })
+}
+
+var readFile = function(err){
+    return new Promise(function(resolve, reject){
+        fs.readFile(file, function(err, content){
+            if(err) reject(err)
+            else resolve(content)
+        })
+    })
+}
+
 // Serve a request by delivering a file.
 function handle(request, response) {
-    //get the URL with type or no type, if no type add .html type
-    //
     var url = request.url.toLowerCase();
-    if(url == "/forum"){
-        return forum;
+    if(url.lastIndexOf(".") == -1){
+        if(url === "/forum") resolveEJSFile(url, getForumData(), response)
+        else if(url === "/general-forum") resolveEJSFile(url, getGeneralForumData(), response)
+        else if(url === "/challenge1-forum") resolveEJSFile(url, getGeneralForumData(), response)
+        return
     }
-
-
 
     if (url.endsWith("/")) url = url + "index.html";
     if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
@@ -48,50 +89,13 @@ function handle(request, response) {
     if (type == null) return fail(response, BadType, "File type unsupported");
     var file = "./public" + url;
     
-    //give file with .html extension to promise
-    //promise will check if extension is .html and check for .ejs version
-    //if .html version doesn't exist or extension is not .html 
-    //fallback on default readFile handler
-    var readFileEJS = function(file){
-        return new Promise(function(resolve, reject){
-            var lastIndex = file.lastIndexOf(".")
-            var extension = file.substring(lastIndex + 1)
-            if(extension === "html"){
-                ejsFile = file.substring(0, lastIndex) + ".ejs";
-                fs.readFile(ejsFile, function(err, content){
-                    if(err) reject(err)
-                    else resolve(content)
-                })
-            }
-            else reject(new Error("Resource not HTTP file"))
+    readFile(file)
+        .then(function(content){
+            deliver(response, type, content);
         })
-    }
-    var readFile = function(err){
-        return new Promise(function(resolve, reject){
-            fs.readFile(file, function(err, content){
-                if(err) reject(err)
-                else resolve(content)
-            })
+        .catch(function(err){
+            if (err) return fail(response, NotFound, "File not found");
         })
-    }
-    var resolveEJS = function(content){
-        ejs.render()
-    }
-    var resolveHTML = function(content){
-
-    }
-    var err = function(err){
-        fail(response, NotFound, "File not found");
-    }
-    // if (err) return fail(response, NotFound, "File not found");
-    // var typeHeader = { "Content-Type": type };
-    // response.writeHead(OK, typeHeader);
-    // response.write(content);
-    // response.end();
-
-    //readFile returns  
-    fs.readFile(file, ready);
-    function ready(err, content) { deliver(response, type, err, content); }
 }
 
 // Forbid any resources which shouldn't be delivered to the browser.
@@ -111,8 +115,7 @@ function findType(url) {
 }
 
 // Deliver the file that has been read in to the browser.
-function deliver(response, type, err, content) {
-    if (err) return fail(response, NotFound, "File not found");
+function deliver(response, type, content) {
     var typeHeader = { "Content-Type": type };
     response.writeHead(OK, typeHeader);
     response.write(content);

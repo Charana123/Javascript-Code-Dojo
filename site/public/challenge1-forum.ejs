@@ -22,38 +22,30 @@
   </ul>
 </div>
 
-<!-- SAD -->
-<!-- <div id="wrapper">
-  <div id="content-wrapper">
-    <div id="content">
-      <h4>Here is where the forum will go.</h4>
-    </div>
-  </div>
-</div> -->
-
-<div class="sidebar">
-  <ul>
-    <li id="forum-name" >Name</li>
-    <li id="forum-description" >Desription</li>
-    <li id="forum-questions" >Questions</li>
-  </ul>
-</div>
 <div class="sidebar">
     <ul>
-      <li id="forum-name"><a href="general-forum">General</a></li>
-      <li id="forum-description"> The general forum </li>
-      <li id="forum-questions"> 0 </li>
+        <li id="thread-votes">Votes</li>
+        <li id="thread-comments">Comments</li>
+        <li id="thread-author">Author</li>
+        <li id="thread-date">Date Created</li>
     </ul>
 </div>
 <div class="sidebar">
     <ul>
-        <li id="forum-name"><a href="challenge1-forum"> Challenge1 </a></li>
-      <li id="forum-description"> The challenge1 forum </li>
-      <li id="forum-questions"> 0 </li>
+        <li id="thread-votes"> <%= thread_votes %> </li>
+        <li id="thread-comments"> <%= thread_comments %> </li>
+        <li id="thread-author"> <%= thread_author %> </li>
+        <li id="thread-date"> <%= thread_date %> </li>
     </ul>
 </div>
-
+<div class="sidebar">
+    <ul>
+        <li id="thread-votes"> 3 </li>
+        <li id="thread-comments"> 10 </li>
+        <li id="thread-author"> Joshua VanL </li>
+        <li id="thread-date"> 21th Feburary 2018 </li>
+    </ul>
+</div>
 
 </body>
 </html>
-
