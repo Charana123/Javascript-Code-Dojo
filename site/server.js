@@ -40,15 +40,22 @@ var readFileEJS = function(EJSfile){
     })
 }
 
-var getForumData = function(){
-    var forum_data = { forum_name: "General", forum_description: "General Forum", forum_questions: "0"  }
-    return forum_data;
+var getAllPostsData = function(){
+    var forum_data = { question_title: "HTTP - Writing a server", question_category: "Coding/Projects",
+        question_comments: "35", question_views: "2", question_activity: "26d" }
+    return forum_data
 }
 
-var getGeneralForumData = function(){
-    var general_forum_data = { thread_votes: "3", thread_comments: "8",
-        thread_author: "Charana Nandasena", thread_date: "5th January 2018" }
-    return general_forum_data;
+var getTopPostsData = function(){
+    return getAllPostsData()
+}
+
+var getNewPostsData = function(){
+    return getAllPostsData()
+}
+
+var getHotPostsData = function(){
+    return getAllPostsData()
 }
 
 function resolveEJSFile(uri, data, response){
@@ -64,7 +71,7 @@ function resolveEJSFile(uri, data, response){
         })
 }
 
-var readFile = function(err){
+var readFile = function(file){
     return new Promise(function(resolve, reject){
         fs.readFile(file, function(err, content){
             if(err) reject(err)
@@ -76,10 +83,15 @@ var readFile = function(err){
 // Serve a request by delivering a file.
 function handle(request, response) {
     var url = request.url.toLowerCase();
-    if(url.lastIndexOf(".") == -1){
-        if(url === "/forum") resolveEJSFile(url, getForumData(), response)
-        else if(url === "/general-forum") resolveEJSFile(url, getGeneralForumData(), response)
-        else if(url === "/challenge1-forum") resolveEJSFile(url, getGeneralForumData(), response)
+    console.log(url)
+    if(url.lastIndexOf(".") == -1 && url != "/"){
+        if(url === "/forum") resolveEJSFile(url, getAllPostsData(), response)
+        if(url === "/top") resolveEJSFile("/forum", getTopPostsData(), response)
+        if(url === "/new") resolveEJSFile("/forum", getNewPostsData(), response)
+        if(url === "/hot") resolveEJSFile("/forum", getHotPostsData(), response)
+
+        if(url === "/general") resolveEJSFile("/forum", getAllPostsData(), response)
+        if(url === "/challenge1") resolveEJSFile("/forum", getAllPostsData(), response)
         return
     }
 
@@ -88,12 +100,13 @@ function handle(request, response) {
     var type = findType(url);
     if (type == null) return fail(response, BadType, "File type unsupported");
     var file = "./public" + url;
-    
+
     readFile(file)
         .then(function(content){
             deliver(response, type, content);
         })
         .catch(function(err){
+            console.log(file)
             if (err) return fail(response, NotFound, "File not found");
         })
 }

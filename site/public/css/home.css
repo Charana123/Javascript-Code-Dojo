@@ -100,9 +100,11 @@ body
     padding-left: 10px;
 }
 
-#forum-name { width: 150px; }
-#forum-description { width: 500px; }
-#forum-questions { width: 100px }
+#question-title { width: 600px }
+#question-category { width: 200px }
+#question-comments { width: 150px }
+#question-views { width: 150px }
+#question-activity { width: 200px }
 
 /* ==== Navigation ============================================================ */
 #navigation
@@ -115,10 +117,12 @@ body
     background: #999999 url(images/navigation_bg.gif) top left repeat; 
 }
 
-#navigation a { float: left; }
+#navigation a {
+     float: left;
+}
 
 #navigation a:link,
-#navigation a:visited
+#navigation a:visited,
 {
     color: #002244;
     font-weight: bold;
@@ -126,10 +130,55 @@ body
 }
 
 #navigation a:hover,
-#navigation a:active {
+#navigation a:active,
+{
     color: #7799CC;
     background: #333333 url(images/navigation_hover.gif) top left repeat;
 }
+
+/* ==== SELECT ==================================================== */
+
+#select-container {
+    /* Offset in sidebar */
+    margin: 4px;
+
+   /* Float to top left */
+   float: left;
+   background: lightblue;
+
+   width: 120px;
+}
+
+
+#select-container > select {
+   /* Remove select border */
+   border: none;
+   outline: 0px;
+
+   /* Remove default CSS */
+   -webkit-appearance: none;
+   padding: 5px 20px;
+
+   /* Make underling div element color noticable */
+   background: transparent;
+
+   font-size: 15px;
+} 
+
+#select-container > select > option {
+   /* Remove select border */
+   border: none;
+   outline: 0px;
+
+   /* Remove default CSS */
+   -webkit-appearance: none;
+   padding: 5px 20px;
+
+   /* Make underling div element color noticable */
+   background: transparent;
+
+   font-size: 15px;
+} 
 
 /* ==== Elements ============================================================ */
 /* li#lhome a:hover,
