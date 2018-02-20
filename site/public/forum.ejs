@@ -7,33 +7,28 @@
   <meta name="copyright" content="Copyright Goes Here" />
   <meta name="description" content="A website to learn JavaScript!" />
   <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="css/forum.css" />
+  <script type="text/javascript" src="js/cookies.js" async="async"> </script>
+  <script type="text/javascript" src="js/forum_cookies.js" async="async"> </script>
 </head>
 
 <body>
-<div id="header">
-    <h1>Learn JavaScript!</h1>
-</div>
-<div class="sidebar" id="navigation" > <!-- style="position: fixed;" -->
+
+<div class="sidebar navigation" id="header" >
   <ul>
-    <li id="lhome"><a href="index.html">Home</a></li>
-    <li id="lchallenges"><a href="challenges.html">Challenges</a></li>
-    <li id="lforum"><a href="forum.html">Forum</a></li>
-    <li id="lgames"><a href="games.html">Games</a></li>
-    <li id="llongin"><a href="login.html">Log In</a></li>
-    <li id="lsignup"><a href="sign-up.html">Sign Up</a></li>
+    <li> <div> Learn Javascript </div> </li>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="challenges.html">Challenges</a></li>
+    <li><a href="forum.html">Forum</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li id="login" ><a href="login.html">Log In</a></li>
+    <li><a href="sign-up.html">Sign Up</a></li>
+    <li> <img id="settings-image" src="img/settings-cog.svg" /> </li>
+    <li> <img id="profile-image" src="img/death.jpg" /> </li>
   </ul>
 </div>
 
-<!-- SAD -->
-<!-- <div id="wrapper">
-  <div id="content-wrapper">
-    <div id="content">
-      <h4>Here is where the forum will go.</h4>
-    </div>
-  </div>
-</div> -->
-
-<div class="sidebar" id="navigation" >
+<div class="sidebar navigation" id="question-nav" >
   <div id="select-container">
     <select id="category-select" >
       <option value="general" > General </option>
@@ -41,9 +36,9 @@
     </select>
   </div>
   <ul>
-    <li id="lnew"><a href="new">New</a></li>
-    <li id="ltop"><a href="top">Top</a></li>
-    <li id="lhot"><a href="hot">Hot</a></li>
+    <li><a href="new">New</a></li>
+    <li><a href="top">Top</a></li>
+    <li><a href="hot">Hot</a></li>
   </ul>
 </div>
 
@@ -59,14 +54,13 @@
   </div>
 <% }) %>
 
+<!-- 
 <script type="text/javascript">
   var category_select = document.getElementById("category-select")
   category_select.onchange = function(){
     location.href = "/" + category_select.options[category_select.selectedIndex].value;
   }
 </script>
-
-
+-->
 </body>
 </html>
-
