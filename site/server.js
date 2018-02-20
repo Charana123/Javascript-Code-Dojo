@@ -27,19 +27,28 @@ function start() {
 function checkSite() {
     var path = "./public";
     var ok = fs.existsSync(path);
-    if (ok) path = "./public/index.html";
-    if (ok) ok = fs.existsSync(path);
-    if (!ok) console.log("Can't find", path);
     return ok;
 }
 
 
-var loadEJSelseHTML = function(request, uri, EJSData, response){
+// var loadEJSelseHTML = function(request, uri, EJSData, response){
+//     cookies.getCookie(request, "session")
+//         .then(files.readEJSFile(uri, EJSData, response))
+//         .catch(files.readHTMLFile(uri))
+//         .then(function(contentHTML){
+//             var type = types["html"]
+//             deliver(response, type, contentHTML)
+//         })
+//         .catch(function(err){
+//             fail(response, NotFound, err.message)
+//         })
+// }
+
+var loadEJS = function(request, uri, EJSDataFunction, defaultDefaultFunction, response){
     cookies.getCookie(request, "session")
-        .then(files.readEJSFile(uri, EJSData, response))
-        .catch(files.readHTMLFile(uri))
+        .then(files.readEJSFile(uri, EJSDataFunction, response))
+        .catch(files.readEJSFile(uri, defaultDefaultFunction, response))
         .then(function(contentHTML){
-            console.log("sending HTML")
             var type = types["html"]
             deliver(response, type, contentHTML)
         })
@@ -52,17 +61,28 @@ var loadEJSelseHTML = function(request, uri, EJSData, response){
 // Serve a request by delivering a file.
 function handle(request, response) {
     var url = request.url.toLowerCase();
-    if (url.endsWith("/")) url = url + "index.html";
+    if (url.endsWith("/")) url = url + "index.html"
 
     //Handles file that are EJS or HTML
     if(url.lastIndexOf(".") == -1){
-        if(url === "/forum") loadEJSelseHTML(request, url, forum.getAllPostsData(), response)
-        if(url === "/top") loadEJSelseHTML(request, url, forum.getTopPostsData(), response)
-        if(url === "/new") loadEJSelseHTML(request, url, forum.getNewPostsData(), response)
-        if(url === "/hot") loadEJSelseHTML(request, url, forum.getHotPostsData(), response)
+        //Forum URIs
+        if(url == "/forum") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url === "/top") loadEJS(request, "/forum", forum.getTopPostsData, forum.getDefault, response)
+        if(url === "/new") loadEJS(request, "/forum", forum.getNewPostsData, forum.getDefault, response)
+        if(url === "/hot") loadEJS(request, "/forum", forum.getHotPostsData, forum.getDefault, response)
 
-        if(url === "/general") loadEJSelseHTML(request, url, forum.getAllPostsData(), response)
-        if(url === "/challenge1") loadEJSelseHTML(request, url, forum.getAllPostsData(), response)
+        if(url === "/general") loadEJS(request, "/forum", forum.getAllPostsData, forum.getDefault, response)
+        if(url === "/challenge1") loadEJS(request, "/forum", forum.getAllPostsData, forum.getDefault, response)
+
+        //Login URIs
+        if(url == "/login") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url == "/index") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url == "/sign-up") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url == "/challenges") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url == "/games") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url == "/snake") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url == "/tetris") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url == "/asteroids") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         return
     }
 

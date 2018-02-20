@@ -9,24 +9,12 @@
         <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
     </head>
     <body onload="startGame()">
-        <div id="header">
-            <h1>Learn JavaScript!</h1>
-        </div>
-        <div class="sidebar" id="navigation">
-            <ul>
-                <li id="lhome"><a href="index.html">Home</a></li>
-                <li id="lchallenges"><a href="challenges.html">Challenges</a></li>
-                <li id="lforum"><a href="forum.html">Forum</a></li>
-                <li id="lgames"><a href="games.html">Games</a></li>
-                <li id="llongin"><a href="login.html">Log In</a></li>
-                <li id="lsignup"><a href="sign-up.html">Sign Up</a></li>
-            </ul>
-        </div>
+        <% include partials/header %>
         <div>
             <div id="divGameStage">
                 <canvas class=" sketch" height="450" width="450"></canvas>
             </div>
-            <script type='text/javascript' src='games/asteroids.js'></script>
+            <script type='text/javascript' src='games/snake.js'></script>
         </div>
         <div id="wrapper">
                 <div id="content">
@@ -37,4 +25,3 @@
         </div>
     </body>
 </html>
-

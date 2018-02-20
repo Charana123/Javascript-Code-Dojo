@@ -9,20 +9,9 @@
         <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/login.css" />
     </head>
-    <body id="babout">
-        <div id="header">
-            <h1>Learn JavaScript!</h1>
-        </div>
-        <div class="sidebar" id="navigation">
-            <ul>
-                <li id="lhome"><a href="index.html">Home</a></li>
-                <li id="lchallenges"><a href="challenges.html">Challenges</a></li>
-                <li id="lforum"><a href="forum.html">Forum</a></li>
-                <li id="lgames"><a href="games.html">Games</a></li>
-                <li id="llongin"><a href="login.html">Log In</a></li>
-                <li id="lsignup"><a href="sign-up.html">Sign Up</a></li>
-            </ul>
-        </div>
+    <body>
+        <% include partials/header %>
+
         <div id="wrapper">
             <h4>Login In</h4>
             <form action="/login-user" method="post">

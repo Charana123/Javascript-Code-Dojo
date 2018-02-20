@@ -14,18 +14,20 @@ files.readFile = function(file){
     })
 }
 
-files.readEJSFile = function(uri, data, response){
+files.readEJSFile = function(uri, getDataFunction, response){
     var EJSfile = "./public" + uri + ".ejs";
     return function(user_id){
         console.log("user_id: " + user_id)
         //use user_id to query from database
-        return new Promise(function(resolve, reject){
-            fs.readFile(EJSfile, "utf-8", function(err, content){
-                var contentHTML = ejs.render(content, data)
-                if(!err) resolve(contentHTML)
-                else reject(err)
+        var renderEJS = function(data){
+            return new Promise(function(resolve, reject){
+                ejs.renderFile(EJSfile, data, function(err, contentHTML){
+                    if(!err) resolve(contentHTML)
+                    else reject(err)
+                })
             })
-        })
+        }
+        return getDataFunction().then(renderEJS)
     }
 }
 
