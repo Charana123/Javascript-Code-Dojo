@@ -79,8 +79,9 @@ body
 .sidebar {
     float: left;
     width: 100%;
-    color: #000000;
-    background-color: #999999;
+    margin-bottom: 5px;
+    color: black;
+    background-color: grey;
 }
 
 .sidebar ul { 
@@ -100,39 +101,18 @@ body
     padding-left: 10px;
 }
 
-#question-title { width: 600px }
-#question-category { width: 200px }
-#question-comments { width: 150px }
-#question-views { width: 150px }
-#question-activity { width: 200px }
-
 /* ==== Navigation ============================================================ */
-#navigation
-{
-    float: left;
-    width: 100%;
-    clear: both;
-    color: #333333;
-    border-bottom: 5px solid #222222;
-    background: #999999 url(images/navigation_bg.gif) top left repeat; 
-}
 
-#navigation a {
+.navigation a {
      float: left;
+     font-weight: bold;
+     text-transform: uppercase;
 }
 
-#navigation a:link,
-#navigation a:visited,
+.navigation a:hover,
+.navigation a:active
 {
-    color: #002244;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-#navigation a:hover,
-#navigation a:active,
-{
-    color: #7799CC;
+    color: darkblue;
     background: #333333 top left repeat;
 }
 
@@ -179,37 +159,6 @@ body
 
    font-size: 15px;
 } 
-
-/* ==== Elements ============================================================ */
-/* li#lhome a:hover,
-li#lhome a:active {
-    background-position: 0 -3px;
-}
-
-li#lchallenges a:hover,
-li#lchallenges a:active {
-    background-position: 0 1px;
-}
-
-li#lforum a:hover,
-li#lforum a:active {
-    background-position: 0 2px;
-}
-
-li#lgames a:hover,
-li#lgames a:active {
-    background-position: 0 -1px;
-}
-
-li#llogin a:hover,
-li#llogin a:active {
-    background-position: 0 -2px;
-}
-
-li#lsignup a:hover,
-li#lsignup a:active {
-    background-position: 0 -3px;
-} */
 
 a.button {
     color: #779999;
