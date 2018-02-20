@@ -14,19 +14,7 @@
 
 <body>
 
-<div class="sidebar navigation" id="header" >
-  <ul>
-    <li> <div> Learn Javascript </div> </li>
-    <li><a href="index.html">Home</a></li>
-    <li><a href="challenges.html">Challenges</a></li>
-    <li><a href="forum.html">Forum</a></li>
-    <li><a href="games.html">Games</a></li>
-    <li id="login" ><a href="login.html">Log In</a></li>
-    <li><a href="sign-up.html">Sign Up</a></li>
-    <li> <img id="settings-image" src="img/settings-cog.svg" /> </li>
-    <li> <img id="profile-image" src="img/death.jpg" /> </li>
-  </ul>
-</div>
+<% include partials/header %>
 
 <div class="sidebar navigation" id="question-nav" >
   <div id="select-container">
@@ -54,13 +42,5 @@
   </div>
 <% }) %>
 
-<!-- 
-<script type="text/javascript">
-  var category_select = document.getElementById("category-select")
-  category_select.onchange = function(){
-    location.href = "/" + category_select.options[category_select.selectedIndex].value;
-  }
-</script>
--->
 </body>
 </html>

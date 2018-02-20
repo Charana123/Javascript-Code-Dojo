@@ -18,3 +18,6 @@ window.onload = function(){
 }
 
 
+//on load, get cookie, get user identifier, make database call to return user data
+//use user data to populate webpage
+

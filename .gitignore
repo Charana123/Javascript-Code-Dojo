@@ -2,3 +2,4 @@
 bin/*
 site/node_modules
 docker/node_modules
+docker/nohup.out

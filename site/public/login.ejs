@@ -9,33 +9,23 @@
         <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/login.css" />
     </head>
-    <body id="babout">
-        <div id="header">
-            <h1>Learn JavaScript!</h1>
-        </div>
-        <div class="sidebar" id="navigation">
-            <ul>
-                <li id="lhome"><a href="index.html">Home</a></li>
-                <li id="lchallenges"><a href="challenges.html">Challenges</a></li>
-                <li id="lforum"><a href="forum.html">Forum</a></li>
-                <li id="lgames"><a href="games.html">Games</a></li>
-                <li id="llongin"><a href="login.html">Log In</a></li>
-                <li id="lsignup"><a href="sign-up.html">Sign Up</a></li>
-            </ul>
-        </div>
+    <body>
+        <% include partials/header %>
+
         <div id="wrapper">
             <h4>Login In</h4>
-            <form>
+            <form action="/login-user" method="post">
                 <div class="container">
-                    <label ><b>Email</b></label>
-                    <input type="text" placeholder="Enter Email"></input>
+                    <label for="email-field"><b>Email</b></label>
+                    <input id="email-field" type="text" placeholder="Enter Email"></input>
 
-                    <label><b>Password</b></label>
-                    <input type="password" placeholder="Enter Password" name="psw"></input>
+                    <label for="password-field"><b>Password</b></label>
+                    <input id="password-field" type="password" placeholder="Enter Password" name="psw"></input>
 
-                    <button type="submit">Login</button>
+                    <button style="font-size: 24px" type="submit"><b>Login</b></button>
                     <label>
-                        <input type="checkbox" checked="checked" name="remember">Remember me</input>
+                        <input style="float:left" type="checkbox" checked="checked" name="remember" />
+                        <div style="margin-left: 20px; font-size: 15px; color: white;"> Remember me </div>
                     </label>
                 </div>
 
