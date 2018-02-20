@@ -2,9 +2,10 @@ var port = 8080;
 var verbose = true;
 
 var http = require("http");
-var fs = require("fs");
-var ejs = require("ejs")
-var forum = require("./database/forum.js")
+var fs = require("fs")
+var forum = require("./database/forum")
+var files = require("./js/files.js")
+var cookies = require("./js/cookies.js")
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
 start();
@@ -32,58 +33,46 @@ function checkSite() {
     return ok;
 }
 
-var readFileEJS = function(EJSfile){
-    return new Promise(function(resolve, reject){
-        fs.readFile(EJSfile, "utf-8", function(err, content){
-            if(err) reject(err)
-            else resolve(content)
-        })
-    })
-}
 
-function resolveEJSFile(uri, data, response){
-    var EJSfile = "./public" + uri + ".ejs";
-    readFileEJS(EJSfile)
-        .then(function(content){
-            var contentHTML = ejs.render(content, data)
-            var type = types["ejs"]
+var loadEJSelseHTML = function(request, uri, EJSData, response){
+    cookies.getCookie(request, "session")
+        .then(files.readEJSFile(uri, EJSData, response))
+        .catch(files.readHTMLFile(uri))
+        .then(function(contentHTML){
+            console.log("sending HTML")
+            var type = types["html"]
             deliver(response, type, contentHTML)
         })
         .catch(function(err){
-            fail(response, NotFound, err.message);
+            console.log("error failure")
+            fail(response, NotFound, err.message)
         })
-}
-
-var readFile = function(file){
-    return new Promise(function(resolve, reject){
-        fs.readFile(file, function(err, content){
-            if(err) reject(err)
-            else resolve(content)
-        })
-    })
 }
 
 // Serve a request by delivering a file.
 function handle(request, response) {
     var url = request.url.toLowerCase();
-    if(url.lastIndexOf(".") == -1 && url != "/"){
-        if(url === "/forum") resolveEJSFile(url, forum.getAllPostsData(), response)
-        if(url === "/top") resolveEJSFile("/forum", forum.getTopPostsData(), response)
-        if(url === "/new") resolveEJSFile("/forum", forum.getNewPostsData(), response)
-        if(url === "/hot") resolveEJSFile("/forum", forum.getHotPostsData(), response)
+    if (url.endsWith("/")) url = url + "index.html";
 
-        if(url === "/general") resolveEJSFile("/forum", forum.getAllPostsData(), response)
-        if(url === "/challenge1") resolveEJSFile("/forum", forum.getAllPostsData(), response)
+    //Handles file that are EJS or HTML
+    if(url.lastIndexOf(".") == -1){
+        if(url === "/forum") loadEJSelseHTML(request, url, forum.getAllPostsData(), response)
+        if(url === "/top") loadEJSelseHTML(request, url, forum.getTopPostsData(), response)
+        if(url === "/new") loadEJSelseHTML(request, url, forum.getNewPostsData(), response)
+        if(url === "/hot") loadEJSelseHTML(request, url, forum.getHotPostsData(), response)
+
+        if(url === "/general") loadEJSelseHTML(request, url, forum.getAllPostsData(), response)
+        if(url === "/challenge1") loadEJSelseHTML(request, url, forum.getAllPostsData(), response)
         return
     }
 
-    if (url.endsWith("/")) url = url + "index.html";
+    //Handling files that are NOT EJS or HTML (.js, .svg etc.)
     if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
     var type = findType(url);
     if (type == null) return fail(response, BadType, "File type unsupported");
     var file = "./public" + url;
 
-    readFile(file)
+    files.readFile(file)
         .then(function(content){
             deliver(response, type, content);
         })
@@ -143,7 +132,6 @@ function banUpperCase(root, folder) {
 
 function defineTypes() {
     var types = {
-        ejs : "application/xhtml+xml",
         html : "application/xhtml+xml",
         css  : "text/css",
         js   : "application/javascript",
