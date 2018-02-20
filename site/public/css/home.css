@@ -135,7 +135,7 @@ body
 
    /* Remove default CSS */
    -webkit-appearance: none;
-   padding: 5px 20px;
+   padding: 3px 20px;
 
    /* Make underling div element color noticable */
    background: transparent;
@@ -150,7 +150,6 @@ body
 
    /* Remove default CSS */
    -webkit-appearance: none;
-   padding: 5px 20px;
 
    /* Make underling div element color noticable */
    background: transparent;
