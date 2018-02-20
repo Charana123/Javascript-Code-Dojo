@@ -3,14 +3,23 @@
 const database_api = require('./database_api.js');
 const database = database_api.newDatabase();
 
-function fieldAvailable(field, username) {
+function fieldByValue(field, value) {
     return new Promise(function(resolve, reject) {
-        database.rowsByField("users", field, username).then(function(user) {
-            if (Object.keys(user).length > 0) {
-                resolve(true);
-            }
-            resolve(false);
+        database.rowsByField("users", field, value).then(function(user) {
+            resolve(user);
+        }, function(err) {
+            reject(err);
+        });
+    });
+}
 
+function fieldAvailable(field, value) {
+    return new Promise(function(resolve, reject) {
+        fieldByValue(field, value).then(function(row) {
+            if (Object.keys(row).length > 0) {
+                resolve(false);
+            }
+            resolve(true);
         }, function(err) {
             reject(err);
         });
@@ -39,36 +48,55 @@ function newUser(email, username, password) {
 function signUp(email, username, pass1, pass2) {
     if (email.length == 0) {
         throw "No email provided.";
+        return;
     }
     if (username.length == 0) {
         throw "No username provided.";
+        return;
     }
     if (pass1.length == 0) {
         throw "No password provided.";
+        return;
     }
     if (pass2.length == 0) {
         throw "No re-password provided.";
+        return;
     }
 
     if (!passwordsMatch(pass1, pass2)) {
         throw "Passwords do not match.";
+        return;
     }
 
     if (!validEmail(email)) {
         throw "Not a valid email.";
+        return;
     }
 
-    if (!fieldAvailable("username", username)) {
-        throw "Username is already taken.";
-    }
+    fieldAvailable("username", username).then(function(available) {
+        if (!available) {
+            throw "Username is already taken.";
+            return;
+        }
+        fieldAvailable("email", email).then(function(available) {
+            if (!available) {
+                throw "Email is already taken.";
+                return;
+            }
+            newUser(email, username, pass1).then(function(username) {
+                console.log("new user created: " + username);
+            }, function(err) {
+                throw "failed to create new user: " + err;
+                return;
+            });
 
-    if (!fieldAvailable("email", email)) {
-        throw "Email is already taken.";
-    }
+        }, function(err) {
+            throw err;
+            return;
+        });
 
-    newUser(email, username, pass1).then(function(username) {
-        console.log("new user created: " + username);
     }, function(err) {
-        throw "failed to create new user: " + err;
+        throw err;
+        return;
     });
 }
