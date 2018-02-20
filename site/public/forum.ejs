@@ -47,33 +47,17 @@
   </ul>
 </div>
 
-<div class="sidebar">
+<% forum_data.forEach(function(user){ %>
+  <div class="sidebar">
     <ul>
-      <li id="question-title"> Title </li>
-      <li id="question-category"> Questions </li>
-      <li id="question-comments"> Comments </li>
-      <li id="question-views"> Views </li>
-      <li id="question-activity"> Activity </li>
+      <li id="question-title"> <%= user.title %> </li>
+      <li id="question-category"> <%= user.category %> </li>
+      <li id="question-comments"> <%= user.comments %> </li>
+      <li id="question-views"> <%= user.views %> </li>
+      <li id="question-activity"> <%= user.activity %> </li>
     </ul>
-</div>
-<div class="sidebar">
-    <ul>
-      <li id="question-title"> <%= question_title %> </li>
-      <li id="question-category"> <%= question_category %> </li>
-      <li id="question-comments"> <%= question_comments %> </li>
-      <li id="question-views"> <%= question_views %> </li>
-      <li id="question-activity"> <%= question_activity %> </li>
-    </ul>
-</div>
-<div class="sidebar">
-    <ul>
-      <li id="question-title"> Software Engineering </li>
-      <li id="question-category"> Learning </li>
-      <li id="question-comments"> 20 </li>
-      <li id="question-views"> 245 </li>
-      <li id="question-activity"> 15th Jan 2018 </li>
-    </ul>
-</div>
+  </div>
+<% }) %>
 
 <script type="text/javascript">
   var category_select = document.getElementById("category-select")

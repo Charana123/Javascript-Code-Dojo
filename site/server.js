@@ -4,6 +4,7 @@ var verbose = true;
 var http = require("http");
 var fs = require("fs");
 var ejs = require("ejs")
+var forum = require("./database/forum.js")
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
 start();
@@ -40,24 +41,6 @@ var readFileEJS = function(EJSfile){
     })
 }
 
-var getAllPostsData = function(){
-    var forum_data = { question_title: "HTTP - Writing a server", question_category: "Coding/Projects",
-        question_comments: "35", question_views: "2", question_activity: "26d" }
-    return forum_data
-}
-
-var getTopPostsData = function(){
-    return getAllPostsData()
-}
-
-var getNewPostsData = function(){
-    return getAllPostsData()
-}
-
-var getHotPostsData = function(){
-    return getAllPostsData()
-}
-
 function resolveEJSFile(uri, data, response){
     var EJSfile = "./public" + uri + ".ejs";
     readFileEJS(EJSfile)
@@ -83,15 +66,14 @@ var readFile = function(file){
 // Serve a request by delivering a file.
 function handle(request, response) {
     var url = request.url.toLowerCase();
-    console.log(url)
     if(url.lastIndexOf(".") == -1 && url != "/"){
-        if(url === "/forum") resolveEJSFile(url, getAllPostsData(), response)
-        if(url === "/top") resolveEJSFile("/forum", getTopPostsData(), response)
-        if(url === "/new") resolveEJSFile("/forum", getNewPostsData(), response)
-        if(url === "/hot") resolveEJSFile("/forum", getHotPostsData(), response)
+        if(url === "/forum") resolveEJSFile(url, forum.getAllPostsData(), response)
+        if(url === "/top") resolveEJSFile("/forum", forum.getTopPostsData(), response)
+        if(url === "/new") resolveEJSFile("/forum", forum.getNewPostsData(), response)
+        if(url === "/hot") resolveEJSFile("/forum", forum.getHotPostsData(), response)
 
-        if(url === "/general") resolveEJSFile("/forum", getAllPostsData(), response)
-        if(url === "/challenge1") resolveEJSFile("/forum", getAllPostsData(), response)
+        if(url === "/general") resolveEJSFile("/forum", forum.getAllPostsData(), response)
+        if(url === "/challenge1") resolveEJSFile("/forum", forum.getAllPostsData(), response)
         return
     }
 
