@@ -3,6 +3,7 @@
 }
 
 #header div {
+    color: white;
     margin-right: 100px;
 }
 
@@ -15,7 +16,7 @@
 
 #settings-image
 {
-    margin-left: 270px;
+    /* margin-left: 270px; */
     border-radius: 50%;
     width: 30px;
     height: 30px;

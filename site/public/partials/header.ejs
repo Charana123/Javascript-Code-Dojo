@@ -7,9 +7,15 @@
     <li><a href="challenges">Challenges</a></li>
     <li><a href="forum">Forum</a></li>
     <li><a href="games">Games</a></li>
-    <li id="login" ><a href="login">Log In</a></li>
-    <li><a href="sign-up">Sign Up</a></li>
-    <li> <img id="settings-image" src="img/settings-cog.svg" /> </li>
-    <li> <img id="profile-image" src="img/death.jpg" /> </li>
+    <li id="login" ></li>
+
+    <% if(!session_valid) { %>
+    <li style="float: right"> <a href="sign-up">Sign Up</a> </li>
+      <li style="float: right"> <a href="login">Log In</a> </li>
+    <% } %>
+    <% if(session_valid) { %>
+      <li style="float: right"> <img  id="profile-image" src="img/death.jpg" /> </li>
+      <li style="float: right"  > <img id="settings-image" src="img/settings-cog.svg" /> </li>
+    <% } %>
   </ul>
 </div>

@@ -16,17 +16,29 @@
 
 <% include partials/header %>
 
-<div class="sidebar navigation" id="question-nav" >
-  <div id="select-container">
-    <select id="category-select" >
-      <option value="general" > General </option>
-      <option value="challenge1" > Challenge1 </option>
-    </select>
-  </div>
+<div class="sidebar navigation">
   <ul>
+    <li>
+      <div id="select-container">
+        <select>
+          <option value="general" > General </option>
+          <option value="challenge1" > Challenge1 </option>
+        </select>
+      </div>
+    </li>
     <li><a href="new">New</a></li>
     <li><a href="top">Top</a></li>
     <li><a href="hot">Hot</a></li>
+  </ul>
+</div>
+
+<div class="sidebar">
+  <ul>
+    <li id="question-title"> Title </li>
+    <li id="question-category"> Category </li>
+    <li id="question-comments"> Comments </li>
+    <li id="question-views"> Views </li>
+    <li id="question-activity"> Activity </li>
   </ul>
 </div>
 
