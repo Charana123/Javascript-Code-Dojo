@@ -37,5 +37,12 @@ forum.getHotPostsData = function(){
     return forum.getAllPostsData()
 }
 
+forum.login = function(email, password){
+    return new Promise(function(resolve, reject){
+        if(email == "charana@yahoo.com" && password == "password123") resolve(true)
+        else reject(new Error("Incorrent field"))
+    })
+}
+
 module.exports = forum
 

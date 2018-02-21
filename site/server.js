@@ -45,7 +45,7 @@ function checkSite() {
 // }
 
 var loadEJS = function(request, uri, EJSDataFunction, defaultDefaultFunction, response){
-    cookies.getCookie(request, "session")
+    cookies.getCookie(request, "x")
         .then(files.readEJSFile(uri, EJSDataFunction, response))
         .catch(files.readEJSFile(uri, defaultDefaultFunction, response))
         .then(function(contentHTML){
@@ -74,15 +74,51 @@ function handle(request, response) {
         if(url === "/general") loadEJS(request, "/forum", forum.getAllPostsData, forum.getDefault, response)
         if(url === "/challenge1") loadEJS(request, "/forum", forum.getAllPostsData, forum.getDefault, response)
 
-        //Login URIs
-        if(url == "/login") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url == "/index") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url == "/sign-up") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url == "/challenges") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url == "/games") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url == "/snake") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url == "/tetris") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url == "/asteroids") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        //Page URIs
+        if(url === "/login") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url === "/index") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url === "/sign-up") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url === "/challenges") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url === "/games") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url === "/snake") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url === "/tetris") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url === "/asteroids") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+
+        //Login & Signup POST Requests
+        if(url === "/login-user" && request.method === "POST"){
+            request.on("data", (data) => {
+
+                //decode buffer into URI, decode URI into String
+                data = decodeURIComponent(data.toString('utf-8'));
+                console.log("DATA: " + data.toString())
+                
+                var keyValuePairs = data.split("&");
+                var dictionary = {};
+                for(var keyValuePair of keyValuePairs){
+                    var key = keyValuePair.split("=")[0];
+                    var value = keyValuePair.split("=")[1];
+                    dictionary[key] = value;
+                }
+
+                //Get Email and Password fields
+                var email = dictionary["email"];
+                var password = dictionary["password"];
+
+                //Check again DB and successful login sets session cookie
+                forum.login(email, password)
+                    .then((value) => {
+                        cookies.setCookie(response, "x", "YES", 1);
+                        var content = { success: true }
+                        var contentJSON = JSON.stringify(content);
+                        deliver(response, types["json"], contentJSON)
+                    })
+                    .catch((err) => {
+                        var content = { success: false, error: err.message }
+                        var contentJSON = JSON.stringify(content);
+                        deliver(response, types["json"], contentJSON)
+                    })
+            });
+        }
         return
     }
 
@@ -125,6 +161,7 @@ function deliver(response, type, content) {
     response.write(content);
     response.end();
 }
+
 
 // Give a minimal failure response to the browser
 function fail(response, code, text) {
