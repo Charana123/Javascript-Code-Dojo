@@ -3,9 +3,10 @@ var verbose = true;
 
 var http = require("http");
 var fs = require("fs")
-var forum = require("./database/forum")
+var forum = require("./database/forum.js")
 var files = require("./js/files.js")
 var cookies = require("./js/cookies.js")
+var docker = require("../docker/check_answer.js")
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
 start();
@@ -89,7 +90,8 @@ function handle(request, response) {
             request.on("data", (data) => {
 
                 //decode buffer into URI, decode URI into String
-                data = decodeURIComponent(data.toString('utf-8'));
+                // data = decodeURIComponent(data.toString('utf-8'))
+                data = data.toString('utf-8')
                 console.log("DATA: " + data.toString())
                 
                 var keyValuePairs = data.split("&");
@@ -118,6 +120,14 @@ function handle(request, response) {
                         deliver(response, types["json"], contentJSON)
                     })
             });
+        }
+
+        if(url === "/challenge_request" && request.method === "POST"){
+            request.on("data", (data) =>{
+                data = data.toString("utf-8")
+                files.writeFile("answer1", data)
+                docker.run()
+            })
         }
         return
     }

@@ -7,13 +7,40 @@
 <meta name="copyright" content="Copyright Goes Here" />
 <meta name="description" content="A website to learn JavaScript!" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
+<script type="text/javascript" src="js/http_requests.js" async="async"> </script>
+<script type="text/javascript" src="js/challenges.js" async="async"> </script>
+<script>
+  window.document.onload = function(){
+    var user_script_container = document.getElementById("user-script-container")
+    user_script_container.selectionIndex = 0
+  }
+
+  var submitCode = function(){
+    var user_script_container = document.getElementById("user-script-container")
+    console.log("response")
+    httpPostAsync("/challenge_request", user_script_container.value)
+      .then(json_response => {
+        console.log("response!")
+      })
+  }
+
+  function onkd(e) {
+    var tab_keycode = 9
+    if (e.keyCode == tab_keycode){
+        e.preventDefault();
+        e.stopPropagation();
+    }
+  }
+</script>
 </head>
 <body>
 <% include partials/header %>
 <div id="wrapper">
   <div id="content-wrapper">
     <div id="content">
-      <h4>Here is where the challenges will go</h4>
+      <textarea wrap="off" id="user-script-container" rows="30" cols="50" >
+      </textarea> <br/>
+      <button id="submit" type="button" style="background-color: green" onclick="submitCode()"> Submit </button>
     </div>
   </div>
 </div>
