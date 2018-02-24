@@ -81,18 +81,18 @@ foo.build().then(function(data) {
             foo.cmpfiles("answers/fib100", "output").then(function(data) {
                 console.log(data);
             }, function(err) {
-                console(err);
+                console.log(err);
                 return;
             });
         }, function(err) {
-            console(err);
+            console.log(err);
             return;
         });
     }, function(err) {
-        console(err);
+        console.log(err);
         return;
     });
 }, function(err) {
-    console(err);
+    console.log(err);
     return;
 });
