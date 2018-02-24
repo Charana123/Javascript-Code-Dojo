@@ -1,63 +1,98 @@
+"use strict"
+
 var cmd = require("node-cmd");
 var Promise = require('bluebird');
 
 const getAsync = Promise.promisify(cmd.get, { multiArgs: true, context: cmd })
+const foo = newDockerChecker();
 
-var docker = function(){
+module.exports = {
+    newDockerChecker: newDockerChecker
+};
 
+function newDockerChecker() {
+    return (function() {
+        var dockerBuild = function() {
+            return new Promise(function(resolve, reject) {
+                getAsync('docker build -t mynode .').then(data => {
+                    resolve(data);
+                }).catch(err => {
+                    reject(err);
+                });
+            });
+        };
+
+        var dockerRun = function() {
+            return new Promise(function(resolve, reject) {
+                getAsync('docker run mynode').then(data => {
+                    resolve(data);
+                }).catch(err => {
+                    reject(err);
+                });
+            });
+        };
+
+        var dockerCopy = function() {
+            return new Promise(function(resolve, reject) {
+                getAsync('docker cp $(docker ps -l -q):/output .').then(data => {
+                    resolve(data);
+                }).catch(err => {
+                    reject(err)
+                });
+            });
+        };
+
+        var compareFiles = function(file1, file2) {
+            return new Promise(function(resolve, reject) {
+                getAsync('cmp --silent ' + file1 + ' ' + file2 + ' || echo "files are different"').then(data => {
+                    if (data[0] != "") {
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                }).catch(err => {
+                    resolve(err);
+                });
+            });
+        };
+
+        return {
+            build:function() {
+                return dockerBuild();
+            },
+            run:function() {
+                return dockerRun();
+            },
+            cp:function() {
+                return dockerCopy();
+            },
+            cmpfiles:function(file1, file2) {
+                return compareFiles(file1, file2);
+            },
+        }
+
+
+    }());
 }
 
-docker.run = function(){
-    getAsync('docker build -t mynode ../docker/.')
-        .then(() => getAsync('docker run mynode'))
-        .then(() => getAsync('docker cp $(docker ps -l -q):/output .'))
-        .then(() => getAsync('cmp --silent answer1 output || echo "files are different"'))
-        .then(data => {
-            if (data[0] != "") {
-                console.log("files are different!");
-            } else {
-                console.log("files are the same!");
-            }
-        })
-        .catch(err => {
-            console.log('error:', err.message)
+foo.build().then(function(data) {
+    foo.run().then(function(data) {
+        foo.cp().then(function(data) {
+            foo.cmpfiles("answers/fib100", "output").then(function(data) {
+                console.log(data);
+            }, function(err) {
+                console(err);
+                return;
+            });
+        }, function(err) {
+            console(err);
+            return;
         });
-}
-
-// function dockerBuild(){
-//     getAsync('docker build -t mynode .').then(data => {
-//         dockerRun();
-//     }).catch(err => {
-//         console.log(err)
-//     })
-// }
-
-// function dockerRun() {
-//     getAsync('docker run mynode').then(data => {
-//         dockerCp();
-//     }).catch(err => {
-//         console.log(err)
-//     });
-// }
-
-// function dockerCp() {
-//     getAsync('docker cp $(docker ps -l -q):/output .').then(data => {
-//         compareFiles();
-//     }).catch(err => {
-//         console.log(err)
-//     });
-// }
-
-// function compareFiles() {
-//     getAsync('cmp --silent answer1 output || echo "files are different"').then(data => {
-//         if (data[0] != "") {
-//             console.log("files are different!");
-//         } else {
-//             console.log("files are the same!");
-//         }
-//     }).catch(err => {
-//         console.log('error:', err)
-//     });
-// }
-
-module.exports = docker
+    }, function(err) {
+        console(err);
+        return;
+    });
+}, function(err) {
+    console(err);
+    return;
+});
