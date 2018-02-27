@@ -1,3 +1,5 @@
+"use strict"
+
 var port = 8080;
 var verbose = true;
 
@@ -6,9 +8,12 @@ var fs = require("fs")
 var forum = require("./database/forum.js")
 var files = require("./js/files.js")
 var cookies = require("./js/cookies.js")
-var docker = require("../docker/check_answer.js")
+var dock= require("./docker/check_answer.js")
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
+
+var docker = dock.newDockerChecker();
+
 start();
 
 // Start the http service. Accept only requests from localhost, for security.
@@ -125,8 +130,8 @@ function handle(request, response) {
         if(url === "/challenge_request" && request.method === "POST"){
             request.on("data", (data) =>{
                 data = data.toString("utf-8")
-                files.writeFile("answer1", data)
-                docker.run()
+                files.writeFile("docker/task.js", data)
+                docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/fib100")
             })
         }
         return
