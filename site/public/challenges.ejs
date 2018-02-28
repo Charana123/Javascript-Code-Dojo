@@ -7,6 +7,16 @@
 <meta name="copyright" content="Copyright Goes Here" />
 <meta name="description" content="A website to learn JavaScript!" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
+  <style type="text/css" media="screen">
+
+    .ace_editor {
+        position: relative !important;
+        margin: auto;
+        height: 500px;
+        width: 1250%;
+    }
+
+  </style>
 <script type="text/javascript" src="js/http_requests.js" async="async"> </script>
 <script type="text/javascript" src="js/challenges.js" async="async"> </script>
 <script>
@@ -38,8 +48,17 @@
 <div id="wrapper">
   <div id="content-wrapper">
     <div id="content">
-      <textarea wrap="off" id="user-script-container" rows="30" cols="50" >
-      </textarea> <br/>
+        <pre id="editor">var a = "Hello";
+var b = "World!";
+console.log(a + " " + b);</pre>
+
+        <script src="js/editor/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+            var editor = ace.edit("editor");
+            editor.setTheme("ace/theme/gruvbox");
+            editor.session.setMode("ace/mode/javascript");
+        </script>
+        <!--<textarea wrap="on" id="user-script-container" rows="30" cols="50" ></textarea> <br/>-->
       <button id="submit" type="button" style="background-color: green" onclick="submitCode()"> Submit </button>
     </div>
   </div>

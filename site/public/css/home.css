@@ -45,7 +45,7 @@ body
     float: left;
     width: 100%;
     margin: 10px 0;
-    background: transparent 60% 0 repeat-y; 
+    background: transparent 60% 0 repeat-y;
 }
 
 #content-wrapper
@@ -83,15 +83,15 @@ body
     background-color: grey;
 }
 
-.sidebar ul { 
-    list-style-type: none; 
-    margin: 0; 
-    padding: 0; 
-    background: none; 
-    border-width: 0; 
+.sidebar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border-width: 0;
 }
 
-.sidebar li { 
+.sidebar li {
     display: inline-block;
     vertical-align: middle;
 
@@ -103,15 +103,14 @@ body
 /* ==== Navigation ============================================================ */
 
 .navigation a {
-     font-weight: bold;
-     text-transform: uppercase;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .navigation a:hover,
 .navigation a:active
 {
-    color: darkblue;
-    background: #333333 top left repeat;
+    color: #FFFFFF;
 }
 
 /* ==== SELECT ==================================================== */
@@ -120,42 +119,42 @@ body
     /* Offset in sidebar */
     margin: 4px;
 
-   /* Float to top left */
-   float: left;
-   background: lightblue;
+    /* Float to top left */
+    float: left;
+    background: lightblue;
 
-   width: 120px;
+    width: 120px;
 }
 
 
 #select-container > select {
-   /* Remove select border */
-   border: none;
-   outline: 0px;
+    /* Remove select border */
+    border: none;
+    outline: 0px;
 
-   /* Remove default CSS */
-   -webkit-appearance: none;
-   padding: 3px 20px;
+    /* Remove default CSS */
+    -webkit-appearance: none;
+    padding: 3px 20px;
 
-   /* Make underling div element color noticable */
-   background: transparent;
+    /* Make underling div element color noticable */
+    background: transparent;
 
-   font-size: 15px;
-} 
+    font-size: 15px;
+}
 
 #select-container > select > option {
-   /* Remove select border */
-   border: none;
-   outline: 0px;
+    /* Remove select border */
+    border: none;
+    outline: 0px;
 
-   /* Remove default CSS */
-   -webkit-appearance: none;
+    /* Remove default CSS */
+    -webkit-appearance: none;
 
-   /* Make underling div element color noticable */
-   background: transparent;
+    /* Make underling div element color noticable */
+    background: transparent;
 
-   font-size: 15px;
-} 
+    font-size: 15px;
+}
 
 a.button {
     color: #779999;
