@@ -26,11 +26,11 @@
   }
 
   var submitCode = function(){
-    var user_script_container = document.getElementById("user-script-container")
-    console.log("response")
-    httpPostAsync("/challenge_request", user_script_container.value)
+    var user_script_container = ace.edit("editor");
+    console.log("response");
+    httpPostAsync("/challenge_request", user_script_container.getValue())
       .then(json_response => {
-        console.log("response!")
+        console.log("response!");
       })
   }
 
@@ -57,6 +57,9 @@ console.log(a + " " + b);</pre>
             var editor = ace.edit("editor");
             editor.setTheme("ace/theme/gruvbox");
             editor.session.setMode("ace/mode/javascript");
+            editor.renderer.setCursorStyle("smooth");
+            editor.session.setUseWrapMode(true);
+            editor.session.setWrapLimitRange(80, 80);
         </script>
         <!--<textarea wrap="on" id="user-script-container" rows="30" cols="50" ></textarea> <br/>-->
       <button id="submit" type="button" style="background-color: green" onclick="submitCode()"> Submit </button>
