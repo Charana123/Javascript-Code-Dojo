@@ -26,6 +26,7 @@
   }
 
   var submitCode = function(){
+    document.getElementById("loader").style.visibility = "visible";
     var user_script_container = ace.edit("editor");
     console.log("response");
     httpPostAsync("/challenge_request", user_script_container.getValue())
@@ -61,8 +62,12 @@ console.log(a + " " + b);</pre>
             editor.session.setUseWrapMode(true);
             editor.session.setWrapLimitRange(80, 80);
         </script>
-        <!--<textarea wrap="on" id="user-script-container" rows="30" cols="50" ></textarea> <br/>-->
-      <button id="submit" type="button" style="background-color: green" onclick="submitCode()"> Submit </button>
+        <!--<button id="submit" type="button" style="background-color: green" > Submit </button>-->
+
+        <button class="buttonload" onclick="submitCode()">
+            Submit
+        </button>
+        <div id="loader" class="loader"></div>
     </div>
   </div>
 </div>
