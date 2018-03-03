@@ -13,7 +13,7 @@
         position: relative !important;
         margin: auto;
         height: 500px;
-        width: 1250%;
+        width: 700px;
     }
 
   </style>
@@ -34,6 +34,7 @@
         console.log("response!" + json_response);
         document.getElementById("loader").style.visibility = "hidden";
         document.getElementById("submitButton").style.visibility = "visible";
+        document.getElementById("response").innerHTML = "This answer is: " + json_response;
       })
   }
 
@@ -64,12 +65,12 @@ console.log(a + " " + b);</pre>
             editor.session.setUseWrapMode(true);
             editor.session.setWrapLimitRange(80, 80);
         </script>
-        <!--<button id="submit" type="button" style="background-color: green" > Submit </button>-->
 
         <button id="submitButton" class="buttonload" onclick="submitCode()">
-            Submit
+            --Submit--
         </button>
         <div id="loader" class="loader"></div>
+        <div id="response"> </div>
     </div>
   </div>
 </div>

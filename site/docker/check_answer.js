@@ -75,7 +75,7 @@ function newDockerChecker() {
                         dockerRun().then(function(data) {
                             dockerCopy(outputFile).then(function(data) {
                                 compareFiles(answerFile, outputFile).then(function(data) {
-                                    resolve("Answer was: " + data);
+                                    resolve(data);
                                 }, function(err) {
                                     reject(err);
                                 });
@@ -96,25 +96,3 @@ function newDockerChecker() {
 
     }());
 }
-
-//foo.build().then(function(data) {
-//    foo.run().then(function(data) {
-//        foo.cp().then(function(data) {
-//            foo.cmpfiles("answers/fib100", "output").then(function(data) {
-//                console.log(data);
-//            }, function(err) {
-//                console.log(err);
-//                return;
-//            });
-//        }, function(err) {
-//            console.log(err);
-//            return;
-//        });
-//    }, function(err) {
-//        console.log(err);
-//        return;
-//    });
-//}, function(err) {
-//    console.log(err);
-//    return;
-//});

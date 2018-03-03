@@ -156,15 +156,19 @@ body
     font-size: 15px;
 }
 
-a.button {
-    color: #779999;
-    font-size: 32px;
-    border: none;
+button {
+    color: #BBBBBB;
+    font-size: 24px;
+    border: #222222;
+    border-style: solid;
+    border-width: 1px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     padding: 0;
-    background: none;
+    background: #222222;
+    position: relative;
+    top: 20px;
 }
 
 i.buttonload {

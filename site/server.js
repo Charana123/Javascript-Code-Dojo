@@ -133,6 +133,11 @@ function handle(request, response) {
                 files.writeFile("docker/task.js", data);
                 docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/fib100").then(function(ans) {
                     console.log("server got: " + ans);
+                    if (ans == true) {
+                        ans = "correct!";
+                    } else {
+                        ans = "incorrect!";
+                    }
                     deliver(response, types["json"], ans);
                 }, function(err) {
                     deliver(response, types["json"], ("error from docker: " + err));
