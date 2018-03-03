@@ -186,6 +186,8 @@ i.buttonload {
     height: 12px;
     animation: spin 2s linear infinite;
     visibility:hidden;
+    position: relative;
+    top: -20px;
 }
 
 @keyframes spin {

@@ -98,7 +98,7 @@ function handle(request, response) {
                 // data = decodeURIComponent(data.toString('utf-8'))
                 data = data.toString('utf-8')
                 console.log("DATA: " + data.toString())
-                
+
                 var keyValuePairs = data.split("&");
                 var dictionary = {};
                 for(var keyValuePair of keyValuePairs){
@@ -128,29 +128,34 @@ function handle(request, response) {
         }
 
         if(url === "/challenge_request" && request.method === "POST"){
-            request.on("data", (data) =>{
-                data = data.toString("utf-8")
-                files.writeFile("docker/task.js", data)
-                docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/fib100")
-            })
+            request.on("data", (data) => {
+                data = data.toString("utf-8");
+                files.writeFile("docker/task.js", data);
+                docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/fib100").then(function(ans) {
+                    console.log("server got: " + ans);
+                    deliver(response, types["json"], ans);
+                }, function(err) {
+                    deliver(response, types["json"], ("error from docker: " + err));
+                })
+            });
         }
         return
-    }
+}
 
-    //Handling files that are NOT EJS or HTML (.js, .svg etc.)
-    if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
-    var type = findType(url);
-    if (type == null) return fail(response, BadType, "File type unsupported");
-    var file = "./public" + url;
+//Handling files that are NOT EJS or HTML (.js, .svg etc.)
+if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
+var type = findType(url);
+if (type == null) return fail(response, BadType, "File type unsupported");
+var file = "./public" + url;
 
-    files.readFile(file)
-        .then(function(content){
-            deliver(response, type, content);
-        })
-        .catch(function(err){
-            console.log(file)
-            if (err) return fail(response, NotFound, "File not found");
-        })
+files.readFile(file)
+    .then(function(content){
+        deliver(response, type, content);
+    })
+    .catch(function(err){
+        console.log(file)
+        if (err) return fail(response, NotFound, "File not found");
+    })
 }
 
 // Forbid any resources which shouldn't be delivered to the browser.

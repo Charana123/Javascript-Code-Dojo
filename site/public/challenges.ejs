@@ -26,12 +26,14 @@
   }
 
   var submitCode = function(){
+    document.getElementById("submitButton").style.visibility = "hidden";
     document.getElementById("loader").style.visibility = "visible";
     var user_script_container = ace.edit("editor");
-    console.log("response");
     httpPostAsync("/challenge_request", user_script_container.getValue())
       .then(json_response => {
-        console.log("response!");
+        console.log("response!" + json_response);
+        document.getElementById("loader").style.visibility = "hidden";
+        document.getElementById("submitButton").style.visibility = "visible";
       })
   }
 
@@ -64,7 +66,7 @@ console.log(a + " " + b);</pre>
         </script>
         <!--<button id="submit" type="button" style="background-color: green" > Submit </button>-->
 
-        <button class="buttonload" onclick="submitCode()">
+        <button id="submitButton" class="buttonload" onclick="submitCode()">
             Submit
         </button>
         <div id="loader" class="loader"></div>

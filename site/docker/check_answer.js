@@ -70,29 +70,25 @@ function newDockerChecker() {
                 return compareFiles(file1, file2);
             },
             tryAnswer:function(dockerPath, userJsFile, outputFile, answerFile) {
-                dockerBuild(dockerPath).then(function(data) {
-                    dockerRun().then(function(data) {
-                        dockerCopy(outputFile).then(function(data) {
-                            compareFiles(answerFile, outputFile).then(function(data) {
-                                console.log("Answer was: " + data);
-                                return data;
+                return new Promise(function(resolve, reject) {
+                    dockerBuild(dockerPath).then(function(data) {
+                        dockerRun().then(function(data) {
+                            dockerCopy(outputFile).then(function(data) {
+                                compareFiles(answerFile, outputFile).then(function(data) {
+                                    resolve("Answer was: " + data);
+                                }, function(err) {
+                                    reject(err);
+                                });
                             }, function(err) {
-                                console.log(err);
-                                return;
+                                reject(err);
                             });
                         }, function(err) {
-                            console.log(err);
-                            return;
+                            reject(err);
                         });
                     }, function(err) {
-                        console.log(err);
-                        return;
+                        reject(err);
                     });
-                }, function(err) {
-                    console.log(err);
-                    return;
                 });
-
             }
 
         }
