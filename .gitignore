@@ -7,3 +7,4 @@ site/docker/output
 report-prelim*
 !report-prelim.tex
 !report-prelim.pdf
+site.zip
