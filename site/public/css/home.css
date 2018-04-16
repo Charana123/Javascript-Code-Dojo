@@ -45,7 +45,7 @@ body
     float: left;
     width: 100%;
     margin: 10px 0;
-    background: transparent 60% 0 repeat-y; 
+    background: transparent 60% 0 repeat-y;
 }
 
 #content-wrapper
@@ -83,15 +83,15 @@ body
     background-color: grey;
 }
 
-.sidebar ul { 
-    list-style-type: none; 
-    margin: 0; 
-    padding: 0; 
-    background: none; 
-    border-width: 0; 
+.sidebar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border-width: 0;
 }
 
-.sidebar li { 
+.sidebar li {
     display: inline-block;
     vertical-align: middle;
 
@@ -103,15 +103,14 @@ body
 /* ==== Navigation ============================================================ */
 
 .navigation a {
-     font-weight: bold;
-     text-transform: uppercase;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .navigation a:hover,
 .navigation a:active
 {
-    color: darkblue;
-    background: #333333 top left repeat;
+    color: #FFFFFF;
 }
 
 /* ==== SELECT ==================================================== */
@@ -120,50 +119,82 @@ body
     /* Offset in sidebar */
     margin: 4px;
 
-   /* Float to top left */
-   float: left;
-   background: lightblue;
+    /* Float to top left */
+    float: left;
+    background: lightblue;
 
-   width: 120px;
+    width: 120px;
 }
 
 
 #select-container > select {
-   /* Remove select border */
-   border: none;
-   outline: 0px;
+    /* Remove select border */
+    border: none;
+    outline: 0px;
 
-   /* Remove default CSS */
-   -webkit-appearance: none;
-   padding: 3px 20px;
+    /* Remove default CSS */
+    -webkit-appearance: none;
+    padding: 3px 20px;
 
-   /* Make underling div element color noticable */
-   background: transparent;
+    /* Make underling div element color noticable */
+    background: transparent;
 
-   font-size: 15px;
-} 
+    font-size: 15px;
+}
 
 #select-container > select > option {
-   /* Remove select border */
-   border: none;
-   outline: 0px;
-
-   /* Remove default CSS */
-   -webkit-appearance: none;
-
-   /* Make underling div element color noticable */
-   background: transparent;
-
-   font-size: 15px;
-} 
-
-a.button {
-    color: #779999;
-    font-size: 32px;
+    /* Remove select border */
     border: none;
+    outline: 0px;
+
+    /* Remove default CSS */
+    -webkit-appearance: none;
+
+    /* Make underling div element color noticable */
+    background: transparent;
+
+    font-size: 15px;
+}
+
+button {
+    color: #BBBBBB;
+    font-size: 24px;
+    border: #222222;
+    border-style: solid;
+    border-width: 1px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     padding: 0;
-    background: none;
+    background: #222222;
+    position: relative;
+    top: 20px;
+}
+
+i.buttonload {
+    background-color: #222222;
+    border: none;
+    color: #CCCCCC;
+    padding: 40px 40px;
+    font-size: 40px;
+}
+
+.loader {
+    border: 16px thin #FFFFFF;
+    border-radius: 50%;
+    border-top: 5px solid #999999;
+    border-left: 5px solid #777777;
+    border-bottom: 5px solid #555555;
+    border-right: 5px solid #333333;
+    width: 12px;
+    height: 12px;
+    animation: spin 2s linear infinite;
+    visibility:hidden;
+    position: relative;
+    top: -20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

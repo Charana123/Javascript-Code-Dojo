@@ -1,8 +1,25 @@
-var fs = require("fs");
+var bluebird = require("bluebird")
+// var fs = bluebird.promisifyAll(require("fs"))
+var fs = require("fs")
 var ejs = require("ejs")
 
 var files = function(){
 
+}
+
+files.writeFile = function(filename, data){
+    // fs.writeFileAsync(filename, data)
+    //     .then(value => {
+            
+    //     })
+    //     .catch(err => {
+    //         console.log(err.message)
+    //     })
+    fs.writeFile(filename, data, function(err){
+        if(err){
+            console.log(err.message)
+        }
+    })
 }
 
 files.readFile = function(file){

@@ -1,13 +1,19 @@
+"use strict"
+
 var port = 8080;
 var verbose = true;
 
 var http = require("http");
 var fs = require("fs")
-var forum = require("./database/forum")
+var forum = require("./database/forum.js")
 var files = require("./js/files.js")
 var cookies = require("./js/cookies.js")
+var dock= require("./docker/check_answer.js")
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
+
+var docker = dock.newDockerChecker();
+
 start();
 
 // Start the http service. Accept only requests from localhost, for security.
@@ -61,7 +67,11 @@ var loadEJS = function(request, uri, EJSDataFunction, defaultDefaultFunction, re
 // Serve a request by delivering a file.
 function handle(request, response) {
     var url = request.url.toLowerCase();
-    if (url.endsWith("/")) url = url + "index.html"
+    if (url.endsWith("/") || url == "localhost:8080" || url == "127.0.0.1:8080") {
+        url = "/index";
+        loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        return;
+    }
 
     //Handles file that are EJS or HTML
     if(url.lastIndexOf(".") == -1){
@@ -89,9 +99,10 @@ function handle(request, response) {
             request.on("data", (data) => {
 
                 //decode buffer into URI, decode URI into String
-                data = decodeURIComponent(data.toString('utf-8'));
+                // data = decodeURIComponent(data.toString('utf-8'))
+                data = data.toString('utf-8')
                 console.log("DATA: " + data.toString())
-                
+
                 var keyValuePairs = data.split("&");
                 var dictionary = {};
                 for(var keyValuePair of keyValuePairs){
@@ -119,23 +130,41 @@ function handle(request, response) {
                     })
             });
         }
+
+        if(url === "/challenge_request" && request.method === "POST"){
+            request.on("data", (data) => {
+                data = data.toString("utf-8");
+                files.writeFile("docker/task.js", data);
+                docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/fib100").then(function(ans) {
+                    console.log("server got: " + ans);
+                    if (ans == true) {
+                        ans = "correct!";
+                    } else {
+                        ans = "incorrect!";
+                    }
+                    deliver(response, types["json"], ans);
+                }, function(err) {
+                    deliver(response, types["json"], ("error from docker: " + err));
+                })
+            });
+        }
         return
-    }
+}
 
-    //Handling files that are NOT EJS or HTML (.js, .svg etc.)
-    if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
-    var type = findType(url);
-    if (type == null) return fail(response, BadType, "File type unsupported");
-    var file = "./public" + url;
+//Handling files that are NOT EJS or HTML (.js, .svg etc.)
+if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
+var type = findType(url);
+if (type == null) return fail(response, BadType, "File type unsupported");
+var file = "./public" + url;
 
-    files.readFile(file)
-        .then(function(content){
-            deliver(response, type, content);
-        })
-        .catch(function(err){
-            console.log(file)
-            if (err) return fail(response, NotFound, "File not found");
-        })
+files.readFile(file)
+    .then(function(content){
+        deliver(response, type, content);
+    })
+    .catch(function(err){
+        console.log(file)
+        if (err) return fail(response, NotFound, "File not found");
+    })
 }
 
 // Forbid any resources which shouldn't be delivered to the browser.

@@ -1,5 +1,6 @@
 *.swp
 bin/*
 site/node_modules
-docker/node_modules
-docker/nohup.out
+site/docker/node_modules
+site/docker/nohup.out
+site/docker/output
