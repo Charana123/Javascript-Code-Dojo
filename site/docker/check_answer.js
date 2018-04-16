@@ -3,8 +3,12 @@
 var cmd = require("node-cmd");
 var Promise = require('bluebird');
 
-const getAsync = Promise.promisify(cmd.get, { multiArgs: true, context: cmd })
+const getAsync = Promise.promisify(cmd.get, { multiArgs: true, context: cmd})
 //const foo = newDockerChecker();
+
+const dockerBuildCmd = 'docker build -t mynode '
+const dockerRunCmd = 'docker run mynode'
+const dockerCpCmd = 'docker cp $(docker ps -l -q):/output '
 
 module.exports = {
     newDockerChecker: newDockerChecker
@@ -12,11 +16,15 @@ module.exports = {
 
 function newDockerChecker() {
     return (function() {
+
         var dockerBuild = function(path) {
             return new Promise(function(resolve, reject) {
-                getAsync('docker build -t mynode ' + path).then(data => {
+                console.log(dockerBuildCmd + path);
+                getAsync(dockerBuildCmd + path).then(data => {
+                    console.log(data);
                     resolve(data);
                 }).catch(err => {
+                    console.log(err);
                     reject(err);
                 });
             });
@@ -24,9 +32,12 @@ function newDockerChecker() {
 
         var dockerRun = function() {
             return new Promise(function(resolve, reject) {
-                getAsync('docker run mynode').then(data => {
+                console.log(dockerRunCmd);
+                getAsync(dockerRunCmd).then(data => {
+                    console.log(data);
                     resolve(data);
                 }).catch(err => {
+                    console.log(err);
                     reject(err);
                 });
             });
@@ -34,9 +45,12 @@ function newDockerChecker() {
 
         var dockerCopy = function(path) {
             return new Promise(function(resolve, reject) {
-                getAsync('docker cp $(docker ps -l -q):/output ' + path).then(data => {
+                console.log(dockerCpCmd + path);
+                getAsync(dockerCpCmd + path).then(data => {
+                    console.log(data);
                     resolve(data);
                 }).catch(err => {
+                    console.log(err);
                     reject(err)
                 });
             });
@@ -46,11 +60,14 @@ function newDockerChecker() {
             return new Promise(function(resolve, reject) {
                 getAsync('cmp --silent ' + file1 + ' ' + file2 + ' || echo "files are different"').then(data => {
                     if (data[0] != "") {
+                        console.log(data);
                         resolve(false);
                     } else {
+                        console.log(data);
                         resolve(true);
                     }
                 }).catch(err => {
+                    console.log(data);
                     resolve(err);
                 });
             });
@@ -93,6 +110,6 @@ function newDockerChecker() {
 
         }
 
-
     }());
 }
+
