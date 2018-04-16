@@ -67,7 +67,11 @@ var loadEJS = function(request, uri, EJSDataFunction, defaultDefaultFunction, re
 // Serve a request by delivering a file.
 function handle(request, response) {
     var url = request.url.toLowerCase();
-    if (url.endsWith("/")) url = url + "index.html"
+    if (url.endsWith("/") || url == "localhost:8080" || url == "127.0.0.1:8080") {
+        url = "/index";
+        loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        return;
+    }
 
     //Handles file that are EJS or HTML
     if(url.lastIndexOf(".") == -1){
