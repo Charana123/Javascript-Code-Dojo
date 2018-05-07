@@ -1,7 +1,7 @@
 "use strict"
 
-const database_api = require('./database_api.js');
-const database = database_api.newDatabase();
+var database_api = require('./database_api.js');
+var database = database_api.newDatabase();
 
 function fieldByValue(field, value) {
     return new Promise(function(resolve, reject) {

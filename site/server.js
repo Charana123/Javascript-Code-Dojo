@@ -6,6 +6,8 @@ var verbose = true;
 var http = require("http");
 var fs = require("fs")
 var forum = require("./database/forum.js")
+var user = require("./database/forum.js")
+var dbApi = require("./database/database_api.js")
 var files = require("./js/files.js")
 var cookies = require("./js/cookies.js")
 var dock= require("./docker/check_answer.js")
@@ -15,6 +17,15 @@ var types, banned;
 var docker = dock.newDockerChecker();
 
 start();
+
+var db = dbApi.newDatabase();
+db.ensure().then((value) => {
+    console.log("database ensured");
+}).catch((err) => {
+    console.log("error: "+ err);
+});
+
+db.close();
 
 // Start the http service. Accept only requests from localhost, for security.
 function start() {
@@ -149,22 +160,22 @@ function handle(request, response) {
             });
         }
         return
-}
+    }
 
-//Handling files that are NOT EJS or HTML (.js, .svg etc.)
-if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
-var type = findType(url);
-if (type == null) return fail(response, BadType, "File type unsupported");
-var file = "./public" + url;
+    //Handling files that are NOT EJS or HTML (.js, .svg etc.)
+    if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
+    var type = findType(url);
+    if (type == null) return fail(response, BadType, "File type unsupported");
+    var file = "./public" + url;
 
-files.readFile(file)
-    .then(function(content){
-        deliver(response, type, content);
-    })
-    .catch(function(err){
-        console.log(file)
-        if (err) return fail(response, NotFound, "File not found");
-    })
+    files.readFile(file)
+        .then(function(content){
+            deliver(response, type, content);
+        })
+        .catch(function(err){
+            console.log(file)
+            if (err) return fail(response, NotFound, "File not found");
+        })
 }
 
 // Forbid any resources which shouldn't be delivered to the browser.

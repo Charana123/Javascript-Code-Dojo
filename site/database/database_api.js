@@ -1,6 +1,7 @@
 "use strict";
 
 var sqlite3 = require("sqlite3");
+var fs = require('fs');
 
 const dbName = "./db.sqlite3";
 const selectAll = "SELECT * FROM ";
@@ -21,6 +22,7 @@ function getDatabase(fileName) {
         console.log("Found and opened SQlite3 database: " + fileName);
     });
 }
+
 
 // Helper functions
 function getRowByIdString(table, id) {
@@ -89,12 +91,27 @@ function newDatabase() {
             });
         };
 
+        var ensure = function ensure(db) {
+            console.log("ensuring database");
+            return new Promise(function(resolve, reject) {
+                db.all("CREATE TABLE if not exists users (email TEXT, username TEXT, password TEXT)", (err) => {
+                    if (err) {
+                        reject("failed to ensure user table " + err);
+                    }
+                    resolve();
+                });
+            });
+        };
+
+
         return{
             close:function() {
                 db.close((err) => {
                     if (err) {
                         return console.error(err.message);
                     }
+
+                    console.log("databse closed successfully!");
                 });
             },
             rowById:function(table, id) {
@@ -108,6 +125,12 @@ function newDatabase() {
             },
             newUser:function(email, username, password) {
                 return newUser(db, email, username, password);
+            },
+            newUser:function(email, username, password) {
+                return newUser(db, email, username, password);
+            },
+            ensure:function() {
+                return ensure(db);
             },
         }
     }());
