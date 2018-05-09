@@ -94,7 +94,7 @@ function newDatabase() {
         var ensure = function ensure(db) {
             console.log("ensuring database");
             return new Promise(function(resolve, reject) {
-                db.all("CREATE TABLE if not exists users (email TEXT, username TEXT, password TEXT)", (err) => {
+                db.all("CREATE TABLE if not exists users (email TEXT, username TEXT, password TEXT, image BLOB)", (err) => {
                     if (err) {
                         reject("failed to ensure user table " + err);
                     }
@@ -111,7 +111,7 @@ function newDatabase() {
                         return console.error(err.message);
                     }
 
-                    console.log("databse closed successfully!");
+                    console.log("database closed successfully!");
                 });
             },
             rowById:function(table, id) {

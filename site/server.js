@@ -78,6 +78,11 @@ var loadEJS = function(request, uri, EJSDataFunction, defaultDefaultFunction, re
 // Serve a request by delivering a file.
 function handle(request, response) {
     var url = request.url.toLowerCase();
+
+    console.log(url);
+
+
+
     if (url.endsWith("/") || url == "localhost:8080" || url == "127.0.0.1:8080") {
         url = "/index";
         loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
@@ -158,6 +163,12 @@ function handle(request, response) {
                     deliver(response, types["json"], ("error from docker: " + err));
                 })
             });
+        }
+
+        if (url === "/signup_submission") {
+            console.log(request);
+            console.log("______________________________");
+            console.log(response);
         }
         return
     }
