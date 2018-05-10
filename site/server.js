@@ -166,7 +166,7 @@ function handle(request, response) {
         if (url === "/sign-up_submission") {
             request.on('data', chunk => {
                 var [email, username, pass1, pass2] = chunk.toString().split('&');
-                email = email.split('=')[1];
+                email = email.split('=')[1].replace("%40", "@");
                 username = username.split('=')[1];
                 pass1 = pass1.split('=')[1];
                 pass2 = pass2.split('=')[1];
