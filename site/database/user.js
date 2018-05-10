@@ -57,6 +57,11 @@ function User(database) {
             return new Promise(function(resolve, reject) {
                 db.rowsByField("users", "username", username).then(function(user) {
 
+                    if (user.length == 0) {
+                        reject(false);
+                        return;
+                    }
+
                     if (String(user[0].password) != String(password)) {
                         resolve(false);
                         return;

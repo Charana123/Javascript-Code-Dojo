@@ -3,7 +3,6 @@
 var sqlite3 = require("sqlite3");
 var fs = require('fs');
 
-const dbName = "./db.sqlite3";
 const selectAll = "SELECT * FROM ";
 const insertInto = "INSERT INTO ";
 const deleteFrom = "DELETE FROM ";
@@ -43,7 +42,7 @@ function getRowsByFieldString(table, field, value) {
 }
 
 // Our database module with API
-function newDatabase() {
+function newDatabase(dbName) {
     return (function() {
         var db = getDatabase(dbName);
 
