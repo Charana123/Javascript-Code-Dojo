@@ -19,12 +19,13 @@ var docker = dock.newDockerChecker();
 start();
 
 var db = dbApi.newDatabase();
+var user;
 db.ensure().then((value) => {
     console.log("Database ensured");
+    user = userApi.User(db);
 }).catch((err) => {
     console.log("error: "+ err);
 });
-var user = userApi.User(db);
 
 // Start the http service. Accept only requests from localhost, for security.
 function start() {
@@ -175,15 +176,20 @@ function handle(request, response) {
 
                 user.signUp(email, username, pass1, pass2).then((res) => {
                     returnResult = "Success: " + res;
-                }).catch((err) => {
-                    returnResult = "Failure:\n" + err + "\n";
-                });
-
-
-                request.on('end', () => {
                     returnResult += "\nemail: "+email + "\nusername: "+username + "\npass1: "+pass1 + "\npass2: "+pass2;
                     response.end(returnResult);
+
+                    return;
+
+                }).catch((err) => {
+                    returnResult = "Failure:\n" + err + "\n";
+                    returnResult += "\nemail: "+email + "\nusername: "+username + "\npass1: "+pass1 + "\npass2: "+pass2;
+                    response.end(returnResult);
+
+                    return;
                 });
+
+                return;
             });
 
         }

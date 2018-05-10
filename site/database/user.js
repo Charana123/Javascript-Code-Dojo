@@ -22,7 +22,7 @@ function fieldAvailable(db, field, value) {
             }
             resolve(true);
         }, function(err) {
-            reject(err);
+            reject("error getting field: ["+field+"] value: ["+value+ "], "+err);
         });
     });
 }
@@ -46,8 +46,11 @@ function newUser(db, email, username, password) {
     });
 }
 
-function User(db) {
-    return (function(db) {
+function User(database) {
+    return (function() {
+
+        var db = database;
+
         var signUp = function signUp(email, username, pass1, pass2) {
             return new Promise(function(resolve, reject) {
                 var err = "";
@@ -95,7 +98,12 @@ function User(db) {
                         }
 
                         newUser(db, email, username, pass1).then(function(username) {
-                            console.log("new user created: " + username);
+                            var res = "new user created: " + username;
+                            console.log(res);
+                            resolve(res);
+
+                            return;
+
                         }, function(err) {
                             reject("failed to create new user: " + err);
                             return;
@@ -110,8 +118,6 @@ function User(db) {
                     reject(err);
                     return;
                 });
-
-                resolve("New user created!");
             });
         };
 
