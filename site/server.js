@@ -191,7 +191,37 @@ function handle(request, response) {
 
                 return;
             });
+        }
 
+        if (url === "/sign-in_submission") {
+            request.on('data', chunk => {
+                var [username, password] = chunk.toString().split('&');
+                username = username.split('=')[1];
+                password = password.split('=')[1];
+                console.log(username);
+                console.log(password);
+
+                var returnResult;
+                console.log(user);
+                console.log(user.signIn);
+
+                user.signIn(username, password).then((res) => {
+                    returnResult = "Success: " + res;
+                    returnResult += "\nusername: "+username + "\npassword: "+password;
+                    response.end(returnResult);
+
+                    return;
+
+                }).catch((err) => {
+                    returnResult = "Failure:\n" + err + "\n";
+                    returnResult += "\nusername: "+username + "\npassword: " +password;
+                    response.end(returnResult);
+
+                    return;
+                });
+
+                return;
+            });
         }
 
 
