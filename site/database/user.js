@@ -1,15 +1,12 @@
 "use strict"
 
-const database_api = require('./database_api.js');
-const database = database_api.newDatabase();
-
 module.exports = {
     User: User
 };
 
-function fieldByValue(field, value) {
+function fieldByValue(db, field, value) {
     return new Promise(function(resolve, reject) {
-        database.rowsByField("users", field, value).then(function(user) {
+        db.rowsByField("users", field, value).then(function(user) {
             resolve(user);
         }, function(err) {
             reject(err);
@@ -17,9 +14,9 @@ function fieldByValue(field, value) {
     });
 }
 
-function fieldAvailable(field, value) {
+function fieldAvailable(db, field, value) {
     return new Promise(function(resolve, reject) {
-        fieldByValue(field, value).then(function(row) {
+        fieldByValue(db, field, value).then(function(row) {
             if (Object.keys(row).length > 0) {
                 resolve(false);
             }
@@ -39,9 +36,9 @@ function validEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
-function newUser(email, username, password) {
+function newUser(db, email, username, password) {
     return new Promise(function(resolve, reject) {
-        database.newUser(email, username, password).then(function(username) {
+        db.newUser(email, username, password).then(function(username) {
             resolve(username);
         }, function(err) {
             reject(err);
@@ -49,49 +46,55 @@ function newUser(email, username, password) {
     });
 }
 
-function User() {
-    return (function() {
+function User(db) {
+    return (function(db) {
         var signUp = function signUp(email, username, pass1, pass2) {
             return new Promise(function(resolve, reject) {
+                var err = "";
+
                 if (email.length == 0) {
-                    reject("No email provided.");
-                    return;
+                    err += "No email provided.\n";
                 }
 
                 if (username.length == 0) {
-                    reject("No username provided.");
-                    return;
+                    err += "No username provided.\n";
                 }
                 if (pass1.length == 0) {
-                    reject("No password provided.");
-                    return;
+                    err += "No password provided.\n";
                 }
                 if (pass2.length == 0) {
-                    reject("No re-password provided.");
-                    return;
+                    err += "No re-password provided.\n";
                 }
 
                 if (!passwordsMatch(pass1, pass2)) {
-                    reject("Passwords do not match.");
-                    return;
+                    err += "Passwords do not match.\n";
                 }
 
                 if (!validEmail(email)) {
-                    reject("Not a valid email.");
+                    err += "Not a valid email.\n";
+                }
+
+                if (err != "") {
+                    reject(err);
                     return;
                 }
 
-                fieldAvailable("username", username).then(function(available) {
+                fieldAvailable(db, "username", username).then(function(available) {
                     if (!available) {
-                        reject("Username is already taken.");
-                        return;
+                        err += "Username is already taken.\n";
                     }
-                    fieldAvailable("email", email).then(function(available) {
+
+                    fieldAvailable(db, "email", email).then(function(available) {
                         if (!available) {
-                            reject("Email is already taken.");
+                            err += "Email is already taken.\n";
+                        }
+
+                        if (err != "") {
+                            reject(err);
                             return;
                         }
-                        newUser(email, username, pass1).then(function(username) {
+
+                        newUser(db, email, username, pass1).then(function(username) {
                             console.log("new user created: " + username);
                         }, function(err) {
                             reject("failed to create new user: " + err);

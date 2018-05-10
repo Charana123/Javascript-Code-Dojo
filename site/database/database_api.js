@@ -92,7 +92,7 @@ function newDatabase() {
         };
 
         var ensure = function ensure(db) {
-            console.log("ensuring database");
+            console.log("Ensuring database tables");
             return new Promise(function(resolve, reject) {
                 db.all("CREATE TABLE if not exists users (email TEXT, username TEXT, password TEXT, image BLOB)", (err) => {
                     if (err) {
