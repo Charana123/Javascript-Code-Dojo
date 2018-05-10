@@ -14,7 +14,8 @@ var types, banned;
 
 var docker = require("./docker/check_answer.js").newDockerChecker();
 
-var db = require("./database/database_api.js").newDatabase();
+const dbName = "./database/db.sqlite3";
+var db = require("./database/database_api.js").newDatabase(dbName);
 var user;
 db.ensure().then((value) => {
     console.log("Database ensured");
