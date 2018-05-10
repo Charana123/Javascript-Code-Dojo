@@ -1,7 +1,11 @@
 "use strict"
 
-var database_api = require('./database_api.js');
-var database = database_api.newDatabase();
+const database_api = require('./database_api.js');
+const database = database_api.newDatabase();
+
+module.exports = {
+    User: User
+};
 
 function fieldByValue(field, value) {
     return new Promise(function(resolve, reject) {
@@ -45,58 +49,73 @@ function newUser(email, username, password) {
     });
 }
 
-function signUp(email, username, pass1, pass2) {
-    if (email.length == 0) {
-        throw "No email provided.";
-        return;
-    }
-    if (username.length == 0) {
-        throw "No username provided.";
-        return;
-    }
-    if (pass1.length == 0) {
-        throw "No password provided.";
-        return;
-    }
-    if (pass2.length == 0) {
-        throw "No re-password provided.";
-        return;
-    }
+function User() {
+    return (function() {
+        var signUp = function signUp(email, username, pass1, pass2) {
+            return new Promise(function(resolve, reject) {
+                if (email.length == 0) {
+                    reject("No email provided.");
+                    return;
+                }
 
-    if (!passwordsMatch(pass1, pass2)) {
-        throw "Passwords do not match.";
-        return;
-    }
+                if (username.length == 0) {
+                    reject("No username provided.");
+                    return;
+                }
+                if (pass1.length == 0) {
+                    reject("No password provided.");
+                    return;
+                }
+                if (pass2.length == 0) {
+                    reject("No re-password provided.");
+                    return;
+                }
 
-    if (!validEmail(email)) {
-        throw "Not a valid email.";
-        return;
-    }
+                if (!passwordsMatch(pass1, pass2)) {
+                    reject("Passwords do not match.");
+                    return;
+                }
 
-    fieldAvailable("username", username).then(function(available) {
-        if (!available) {
-            throw "Username is already taken.";
-            return;
-        }
-        fieldAvailable("email", email).then(function(available) {
-            if (!available) {
-                throw "Email is already taken.";
-                return;
-            }
-            newUser(email, username, pass1).then(function(username) {
-                console.log("new user created: " + username);
-            }, function(err) {
-                throw "failed to create new user: " + err;
-                return;
+                if (!validEmail(email)) {
+                    reject("Not a valid email.");
+                    return;
+                }
+
+                fieldAvailable("username", username).then(function(available) {
+                    if (!available) {
+                        reject("Username is already taken.");
+                        return;
+                    }
+                    fieldAvailable("email", email).then(function(available) {
+                        if (!available) {
+                            reject("Email is already taken.");
+                            return;
+                        }
+                        newUser(email, username, pass1).then(function(username) {
+                            console.log("new user created: " + username);
+                        }, function(err) {
+                            reject("failed to create new user: " + err);
+                            return;
+                        });
+
+                    }, function(err) {
+                        reject(err);
+                        return;
+                    });
+
+                }, function(err) {
+                    reject(err);
+                    return;
+                });
+
+                resolve("New user created!");
             });
+        };
 
-        }, function(err) {
-            throw err;
-            return;
-        });
-
-    }, function(err) {
-        throw err;
-        return;
-    });
+        return {
+            signUp:function(email, username, pass1, pass2) {
+                return signUp(email, username, pass1, pass2);
+            },
+        }
+    }());
 }

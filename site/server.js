@@ -6,7 +6,7 @@ var verbose = true;
 var http = require("http");
 var fs = require("fs")
 var forum = require("./database/forum.js")
-var user = require("./database/forum.js")
+var userApi = require("./database/user.js")
 var dbApi = require("./database/database_api.js")
 var files = require("./js/files.js")
 var cookies = require("./js/cookies.js")
@@ -19,6 +19,7 @@ var docker = dock.newDockerChecker();
 start();
 
 var db = dbApi.newDatabase();
+var user = userApi.User();
 db.ensure().then((value) => {
     console.log("database ensured");
 }).catch((err) => {
@@ -78,10 +79,6 @@ var loadEJS = function(request, uri, EJSDataFunction, defaultDefaultFunction, re
 // Serve a request by delivering a file.
 function handle(request, response) {
     var url = request.url.toLowerCase();
-
-    console.log(url);
-
-
 
     if (url.endsWith("/") || url == "localhost:8080" || url == "127.0.0.1:8080") {
         url = "/index";
@@ -145,6 +142,7 @@ function handle(request, response) {
                         deliver(response, types["json"], contentJSON)
                     })
             });
+            return;
         }
 
         if(url === "/challenge_request" && request.method === "POST"){
@@ -163,13 +161,36 @@ function handle(request, response) {
                     deliver(response, types["json"], ("error from docker: " + err));
                 })
             });
+
+            return;
         }
 
-        if (url === "/signup_submission") {
-            console.log(request);
-            console.log("______________________________");
-            console.log(response);
+        if (url === "/sign-up_submission") {
+            request.on('data', chunk => {
+                var [email, username, pass1, pass2] = chunk.toString().split('&');
+                email = email.split('=')[1];
+                username = username.split('=')[1];
+                pass1 = pass1.split('=')[1];
+                pass2 = pass2.split('=')[1];
+
+                var returnResult;
+
+                user.signUp(email, username, pass1, pass2).then((res) => {
+                    returnResult = "Success: " + res;
+                }).catch((err) => {
+                    returnResult = "Failure: " + err;
+                });
+
+
+                request.on('end', () => {
+                    returnResult += "\nemail: "+email + "\nusername: "+username + "\npass1: "+pass1 + "\npass2: "+pass2;
+                    response.end(returnResult);
+                });
+            });
+
         }
+
+
         return
     }
 
