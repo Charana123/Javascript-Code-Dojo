@@ -7,18 +7,14 @@ var http = require("http");
 var fs = require("fs")
 var forum = require("./database/forum.js")
 var userApi = require("./database/user.js")
-var dbApi = require("./database/database_api.js")
 var files = require("./js/files.js")
-var cookies = require("./js/cookies.js")
-var dock= require("./docker/check_answer.js")
+var cookies = require("./js/cookies.js").Cookies();
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
 
-var docker = dock.newDockerChecker();
+var docker = require("./docker/check_answer.js").newDockerChecker();
 
-start();
-
-var db = dbApi.newDatabase();
+var db = require("./database/database_api.js").newDatabase();
 var user;
 db.ensure().then((value) => {
     console.log("Database ensured");
@@ -26,6 +22,8 @@ db.ensure().then((value) => {
 }).catch((err) => {
     console.log("error: "+ err);
 });
+
+start();
 
 // Start the http service. Accept only requests from localhost, for security.
 function start() {
@@ -62,17 +60,22 @@ function checkSite() {
 // }
 
 var loadEJS = function(request, uri, EJSDataFunction, defaultDefaultFunction, response){
-    cookies.getCookie(request, "x")
-        .then(files.readEJSFile(uri, EJSDataFunction, response))
-        .catch(files.readEJSFile(uri, defaultDefaultFunction, response))
-        .then(function(contentHTML){
+    cookies.getCookie(request, "x").then(function(cookie) {
+
+        files.readEJSFile(uri, EJSDataFunction, response).then(function(contentHTML) {
             var type = types["html"]
+            //console.log(cookie);
+            //console.log(response);
+            contentHTML = contentHTML.replace("{{{COOKIE}}}", cookie);
             deliver(response, type, contentHTML)
-        })
-        .catch(function(err){
-            console.log("error failure")
-            fail(response, NotFound, err.message)
-        })
+
+        }, function(err) {
+            console.log("failed to read ejs file: "+err);
+        });
+
+    }, function(err) {
+        console.log("failed to load EJS: " + err);
+    });
 }
 
 // Serve a request by delivering a file.
@@ -81,7 +84,7 @@ function handle(request, response) {
 
     if (url.endsWith("/") || url == "localhost:8080" || url == "127.0.0.1:8080") {
         url = "/index";
-        loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        loadEJS(request, url, forum.getDefault, forum.getDefault, response);
         return;
     }
 
@@ -199,15 +202,10 @@ function handle(request, response) {
 
         if (url === "/sign-in_submission") {
             request.on('data', chunk => {
+                var returnResult;
                 var [username, password] = chunk.toString().split('&');
                 username = username.split('=')[1];
                 password = password.split('=')[1];
-                console.log(username);
-                console.log(password);
-
-                var returnResult;
-                console.log(user);
-                console.log(user.signIn);
 
                 user.signIn(username, password).then((res) => {
                     returnResult = "Success: " + res;
@@ -271,7 +269,6 @@ function deliver(response, type, content) {
     response.write(content);
     response.end();
 }
-
 
 // Give a minimal failure response to the browser
 function fail(response, code, text) {

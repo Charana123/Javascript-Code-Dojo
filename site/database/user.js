@@ -119,7 +119,6 @@ function User(database) {
 
                         newUser(db, email, username, pass1).then(function(username) {
                             var res = "new user created: " + username;
-                            console.log(res);
                             resolve(res);
 
                             return;
