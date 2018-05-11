@@ -24,7 +24,13 @@
 }
 
 #challenges-element-right-col {
+    overflow: auto;
 }
+
+.clear {
+    clear: both;
+}
+
 
 .completed-image {
     float:left;
