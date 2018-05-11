@@ -29,7 +29,7 @@
 
 .passed-percentage {
     height: 20px;
-    font-size: 18px;
+    font-size: 17px;
 }
 
 .completed-image {
@@ -46,7 +46,7 @@
 .solve-button, .try-again-button {
     /* button-div layout in parent div */
     float: right;
-    margin-top: 20px;
+    margin-top: 15px;
     width: 100px;
     height: 40px;
 

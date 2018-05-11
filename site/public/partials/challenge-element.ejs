@@ -14,12 +14,12 @@
         </div>
         <div id="challenges-element-right-col" class="column"> 
             <% if(challenge.user.passed){ %>
-            <div class="passed-percentage" > Passed:<%= challenge.user.passed_percentage %> </div>
-            <div class="try-again-button" > Try Again </div>
+            <div class="passed-percentage" > Passed:<%= challenge.user.passed_percentage %>% </div>
+            <div class="try-again-button" onclick="window.location='/editor'" > Try Again </div>
             <% } %>
             <% if(!challenge.user.passed){ %>
                 <div class="passed-percentage" >  </div>
-                <div class="solve-button" > Solve </div>
+                <div class="solve-button" onclick="window.location='/editor'"> Solve </div>
             <% } %>
         </div>
     </div>
