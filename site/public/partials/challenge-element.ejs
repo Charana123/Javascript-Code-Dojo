@@ -13,7 +13,13 @@
             </div>
         </div>
         <div id="challenges-element-right-col" class="column"> 
-            <button class="solve-button" > Solve </button>
+            <% if(challenge.user.passed){ %>
+            <div class="passed-percentage" > Passed:<%= challenge.user.passed_percentage %> </div>
+            <button class="try-again-button" > Try Again </button>
+            <% } %>
+            <% if(!challenge.user.passed){ %>
+                <button class="solve-button" > Solve </button>
+            <% } %>
         </div>
     </div>
     <br/>

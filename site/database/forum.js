@@ -8,8 +8,9 @@ var Question = function(title, category, comments, views, activity){
     this.activity = activity;
 }
 
-var ChallengeUser = function(passed){
+var ChallengeUser = function(passed, passed_percentage){
     this.passed = passed;
+    this.passed_percentage = passed_percentage;
 }
 
 var Challenge = function(title, description, user){
@@ -31,8 +32,8 @@ forum.getAllPostsData = function(){
 
 forum.getAllChallengeData = function(){
     return new Promise(function(resolve, reject){
-        var challenge1 = new Challenge("Title 1", "Description 1", new ChallengeUser(100))
-        var challenge2 = new Challenge("Title 2", "Description 2", new ChallengeUser(80))
+        var challenge1 = new Challenge("Title 1", "Description 1", new ChallengeUser(true, 100))
+        var challenge2 = new Challenge("Title 2", "Description 2", new ChallengeUser(false))
         var challenges_data = [challenge1, challenge2]
         var data = { session_valid: true, challenges: challenges_data }
         resolve(data)
