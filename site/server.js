@@ -24,6 +24,8 @@ db.ensure().then((value) => {
     console.log("error: "+ err);
 });
 
+var UserSessions = {};
+
 start();
 
 // Start the http service. Accept only requests from localhost, for security.
@@ -47,27 +49,18 @@ function checkSite() {
 }
 
 
-// var loadEJSelseHTML = function(request, uri, EJSData, response){
-//     cookies.getCookie(request, "session")
-//         .then(files.readEJSFile(uri, EJSData, response))
-//         .catch(files.readHTMLFile(uri))
-//         .then(function(contentHTML){
-//             var type = types["html"]
-//             deliver(response, type, contentHTML)
-//         })
-//         .catch(function(err){
-//             fail(response, NotFound, err.message)
-//         })
-// }
-
 var loadEJS = function(request, uri, EJSDataFunction, defaultDefaultFunction, response){
     cookies.getCookie(request, "x").then(function(cookie) {
 
+        if (UserSessions[cookie]) {
+            console.log("logged in!");
+        } else {
+            console.log("not logged in!");
+        }
+
         files.readEJSFile(uri, EJSDataFunction, response).then(function(contentHTML) {
             var type = types["html"]
-            //console.log(cookie);
-            //console.log(response);
-            contentHTML = contentHTML.replace("{{{COOKIE}}}", cookie);
+            response.setHeader("cookie", cookie)
             deliver(response, type, contentHTML)
 
         }, function(err) {
@@ -183,16 +176,16 @@ function handle(request, response) {
                 var returnResult;
 
                 userHandler.signUp(email, username, pass1, pass2).then((res) => {
-                    returnResult = "Success: " + JSON.stringify(res);
-                    returnResult += "\nemail: "+email + "\nusername: "+username + "\npass1: "+pass1 + "\npass2: "+pass2;
-                    response.end(returnResult);
+                    console.log("received cookie: "+request.headers["cookie"]);
+
+                    url = "/index";
+                    loadEJS(request, url, forum.getDefault, forum.getDefault, response);
 
                     return;
 
                 }).catch((err) => {
-                    returnResult = "Failure:\n" + err + "\n";
-                    returnResult += "\nemail: "+email + "\nusername: "+username + "\npass1: "+pass1 + "\npass2: "+pass2;
-                    response.end(returnResult);
+                    url = "/index";
+                    loadEJS(request, url, forum.getDefault, forum.getDefault, response);
 
                     return;
                 });
@@ -208,17 +201,20 @@ function handle(request, response) {
                 username = username.split('=')[1];
                 password = password.split('=')[1];
 
-                userHandler.signIn(username, password).then((res) => {
-                    returnResult = "Success: " + JSON.stringify(res);
-                    returnResult += "\nusername: "+username + "\npassword: "+password;
-                    response.end(returnResult);
+                userHandler.signIn(username, password).then((user) => {
+                    var userCookie = request.headers["cookie"];
+                    console.log("received cookie: " + userCookie);
+                    user.cookie = userCookie;
+                    UserSessions[userCookie] = user;
+
+                    url = "/index";
+                    loadEJS(request, url, forum.getDefault, forum.getDefault, response);
 
                     return;
 
                 }).catch((err) => {
-                    returnResult = "Failure:\n" + err + "\n";
-                    returnResult += "\nusername: "+username + "\npassword: " +password;
-                    response.end(returnResult);
+                    url = "/index";
+                    loadEJS(request, url, forum.getDefault, forum.getDefault, response);
 
                     return;
                 });

@@ -67,12 +67,12 @@ function UserHandler(database) {
                 db.rowsByField("users", "username", username).then(function(user) {
 
                     if (user.length == 0) {
-                        reject(null);
+                        reject("user does not exist");
                         return;
                     }
 
                     if (String(user[0].password) != String(password)) {
-                        resolve(null);
+                        reject("incorrect password");
                         return;
                     }
 
