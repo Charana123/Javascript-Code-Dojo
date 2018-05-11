@@ -105,11 +105,14 @@ function handle(request, response) {
         if(url === "/index") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url === "/sign-up") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url === "/challenges") loadEJS(request, url, forum.getAllChallengeData, forum.getDefault, response);
-        if(url === "/editor") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url === "/games") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url === "/snake") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url === "/tetris") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url === "/asteroids") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url.startsWith("/editor")) {
+            var uri = url.substring(url.lastIndexOf("/"))
+            loadEJS(request, "/editor", forum.getChallengeInEditor(uri), forum.getDefault, response);
+        }
 
         //Login & Signup POST Requests
         if(url === "/login-user" && request.method === "POST"){

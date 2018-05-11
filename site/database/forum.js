@@ -20,6 +20,24 @@ var Challenge = function(title, description, user){
     this.user = user;
 }
 
+forum.getChallengeInEditor = function(challenge_title){
+    return function(){
+        return new Promise(function(resolve, reject){
+
+            var editor_data = { 
+                challenge_title: challenge_title, 
+                challenge_objective: "challenge objective",
+                challenge_task: "challenge task",
+                challenge_input_format: "challenge input format",
+                challenge_output_format: "challenge output format"
+            }
+            var data = { session_valid: true, editor_data: editor_data }
+            resolve(data)
+        })
+    }
+}
+
+
 forum.getAllPostsData = function(){
     return new Promise(function(resolve, reject){
         var question_1 = new Question("HTTP - Writing a server", "General", 5, 35, "26d")

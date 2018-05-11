@@ -6,7 +6,7 @@
 <meta name="author" content="Joshua Van Leeuwen and Charana Nandasena" />
 <meta name="copyright" content="Copyright Goes Here" />
 <meta name="description" content="A website to learn JavaScript!" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="/css/home.css" />
   <style type="text/css" media="screen">
 
     .ace_editor {
@@ -17,23 +17,23 @@
     }
 
   </style>
-<script type="text/javascript" src="js/http_requests.js" async="async"> </script>
-<script type="text/javascript" src="js/editor.js" async="async"> </script>
+<script type="text/javascript" src="/js/http_requests.js" async="async"> </script>
+<script type="text/javascript" src="/js/editor.js" async="async"> </script>
 </head>
 <body>
 <% include partials/header %>
-Challenge 3 - Fibonacci
-<p> Calculate the first 100 Fibonacci numbers, print them out to console, each
-number on a new line.
-</p>
+<div id="challenge-title"> <%= editor_data.challenge_title %> </div>
+<div id="challenge-objective"> <%= editor_data.challenge_objective %> </div> 
+
 <div id="wrapper">
   <div id="content-wrapper">
     <div id="content">
-        <pre id="editor">var a = "Hello";
-var b = "World!";
-console.log(a + " " + b);</pre>
-
-        <script src="js/editor/ace.js" type="text/javascript" charset="utf-8"></script>
+        <pre id="editor">
+          var a = "Hello";
+          var b = "World!";
+          console.log(a + " " + b);
+        </pre>
+        <script src="/js/editor/ace.js" type="text/javascript" charset="utf-8"></script>
         <script>
             var editor = ace.edit("editor");
             editor.setTheme("ace/theme/gruvbox");
@@ -42,7 +42,6 @@ console.log(a + " " + b);</pre>
             editor.session.setUseWrapMode(true);
             editor.session.setWrapLimitRange(80, 80);
         </script>
-
         <button id="submitButton" class="buttonload" onclick="submitCode()">
             --Submit--
         </button>
