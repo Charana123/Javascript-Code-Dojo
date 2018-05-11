@@ -20,17 +20,17 @@
 }
 
 #challenges-element-left-col {
-    width: 750px;
+    width: 770px;
 }
 
 #challenges-element-right-col {
-    overflow: auto;
+    width: 110px;
 }
 
-.clear {
-    clear: both;
+.passed-percentage {
+    height: 20px;
+    font-size: 18px;
 }
-
 
 .completed-image {
     float:left;
@@ -43,23 +43,24 @@
     font-size: 16px;
 }
 
-.passed-percentage {
-    float: none;
-    
-    font-size: 18px;
-}
-
 .solve-button, .try-again-button {
-    float: none; 
-
-    margin-left: 13px;
-    margin-top: 13px;
+    /* button-div layout in parent div */
+    float: right;
+    margin-top: 20px;
     width: 100px;
     height: 40px;
 
+    /* making the div look like a button lol */
+    border-radius: 10px;
+
+    /* text attributes */
     background-color: lightskyblue;
     color: white;
     font-weight: bold;
     font-size: 16px;
+
+    /* center text */
+    text-align: center;
+    line-height: 40px;
 }
 

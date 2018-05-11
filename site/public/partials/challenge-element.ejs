@@ -2,8 +2,7 @@
 
 <% challenges.forEach(function(challenge) { %>
     <div id="<%= challenge.title %>" class="challenge-element">
-        <div class="column"> 
-        <div id="challenges-element-left-col" class="column-container">
+        <div id="challenges-element-left-col" class="column"> 
             <div> 
                 <img class="completed-image" src="../img/checked.svg" />
                 <div class="challenge-heading" > <%= challenge.title %> </div> 
@@ -13,19 +12,15 @@
                 <%= challenge.description %>
             </div>
         </div>
-        </div>
-        <div class="column"> 
-        <div id="challenges-element-right-col" class="column-container">
+        <div id="challenges-element-right-col" class="column"> 
             <% if(challenge.user.passed){ %>
             <div class="passed-percentage" > Passed:<%= challenge.user.passed_percentage %> </div>
-            <div class="passed-percentage" > Passed:<%= challenge.user.passed_percentage %> </div>
-            <!-- <button class="try-again-button" > Try Again </button> -->
+            <div class="try-again-button" > Try Again </div>
             <% } %>
             <% if(!challenge.user.passed){ %>
-                <!-- <button class="solve-button" > Solve </button> -->
+                <div class="passed-percentage" >  </div>
+                <div class="solve-button" > Solve </div>
             <% } %>
-            <div class="clear" >  </div>
-        </div> 
         </div>
     </div>
     <br/>
