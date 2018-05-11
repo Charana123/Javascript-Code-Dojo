@@ -1,0 +1,39 @@
+.slideshow {
+    margin-top: 0px;
+    padding: 10px; 
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+.slide {
+    /* Dimensions of slide */
+    width: 100%;
+    height: 500px;
+
+    /* Temp */
+    background-color: white;
+    margin-bottom: 10px;
+
+    
+}
+
+.welcome-slide-content {
+    margin-top: 5%;
+    margin-left: 5%;
+
+    float: left;
+    height: 80%;
+    width: 55%;
+    max-height: 80%;
+    max-width: 55%;
+}
+
+.code-editor-image {
+    margin-top: 5%;
+    margin-right: 5%;
+
+    float: left;
+    height: 80%;
+    width: 35%;
+    max-height: 80%;
+    max-width: 35%;
+}

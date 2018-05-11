@@ -1,3 +1,4 @@
+/* ========= Style Sheet ======================================================================== */
 html
 {
     margin: 0;
@@ -7,11 +8,13 @@ html
     font: normal 12px "Droid Sans", "Droid Sans", Verdana, Georgia, Sans-Serif;
 }
 
-a:link {
-    text-decoration: none; color: #000000;
+body
+{
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
-/* Html Elements */
 h1, h2, h3, h4, h5, h6 { font-weight: normal; margin: 0; padding: 10px 0; color: #779999 }
 h1 { font-size: 32px; }
 h2 { font-size: 28px; }
@@ -20,18 +23,47 @@ h4 { font-size: 24px; }
 h5, h6 { font-size: 17px; }
 biglist { font-weight: normal; margin: 0; padding: 10px 0; color: #779999; font-size: 24px}
 
-
-/* Structure */
-body
-{
-    margin: 0;
-    float: left;
-    width: 100%;
-    font-size: 20px;
+a:link {
+    text-decoration: none; color: #000000;
 }
+
+/* ========= Content Wrappers ======================================================================== */
+#wrapper
+{
+    width: 98.5%;
+    float: left;
+    margin-left: 10px;
+    margin-right: 10px;
+    background: transparent 60% 0 repeat-y;
+}
+
+#content-wrapper
+{
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+#content
+{
+    width: 100%;
+    align-content: center;
+    padding-top: 5px;
+}
+
+
+
+
+
+
+
+
+
+
 
 #header
 {
+    font-size: 20px;
     float: left;
     width: 100%;
     clear: both;
@@ -39,26 +71,29 @@ body
     background: #222222 top left repeat;
 }
 
-#wrapper
-{
-    clear: both;
-    float: left;
-    width: 100%;
-    margin: 10px 0;
-    background: transparent 60% 0 repeat-y;
-}
 
-#content-wrapper
-{
-    width: 60%;
-    float: left;
-}
 
-#content
-{
-    float: left;
-    padding: 0 20px;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #sidebar-wrapper {
     width: 40%;

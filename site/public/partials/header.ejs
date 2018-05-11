@@ -3,15 +3,15 @@
 <div class="sidebar navigation" id="header" >
   <ul>
     <li> <div> Learn Javascript </div> </li>
-    <li><a href="index">Home</a></li>
-    <li><a href="challenges">Challenges</a></li>
-    <li><a href="forum">Forum</a></li>
-    <li><a href="games">Games</a></li>
+    <li><a href="/index">Home</a></li>
+    <li><a href="/challenges">Challenges</a></li>
+    <li><a href="/forum">Forum</a></li>
+    <li><a href="/games">Games</a></li>
     <li id="login" ></li>
 
     <% if(!session_valid) { %>
-    <li style="float: right"> <a href="sign-up">Sign Up</a> </li>
-      <li style="float: right"> <a href="login">Log In</a> </li>
+    <li style="float: right"> <a href="/sign-up">Sign Up</a> </li>
+      <li style="float: right"> <a href="/login">Log In</a> </li>
     <% } %>
     <% if(session_valid) { %>
       <li style="float: right"> <img  id="profile-image" src="/img/death.jpg" /> </li>
