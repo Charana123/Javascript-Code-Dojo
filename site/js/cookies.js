@@ -29,16 +29,22 @@ function Cookies() {
             });
         };
 
-        var setCookie = function(response, cookie_name, value, exdays) {
-            var exdate = new Date();
-            exdate.setDate(exdate.getDate() + exdays);
-            var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
-            var cookie = cookie_name + "=" + c_value;
-            response.setHeader('Set-Cookie', [cookie])
+        var setCookie = function(response, cookie) {
+            return new Promise(function(resolve) {
+                var exdate = new Date();
+                exdate.setDate(exdate.getDate() + 1);
+
+                cookie = cookie + ";expires"+exdate.toUTCString()+";";
+                response.setHeader('Set-Cookie', [cookie])
+
+                resolve(response);
+                return;
+            });
         };
 
-        var getCookie =  function(request, cookie_name){
+        var getCookie =  function(request) {
             return new Promise(function(resolve, reject){
+
                 // if cookie exists in request we can use that
                 if (request.headers["cookie"]) {
                     resolve(request.headers["cookie"]);

@@ -49,23 +49,35 @@ function checkSite() {
 }
 
 
-var loadEJS = function(request, uri, EJSDataFunction, defaultDefaultFunction, response){
-    cookies.getCookie(request, "x").then(function(cookie) {
+var loadEJS = function(request, uri, EJSDataFunction, defaultFunction, response){
+    cookies.getCookie(request).then(function(cookie) {
 
         if (UserSessions[cookie]) {
-            console.log("logged in!");
+            console.log(JSON.stringify(UserSessions));
+
+            files.readEJSFile(uri, EJSDataFunction, response, UserSessions[cookie]).then(function(contentHTML) {
+                var type = types["html"]
+                cookies.setCookie(response, cookie).then(function(response) {
+                    deliver(response, type, contentHTML)
+                });
+
+            }, function(err) {
+                console.log("failed to read ejs file: "+err);
+            });
+
         } else {
-            console.log("not logged in!");
+
+            files.readEJSFile(uri, defaultFunction, response).then(function(contentHTML) {
+                var type = types["html"]
+                cookies.setCookie(response, cookie).then(function(response) {
+                    deliver(response, type, contentHTML)
+                });
+
+            }, function(err) {
+                console.log("failed to read ejs file: "+err);
+            });
+
         }
-
-        files.readEJSFile(uri, EJSDataFunction, response).then(function(contentHTML) {
-            var type = types["html"]
-            response.setHeader("cookie", cookie)
-            deliver(response, type, contentHTML)
-
-        }, function(err) {
-            console.log("failed to read ejs file: "+err);
-        });
 
     }, function(err) {
         console.log("failed to load EJS: " + err);
@@ -130,7 +142,7 @@ function handle(request, response) {
                 //Check again DB and successful login sets session cookie
                 forum.login(email, password)
                     .then((value) => {
-                        cookies.setCookie(response, "x", "YES", 1);
+                        //cookies.setCookie(response, "x", "YES", 1);
                         var content = { success: true }
                         var contentJSON = JSON.stringify(content);
                         loadEJS(request, "/index", forum.getAllPostsData, forum.getDefault, response)
@@ -176,7 +188,6 @@ function handle(request, response) {
                 var returnResult;
 
                 userHandler.signUp(email, username, pass1, pass2).then((res) => {
-                    console.log("received cookie: "+request.headers["cookie"]);
 
                     url = "/index";
                     loadEJS(request, url, forum.getDefault, forum.getDefault, response);
@@ -203,7 +214,6 @@ function handle(request, response) {
 
                 userHandler.signIn(username, password).then((user) => {
                     var userCookie = request.headers["cookie"];
-                    console.log("received cookie: " + userCookie);
                     user.cookie = userCookie;
                     UserSessions[userCookie] = user;
 

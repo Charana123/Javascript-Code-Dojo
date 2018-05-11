@@ -31,7 +31,7 @@ files.readFile = function(file){
     })
 }
 
-files.readEJSFile = function(uri, getDataFunction, response){
+files.readEJSFile = function(uri, getDataFunction, response, user){
     var EJSfile = "./public" + uri + ".ejs";
     return new Promise(function(resolve, reject) {
 
