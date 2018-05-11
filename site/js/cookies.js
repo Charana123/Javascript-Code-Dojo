@@ -39,26 +39,14 @@ function Cookies() {
 
         var getCookie =  function(request, cookie_name){
             return new Promise(function(resolve, reject){
+                // if cookie exists in request we can use that
                 if (request.headers["cookie"]) {
-                    console.log("received cookie: "+request.headers["cookie"]);
-
-                    var cookies = request.headers["cookie"].split(";")
-                    for(var cookie of cookies){
-                        var key = cookie.substr(0, cookie.indexOf("="))
-
-                        if(key === cookie_name){
-                            var value = cookie.substr(cookie.indexOf("=")+1)
-
-                            console.log("session: " + value)
-                            resolve(value)
-
-                            return
-                        }
-                    }
+                    resolve(request.headers["cookie"]);
                 }
 
                 generateCookie().then(function(cookie) {
                     resolve(cookie);
+
                 }, function(err) {
                     reject(err);
                 });
