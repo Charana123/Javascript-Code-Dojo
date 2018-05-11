@@ -10,7 +10,7 @@ var files = function(){
 files.writeFile = function(filename, data){
     // fs.writeFileAsync(filename, data)
     //     .then(value => {
-            
+
     //     })
     //     .catch(err => {
     //         console.log(err.message)

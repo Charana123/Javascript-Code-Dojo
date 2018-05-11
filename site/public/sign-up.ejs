@@ -14,7 +14,7 @@
         <div id="wrapper">
             <h4>Sign Up</h4>
 
-            <form id="signupForm">
+            <form id="signupForm" method="post" action="/sign-up_submission">
                 <div class="container">
                     <label><b>Email</b></label>
                     <input type="text" placeholder="Enter Email" name="email"></input>
@@ -28,23 +28,14 @@
                     <label><b>Re-Enter Password</b></label>
                     <input type="password" placeholder="Re-Enter Enter Password" name="psw2"></input>
 
-                    <button type="button" onclick="submitSignUp()" value="Submit">Sign Up</button>
-                </div>
+                    <button type="submit" value="Submit">Sign Up</button>
 
                 <div class="container" style="background-color:#f1f1f1">
                     <button type="button" class="cancelbtn">Cancel</button>
                     <span class="psw"><a href="login">Already have an account?</a></span>
                 </div>
+                </div>
             </form>
-            <script type="text/javascript">
-                    function submitSignUp() {
-                        var x = document.getElementById("signupForm");
-                        console.log(x.elements[0].value);
-                        console.log(x.elements[1].value);
-                        console.log(x.elements[2].value);
-                        console.log(x.elements[3].value);
-                    }
-            </script>
         </div>
     </body>
 </html>

@@ -4,3 +4,4 @@ site/node_modules
 site/docker/node_modules
 site/docker/nohup.out
 site/docker/output
+node_modules
