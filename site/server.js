@@ -110,7 +110,7 @@ function handle(request, response) {
         if(url === "/tetris") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url === "/asteroids") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url.startsWith("/editor")) {
-            var uri = url.substring(url.lastIndexOf("/"))
+            var uri = url.substring(url.lastIndexOf("/") + 1);
             loadEJS(request, "/editor", forum.getChallengeInEditor(uri), forum.getDefault, response);
         }
 

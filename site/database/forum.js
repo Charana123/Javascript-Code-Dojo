@@ -25,11 +25,11 @@ forum.getChallengeInEditor = function(challenge_title){
         return new Promise(function(resolve, reject){
 
             var editor_data = { 
-                challenge_title: challenge_title, 
-                challenge_objective: "challenge objective",
-                challenge_task: "challenge task",
-                challenge_input_format: "challenge input format",
-                challenge_output_format: "challenge output format"
+                challenge_title: "Challenge title", 
+                challenge_objective: "Challenge objective",
+                challenge_task: "Challenge task",
+                challenge_input_format: "Challenge input format",
+                challenge_output_format: "Challenge output format"
             }
             var data = { session_valid: true, editor_data: editor_data }
             resolve(data)
