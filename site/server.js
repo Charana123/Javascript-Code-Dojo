@@ -100,7 +100,8 @@ function handle(request, response) {
         if(url === "/login") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url === "/index") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url === "/sign-up") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/challenges") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        if(url === "/challenges") loadEJS(request, url, forum.getAllChallengeData, forum.getDefault, response);
+        if(url === "/editor") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url === "/games") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url === "/snake") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
         if(url === "/tetris") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
@@ -111,7 +112,7 @@ function handle(request, response) {
             request.on("data", (data) => {
 
                 //decode buffer into URI, decode URI into String
-                // data = decodeURIComponent(data.toString('utf-8'))
+                data = decodeURIComponent(data.toString('utf-8'))
                 data = data.toString('utf-8')
                 console.log("DATA: " + data.toString())
 
@@ -124,8 +125,10 @@ function handle(request, response) {
                 }
 
                 //Get Email and Password fields
-                var email = dictionary["email"];
+                var email = dictionary["uname"];
                 var password = dictionary["password"];
+                console.log(email)
+                console.log(password)
 
                 //Check again DB and successful login sets session cookie
                 forum.login(email, password)
@@ -133,7 +136,8 @@ function handle(request, response) {
                         cookies.setCookie(response, "x", "YES", 1);
                         var content = { success: true }
                         var contentJSON = JSON.stringify(content);
-                        deliver(response, types["json"], contentJSON)
+                        loadEJS(request, "/index", forum.getAllPostsData, forum.getDefault, response)
+                        //deliver(response, types["json"], contentJSON)
                     })
                     .catch((err) => {
                         var content = { success: false, error: err.message }

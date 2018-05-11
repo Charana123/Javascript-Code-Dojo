@@ -1,0 +1,20 @@
+<link rel="stylesheet" href="../css/challenge-element.css" />
+
+<% challenges.forEach(function(challenge) { %>
+    <div id="<%= challenge.title %>" class="challenge-element">
+        <div id="challenges-element-left-col" class="column"> 
+            <div> 
+                <img class="completed-image" src="../img/checked.svg" />
+                <div class="challenge-heading" > <%= challenge.title %> </div> 
+            </div>
+            <br/>
+            <div id="challenge-description"> 
+                <%= challenge.description %>
+            </div>
+        </div>
+        <div id="challenges-element-right-col" class="column"> 
+            <button class="solve-button" > Solve </button>
+        </div>
+    </div>
+    <br/>
+<% }) %>

@@ -7,16 +7,7 @@
 <meta name="copyright" content="Copyright Goes Here" />
 <meta name="description" content="A website to learn JavaScript!" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
-  <style type="text/css" media="screen">
-
-    .ace_editor {
-        position: relative !important;
-        margin: auto;
-        height: 500px;
-        width: 700px;
-    }
-
-  </style>
+<link rel="stylesheet" type="text/css" media="screen" href="css/challenges.css" />
 <script type="text/javascript" src="js/http_requests.js" async="async"> </script>
 <script type="text/javascript" src="js/challenges.js" async="async"> </script>
 <script>
@@ -26,15 +17,11 @@
   }
 
   var submitCode = function(){
-    document.getElementById("submitButton").style.visibility = "hidden";
-    document.getElementById("loader").style.visibility = "visible";
-    var user_script_container = ace.edit("editor");
-    httpPostAsync("/challenge_request", user_script_container.getValue())
+    var user_script_container = document.getElementById("user-script-container")
+    console.log("response")
+    httpPostAsync("/challenge_request", user_script_container.value)
       .then(json_response => {
-        console.log("response!" + json_response);
-        document.getElementById("loader").style.visibility = "hidden";
-        document.getElementById("submitButton").style.visibility = "visible";
-        document.getElementById("response").innerHTML = "This answer is: " + json_response;
+        console.log("response!")
       })
   }
 
@@ -49,32 +36,15 @@
 </head>
 <body>
 <% include partials/header %>
-Challenge 3 - Fibonacci
-<p> Calculate the first 100 Fibonacci numbers, print them out to console, each
-number on a new line.
-</p>
 <div id="wrapper">
   <div id="content-wrapper">
     <div id="content">
-        <pre id="editor">var a = "Hello";
-var b = "World!";
-console.log(a + " " + b);</pre>
-
-        <script src="js/editor/ace.js" type="text/javascript" charset="utf-8"></script>
-        <script>
-            var editor = ace.edit("editor");
-            editor.setTheme("ace/theme/gruvbox");
-            editor.session.setMode("ace/mode/javascript");
-            editor.renderer.setCursorStyle("smooth");
-            editor.session.setUseWrapMode(true);
-            editor.session.setWrapLimitRange(80, 80);
-        </script>
-
-        <button id="submitButton" class="buttonload" onclick="submitCode()">
-            --Submit--
-        </button>
-        <div id="loader" class="loader"></div>
-        <div id="response"> </div>
+      <div id="challenges-left-col" class="column">
+          <% include partials/tree-view %>
+      </div>
+      <div id="challenges-right-col" class="column">
+          <% include partials/challenge-element %>
+      </div>
     </div>
   </div>
 </div>

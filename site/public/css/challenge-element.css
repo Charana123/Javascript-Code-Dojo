@@ -1,0 +1,55 @@
+.challenge-element {
+    padding-top: 15px;
+    padding-left: 25px;
+
+    border-style: solid;
+    border-color: white;
+    border-width: 1px;
+    border-radius: 10px;
+
+    width: 900px;
+    height:100px;
+}
+
+.challenge-heading {
+    float:left;
+    margin-left: 10px;
+
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#challenges-element-left-col {
+    width: 750px;
+}
+
+#challenges-element-right-col {
+}
+
+.passed-percentage {
+    font-size: 18px;
+}
+
+.completed-image {
+    float:left;
+    height: 20px;
+    width: 20px;
+}
+
+#challenge-description {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.solve-button {
+    margin-left: 13px;
+    margin-top: 13px;
+    width: 100px;
+    height: 40px;
+
+    background-color: lightskyblue;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}
+

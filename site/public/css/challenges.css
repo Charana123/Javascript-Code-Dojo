@@ -1,0 +1,15 @@
+#content {
+    display:flex;
+}
+
+.column {
+    float: left;
+}
+
+#challenges-left-col {
+    width: 300px;
+}
+
+#challenges-right-col {
+    margin-left: 50px;
+}
