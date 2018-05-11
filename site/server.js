@@ -16,10 +16,10 @@ var docker = require("./docker/check_answer.js").newDockerChecker();
 
 const dbName = "./database/db.sqlite3";
 var db = require("./database/database_api.js").newDatabase(dbName);
-var user;
+var userHandler;
 db.ensure().then((value) => {
     console.log("Database ensured");
-    user = userApi.User(db);
+    userHandler = userApi.UserHandler(db);
 }).catch((err) => {
     console.log("error: "+ err);
 });
@@ -182,8 +182,8 @@ function handle(request, response) {
 
                 var returnResult;
 
-                user.signUp(email, username, pass1, pass2).then((res) => {
-                    returnResult = "Success: " + res;
+                userHandler.signUp(email, username, pass1, pass2).then((res) => {
+                    returnResult = "Success: " + JSON.stringify(res);
                     returnResult += "\nemail: "+email + "\nusername: "+username + "\npass1: "+pass1 + "\npass2: "+pass2;
                     response.end(returnResult);
 
@@ -208,8 +208,8 @@ function handle(request, response) {
                 username = username.split('=')[1];
                 password = password.split('=')[1];
 
-                user.signIn(username, password).then((res) => {
-                    returnResult = "Success: " + res;
+                userHandler.signIn(username, password).then((res) => {
+                    returnResult = "Success: " + JSON.stringify(res);
                     returnResult += "\nusername: "+username + "\npassword: "+password;
                     response.end(returnResult);
 

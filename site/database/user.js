@@ -1,15 +1,23 @@
 "use strict"
 
 module.exports = {
-    User: User
+    UserHandler: UserHandler
 };
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-function User(database) {
+function UserHandler(database) {
     return (function() {
 
         var db = database;
+
+        function User(username, email) {
+            this.username = username;
+            this.email = email;
+            this.image = {};
+            this.cookie = "";
+        };
+
 
         function fieldByValue(db, field, value) {
             return new Promise(function(resolve, reject) {
@@ -46,7 +54,8 @@ function User(database) {
         function newUser(db, email, username, password) {
             return new Promise(function(resolve, reject) {
                 db.newUser(email, username, password).then(function(username) {
-                    resolve(username);
+                    var user = new User(username, email);
+                    resolve(user);
                 }, function(err) {
                     reject(err);
                 });
@@ -58,16 +67,19 @@ function User(database) {
                 db.rowsByField("users", "username", username).then(function(user) {
 
                     if (user.length == 0) {
-                        reject(false);
+                        reject(null);
                         return;
                     }
 
                     if (String(user[0].password) != String(password)) {
-                        resolve(false);
+                        resolve(null);
                         return;
                     }
 
-                    resolve(true);
+                    var userObj = new User(user[0].username, user[0].email);
+                    userObj.image = user.image;
+
+                    resolve(userObj);
 
                 }, function(err) {
                     reject("error getting user by username: " + err);
