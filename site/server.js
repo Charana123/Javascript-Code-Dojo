@@ -77,7 +77,11 @@ var loadEJS = function(request, uri, EJSDataFunction, defaultDefaultFunction, re
 
 // Serve a request by delivering a file.
 function handle(request, response) {
-    var url = request.url.toLowerCase();
+
+    var url = decodeURIComponent(request.url.toString('utf-8'));
+    url = url.toLowerCase();
+    
+    console.log("url " + url)
 
     if (url.endsWith("/") || url == "localhost:8080" || url == "127.0.0.1:8080") {
         url = "/index";

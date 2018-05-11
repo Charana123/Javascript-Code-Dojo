@@ -1,5 +1,13 @@
 <link rel="stylesheet" href="../css/challenge-element.css" />
 
+<script type="text/javascript">
+    var redirect_challenge = function(challenge_title){
+        var title = challenge_title.toLowerCase();
+        var challenge_uri = title.split(' ').join('-');
+        window.location='/editor/' + challenge_uri;
+    }
+</script>
+
 <% challenges.forEach(function(challenge) { %>
     <div id="<%= challenge.title %>" class="challenge-element">
         <div id="challenges-element-left-col" class="column"> 
@@ -15,11 +23,13 @@
         <div id="challenges-element-right-col" class="column"> 
             <% if(challenge.user.passed){ %>
             <div class="passed-percentage" > Passed:<%= challenge.user.passed_percentage %>% </div>
-            <div class="try-again-button" onclick="window.location='/editor'" > Try Again </div>
+            <div class="try-again-button" onclick="redirect_challenge('<%=challenge.title%>')" > 
+            Try Again 
+            </div>
             <% } %>
             <% if(!challenge.user.passed){ %>
                 <div class="passed-percentage" >  </div>
-                <div class="solve-button" onclick="window.location='/editor'"> Solve </div>
+                <div class="solve-button" onclick="redirect_challenge('<%=challenge.title%>')"> Solve </div>
             <% } %>
         </div>
     </div>
