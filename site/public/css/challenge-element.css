@@ -26,10 +26,6 @@
 #challenges-element-right-col {
 }
 
-.passed-percentage {
-    font-size: 18px;
-}
-
 .completed-image {
     float:left;
     height: 20px;
@@ -41,7 +37,15 @@
     font-size: 16px;
 }
 
+.passed-percentage {
+    float: none;
+    
+    font-size: 18px;
+}
+
 .solve-button, .try-again-button {
+    float: none; 
+
     margin-left: 13px;
     margin-top: 13px;
     width: 100px;
