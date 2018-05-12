@@ -7,11 +7,28 @@ const selectAll = "SELECT * FROM ";
 const insertInto = "INSERT INTO ";
 const deleteFrom = "DELETE FROM ";
 
-const ensureUserStr = "CREATE TABLE if not exists users (email TEXT, username TEXT, password TEXT, salt TEXT, image BLOB)"
+const ensureUserStr  = "CREATE TABLE if not exists users " +
+                       "(id INTEGER PRIMARY KEY, email TEXT, username TEXT," +
+                       "password TEXT, salt TEXT, image BLOB)";
+
+const ensureForumStr = "CREATE TABLE if not exists forum " +
+                       "(user INTEGER" +
+                      challengesFieldString(20) +
+                      ", FOREIGN KEY(user) REFERENCES users(id))";
 
 module.exports = {
     newDatabase: newDatabase
 };
+
+function challengesFieldString(count) {
+    var str = "";
+
+    for (var i = 0; i < count; i++) {
+        str += ", challenge_complete_" + i + " INTEGER"
+    }
+
+    return str;
+}
 
 // Database _init_ function
 function getDatabase(fileName) {
@@ -99,7 +116,12 @@ function newDatabase(dbName) {
                     if (err) {
                         reject("failed to ensure user table " + err);
                     }
-                    resolve();
+                    db.all(ensureForumStr, (err) => {
+                        if (err) {
+                            reject("failed to ensure forum table " + err);
+                        }
+                        resolve();
+                    });
                 });
             });
         };

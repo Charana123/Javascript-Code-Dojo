@@ -1,3 +1,8 @@
 User
 ----------
-ID | username | email | password
+ID | username | email | password | salt | challenges-linker
+
+
+
+Challenges
+-----------

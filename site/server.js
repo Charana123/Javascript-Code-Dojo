@@ -88,8 +88,6 @@ function handle(request, response) {
 
     var url = decodeURIComponent(request.url.toString('utf-8'));
     url = url.toLowerCase();
-    
-    console.log("url " + url)
 
     if (url.endsWith("/") || url == "localhost:8080" || url == "127.0.0.1:8080") {
         url = "/index";
