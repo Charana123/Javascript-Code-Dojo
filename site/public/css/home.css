@@ -73,18 +73,6 @@ a:link {
     padding: 5px 20px 5px 10px;
 }
 
-/* ==== Navigation ============================================================ */
-.navigation a {
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.navigation a:hover,
-.navigation a:active
-{
-    color: #FFFFFF;
-}
-
 /* ==== SELECT ==================================================== */
 
 #select-container {
