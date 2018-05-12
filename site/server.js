@@ -132,7 +132,7 @@ function handle(request, response) {
 
         case "/challenges":
             loginFunc = forum.getAllChallengeData;
-            defaultFunc = forum.getDefault;
+            defaultFunc = forum.getAllChallengeData;
             break;
 
         case "/snake":
