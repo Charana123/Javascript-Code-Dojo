@@ -49,13 +49,13 @@ function checkSite() {
 }
 
 
-var loadEJS = function(request, uri, EJSDataFunction, defaultFunction, response){
+function loadEJS(request, uri, loginFunction, defaultFunction, response){
     cookies.getCookie(request).then(function(cookie) {
 
         if (UserSessions[cookie]) {
             console.log(JSON.stringify(UserSessions));
 
-            files.readEJSFile(uri, EJSDataFunction, response, UserSessions[cookie]).then(function(contentHTML) {
+            files.readEJSFile(uri, loginFunction, response, UserSessions[cookie]).then(function(contentHTML) {
                 var type = types["html"]
                 cookies.setCookie(response, cookie).then(function(response) {
                     deliver(response, type, contentHTML)
@@ -94,170 +94,199 @@ function handle(request, response) {
 
     if (url.endsWith("/") || url == "localhost:8080" || url == "127.0.0.1:8080") {
         url = "/index";
-        loadEJS(request, url, forum.getDefault, forum.getDefault, response);
-        return;
     }
 
     //Handles file that are EJS or HTML
-    if(url.lastIndexOf(".") == -1){
-        //Forum URIs
-        if(url == "/forum") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/top") loadEJS(request, "/forum", forum.getTopPostsData, forum.getDefault, response)
-        if(url === "/new") loadEJS(request, "/forum", forum.getNewPostsData, forum.getDefault, response)
-        if(url === "/hot") loadEJS(request, "/forum", forum.getHotPostsData, forum.getDefault, response)
+    if(url.lastIndexOf(".") != -1){
+        //Handling files that are NOT EJS or HTML (.js, .svg etc.)
+        if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
+        var type = findType(url);
+        if (type == null) return fail(response, BadType, "File type unsupported");
+        var file = "./public" + url;
 
-        if(url === "/general") loadEJS(request, "/forum", forum.getAllPostsData, forum.getDefault, response)
-        if(url === "/challenge1") loadEJS(request, "/forum", forum.getAllPostsData, forum.getDefault, response)
+        files.readFile(file)
+            .then(function(content){
+                deliver(response, type, content);
+            })
+            .catch(function(err){
+                console.log(file)
+                if (err) return fail(response, NotFound, "File not found");
+            })
 
-        //Page URIs
-        if(url === "/login") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/index") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/sign-up") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/challenges") loadEJS(request, url, forum.getAllChallengeData, forum.getDefault, response);
-        if(url === "/games") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/snake") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/tetris") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/asteroids") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url.startsWith("/editor")) {
-            var uri = url.substring(url.lastIndexOf("/") + 1);
-            loadEJS(request, "/editor", forum.getChallengeInEditor(uri), forum.getDefault, response);
-        }
-
-        //Login & Signup POST Requests
-        if(url === "/login-user" && request.method === "POST"){
-            request.on("data", (data) => {
-
-                //decode buffer into URI, decode URI into String
-                data = decodeURIComponent(data.toString('utf-8'))
-                data = data.toString('utf-8')
-                console.log("DATA: " + data.toString())
-
-                var keyValuePairs = data.split("&");
-                var dictionary = {};
-                for(var keyValuePair of keyValuePairs){
-                    var key = keyValuePair.split("=")[0];
-                    var value = keyValuePair.split("=")[1];
-                    dictionary[key] = value;
-                }
-
-                //Get Email and Password fields
-                var email = dictionary["uname"];
-                var password = dictionary["password"];
-                console.log(email)
-                console.log(password)
-
-                //Check again DB and successful login sets session cookie
-                forum.login(email, password)
-                    .then((value) => {
-                        //cookies.setCookie(response, "x", "YES", 1);
-                        var content = { success: true }
-                        var contentJSON = JSON.stringify(content);
-                        loadEJS(request, "/index", forum.getAllPostsData, forum.getDefault, response)
-                        //deliver(response, types["json"], contentJSON)
-                    })
-                    .catch((err) => {
-                        var content = { success: false, error: err.message }
-                        var contentJSON = JSON.stringify(content);
-                        deliver(response, types["json"], contentJSON)
-                    })
-            });
-            return;
-        }
-
-        if(url === "/challenge_request" && request.method === "POST"){
-            request.on("data", (data) => {
-                data = data.toString("utf-8");
-                files.writeFile("docker/task.js", data);
-                docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/fib100").then(function(ans) {
-                    console.log("server got: " + ans);
-                    if (ans == true) {
-                        ans = "correct!";
-                    } else {
-                        ans = "incorrect!";
-                    }
-                    deliver(response, types["json"], ans);
-                }, function(err) {
-                    deliver(response, types["json"], ("error from docker: " + err));
-                })
-            });
-
-            return;
-        }
-
-        if (url === "/sign-up_submission") {
-            request.on('data', chunk => {
-                var [email, username, pass1, pass2] = chunk.toString().split('&');
-                email = email.split('=')[1].replace("%40", "@");
-                username = username.split('=')[1];
-                pass1 = pass1.split('=')[1];
-                pass2 = pass2.split('=')[1];
-
-                var returnResult;
-
-                userHandler.signUp(email, username, pass1, pass2).then((res) => {
-
-                    url = "/index";
-                    loadEJS(request, url, forum.getDefault, forum.getDefault, response);
-
-                    return;
-
-                }).catch((err) => {
-                    url = "/index";
-                    loadEJS(request, url, forum.getDefault, forum.getDefault, response);
-
-                    return;
-                });
-
-                return;
-            });
-        }
-
-        if (url === "/sign-in_submission") {
-            request.on('data', chunk => {
-                var returnResult;
-                var [username, password] = chunk.toString().split('&');
-                username = username.split('=')[1];
-                password = password.split('=')[1];
-
-                userHandler.signIn(username, password).then((user) => {
-                    var userCookie = request.headers["cookie"];
-                    user.cookie = userCookie;
-                    UserSessions[userCookie] = user;
-
-                    url = "/index";
-                    loadEJS(request, url, forum.getDefault, forum.getDefault, response);
-
-                    return;
-
-                }).catch((err) => {
-                    url = "/index";
-                    loadEJS(request, url, forum.getDefault, forum.getDefault, response);
-
-                    return;
-                });
-
-                return;
-            });
-        }
-
-
-        return
+        return;
     }
 
-    //Handling files that are NOT EJS or HTML (.js, .svg etc.)
-    if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
-    var type = findType(url);
-    if (type == null) return fail(response, BadType, "File type unsupported");
-    var file = "./public" + url;
+    var loginFunc = function(){};
+    var defaultFunc = function(){};
+    var preFunc = null;
 
-    files.readFile(file)
-        .then(function(content){
-            deliver(response, type, content);
-        })
-        .catch(function(err){
-            console.log(file)
-            if (err) return fail(response, NotFound, "File not found");
-        })
+    switch (url) {
+        case "/index":
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            break;
+
+        case "/sign-up":
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            break;
+
+        case "/challenges":
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            break;
+
+        case "/snake":
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            break;
+
+        case "/tetris":
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            break;
+
+        case "/asteroids":
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            break;
+
+
+        case "/login":
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            break;
+
+
+        case "/forum":
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            break;
+
+        case "/new":
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            url = "forum";
+            break;
+
+        case "/top":
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            url = "forum";
+            break;
+
+        case "/hot":
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            url = "forum";
+            break;
+
+        case "/general":
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            url = "forum";
+            break;
+
+        case "/editor":
+            var uri = url.substring(url.lastIndexOf("/") + 1);
+            loginFunc = forum.getChallengeInEditor(uri);
+            defaultFunc = forum.getDefault;
+            url="editor";
+            break;
+
+            //case "/challenge_request":
+            //    request.on("data", (data) => {
+            //        data = data.toString("utf-8");
+            //        files.writeFile("docker/task.js", data);
+            //        docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/fib100").then(function(ans) {
+            //            console.log("server got: " + ans);
+            //            if (ans == true) {
+            //                ans = "correct!";
+            //            } else {
+            //                ans = "incorrect!";
+            //            }
+            //            deliver(response, types["json"], ans);
+            //        }, function(err) {
+            //            deliver(response, types["json"], ("error from docker: " + err));
+            //        })
+            //    });
+            //    break;
+
+        case "/sign-up_submission":
+            preFunc = new Promise(function(resolve, reject) {
+                request.on('data', chunk => {
+                    var [email, username, pass1, pass2] = chunk.toString().split('&');
+                    email = email.split('=')[1].replace("%40", "@");
+                    username = username.split('=')[1];
+                    pass1 = pass1.split('=')[1];
+                    pass2 = pass2.split('=')[1];
+
+                    var returnResult;
+
+                    userHandler.signUp(email, username, pass1, pass2).then((res) => {
+
+                        resolve(res);
+                        return;
+
+                    }).catch((err) => {
+                        reject(err);
+                        return;
+
+                    });
+                });
+            });
+
+            url = "/index";
+            loginFunc = forum.getDefault;
+            defaultFunc = forum.getDefault;
+            break;
+
+        case "/sign-in_submission":
+            preFunc = new Promise(function(resolve, reject) {
+                request.on('data', chunk => {
+                    var [username, password] = chunk.toString().split('&');
+                    username = username.split('=')[1];
+                    password = password.split('=')[1];
+
+                    userHandler.signIn(username, password).then((user) => {
+                        var userCookie = request.headers["cookie"];
+                        user.cookie = userCookie;
+                        UserSessions[userCookie] = user;
+
+                        resolve(user);
+                        return;
+
+                    }).catch((err) => {
+                        reject(err);
+                        return;
+
+                    });
+                });
+            });
+
+            url = "/index";
+            loginFunc = forum.getDefault;
+            defaultFunc = forum.getDefault;
+            break;
+
+        default:
+            loginFunc = forum.getAllPostsData;
+            defaultFunc = forum.getDefault;
+            url = "/index";
+
+    }
+
+    if (preFunc != null) {
+        preFunc.then(function() {
+            loadEJS(request, url, loginFunc, defaultFunc, response);
+        }, function(err) {
+            console.log("error occured: " + err);
+        });
+    } else {
+        loadEJS(request, url, loginFunc, defaultFunc, response);
+    }
+
+    return
 }
 
 // Forbid any resources which shouldn't be delivered to the browser.
