@@ -3,8 +3,14 @@
 var port = 8080;
 var verbose = true;
 
-var http = require("http");
+var https = require("https");
 var fs = require("fs")
+
+var options = {
+    key: fs.readFileSync("./secrets/server.key"),
+    cert: fs.readFileSync("./secrets/server.crt"),
+};
+
 var forum = require("./database/forum.js")
 var userApi = require("./database/user.js")
 var files = require("./js/files.js")
@@ -34,9 +40,9 @@ function start() {
     types = defineTypes();
     banned = [];
     banUpperCase("./public/", "");
-    var service = http.createServer(handle);
+    var service = https.createServer(options, handle);
     service.listen(port, "localhost");
-    var address = "http://localhost";
+    var address = "https://localhost";
     if (port != 80) address = address + ":" + port;
     console.log("Server running at", address);
 }
