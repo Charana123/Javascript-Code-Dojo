@@ -56,36 +56,29 @@ function checkSite() {
 
 
 function loadEJS(request, uri, loginFunction, defaultFunction, response){
-    cookies.getCookie(request).then(function(cookie) {
-
+    cookies.getCookie(request)
+    .then(function(cookie) {
+        var readEJSFile = function(uri, dataFunction, response, userObject){
+            files.readEJSFile(uri, dataFunction, response, userObject)
+            .then(function(contentHTML) {
+                    var type = types["html"]
+                    cookies.setCookie(response, cookie).then(function(response) {
+                        deliver(response, type, contentHTML)
+                    });
+            })
+            .catch(function(err) {
+                console.log("failed to read ejs file: "+err);
+            });
+        }
+    
         if (UserSessions[cookie]) {
             console.log(JSON.stringify(UserSessions));
-
-            files.readEJSFile(uri, loginFunction, response, UserSessions[cookie]).then(function(contentHTML) {
-                var type = types["html"]
-                cookies.setCookie(response, cookie).then(function(response) {
-                    deliver(response, type, contentHTML)
-                });
-
-            }, function(err) {
-                console.log("failed to read ejs file: "+err);
-            });
-
+            readEJSFile(uri, loginFunction, response, UserSessions[cookie]);
         } else {
-
-            files.readEJSFile(uri, defaultFunction, response).then(function(contentHTML) {
-                var type = types["html"]
-                cookies.setCookie(response, cookie).then(function(response) {
-                    deliver(response, type, contentHTML)
-                });
-
-            }, function(err) {
-                console.log("failed to read ejs file: "+err);
-            });
-
-        }
-
-    }, function(err) {
+            readEJSFile(uri, defaultFunction, response);
+        }    
+    })
+    .catch(function(err) {
         console.log("failed to load EJS: " + err);
     });
 }
