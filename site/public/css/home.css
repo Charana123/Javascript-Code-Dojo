@@ -3,6 +3,8 @@ html
 {
     margin: 0;
     padding: 0;
+    width: 100%;
+    height: 100%;
     color: #aaaaaa;
     background-color: #333333;
     font: normal 12px "Droid Sans", "Droid Sans", Verdana, Georgia, Sans-Serif;
@@ -13,6 +15,7 @@ body
     margin: 0;
     padding: 0;
     width: 100%;
+    height: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 { font-weight: normal; margin: 0; padding: 10px 0; color: #779999 }

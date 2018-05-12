@@ -6,22 +6,17 @@
         <meta name="author" content="Joshua Van Leeuwen and Charana Nandasena" />
         <meta name="copyright" content="Copyright Goes Here" />
         <meta name="description" content="A website to learn JavaScript!" />
-        <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/css/home.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/css/asteroids.css" />
+        <script type='text/javascript' src='games/asteroids.js' async="async"></script>
     </head>
     <body onload="startGame()">
         <% include partials/header %>
-        <div>
-            <div id="divGameStage">
-                <canvas class=" sketch" height="450" width="450"></canvas>
-            </div>
-            <script type='text/javascript' src='games/asteroids.js'></script>
+        <div id="game-rules-div" class="column">
+            Content
         </div>
-        <div id="wrapper">
-                <div id="content">
-                    <button type="button">
-                        <a href="games" class="button">Back!</a>
-                    </button>
-            </div>
+        <div id="game-stage-div" class="column">
+            <canvas id="game-canvas"></canvas>
         </div>
     </body>
 </html>
