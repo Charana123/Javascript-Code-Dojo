@@ -25,6 +25,7 @@ const dbName = "./secrets/db.sqlite3";
 var db = require("./database/database_api.js").newDatabase(dbName);
 var userHandler;
 var challengeHandler;
+
 db.ensure().then((value) => {
     console.log("Database ensured");
     userHandler = userApi.UserHandler(db);

@@ -13,7 +13,7 @@ const ensureUserStr = "CREATE TABLE if not exists users " +
 
 const ensureChallengeStr = "CREATE TABLE if not exists challenges " +
                        "(user INTEGER" +
-                      challengesFieldString(20) +
+                      challengesFieldString(5) +
                       ", FOREIGN KEY(user) REFERENCES users(id))";
 
 module.exports = {
@@ -54,6 +54,11 @@ function deleteRowString(table, id) {
 function insertUserString(email, username, password, salt) {
     return insertInto + "users (email, username, password, salt) VALUES ('" + email +
         "', '" + username + "', '"  + password + "', '" + salt + "');";
+}
+
+function insertChallengeString(userId) {
+    return insertInto + "challenges (user, challenge_complete_0, challenge_complete_1, challenge_complete2, challenge_complete3, challenge_complete4) VALUES ('" + userId +
+        "', '" + 0 + "', '"  + 0 + "', '" + 0 + "', '" + 0 + "', '"  + 0 + "');";
 }
 
 function getRowsByFieldString(table, field, value) {
@@ -104,7 +109,18 @@ function newDatabase(dbName) {
                     if (err) {
                         reject("failed to create user " + username + ": " + err.message);
                     }
-                    resolve(username);
+                    resolve(user);
+                });
+            });
+        };
+
+        var newChallenge = function(db, userId) {
+            return new Promise(function(resolve, reject) {
+                db.all(insertChallengeString(userId), [], (err, challenge) => {
+                    if (err) {
+                        reject("failed to create challenge record " + userId + ": " + err.message);
+                    }
+                    resolve(challenge);
                 });
             });
         };
@@ -148,6 +164,9 @@ function newDatabase(dbName) {
             },
             newUser:function(email, username, password, salt) {
                 return newUser(db, email, username, password, salt);
+            },
+            newChallenge:function(userId) {
+                return newChallenge(db, userId);
             },
             ensure:function() {
                 return ensure(db);

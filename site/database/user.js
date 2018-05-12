@@ -1,6 +1,7 @@
 "use strict"
 
 const crypto = require('crypto');
+const challengeAPI = require("./challenges.js")
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -13,8 +14,10 @@ function UserHandler(database) {
     return (function() {
 
         var db = database;
+        var challengeHandler = challengeAPI.ChallengesHandler(db);
 
-        function User(username, email) {
+        function User(username, email, id) {
+            this.id = id;
             this.username = username;
             this.email = email;
             this.image = {};
@@ -93,9 +96,15 @@ function UserHandler(database) {
 
             return new Promise(function(resolve, reject) {
                 saltHashPassword(password).then(function(sPwd) {
-                    db.newUser(email, username, sPwd.password, sPwd.salt).then(function(username) {
-                        var user = new User(username, email);
-                        resolve(user);
+                    db.newUser(email, username, sPwd.password, sPwd.salt).then(function(user) {
+                        var user = new User(user.username, user.email, user.id);
+                        challengeHandler.newChallenge(user.id).then(function(challenge) {
+                            resolve(user);
+                            return;
+                        }, function(err) {
+                            reject(err);
+                            return;
+                        });
 
                     }, function(err) {
                         reject(err);
@@ -182,7 +191,6 @@ function UserHandler(database) {
                         }
 
                         newUser(db, email, username, pass1).then(function(username) {
-                            var res = "new user created: " + username;
                             resolve(res);
 
                             return;

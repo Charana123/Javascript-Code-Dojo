@@ -43,11 +43,26 @@ function ChallengesHandler(database) {
                     return;
                 });
             });
-        }
+        };
+
+        var newChallenge = function(db, userID) {
+            return new Promise(function(resolve, reject) {
+                db.newChallenge(userID).then(function(challenge) {
+                    resolve(challenge);
+                    return;
+                }, function(err) {
+                    reject(err);
+                    return;
+                });
+            });
+        };
 
         return {
            challengesByUser:function(userID) {
                return challengesByUser(db, userID);
+            },
+           newChallenge:function(userID) {
+               return newChallenge(db, userID);
             },
         }
 
