@@ -6,26 +6,26 @@
     <li><a href="/index">Home</a></li>
     <li><a href="/challenges">Challenges</a></li>
     <li><a href="/forum">Forum</a></li>
-    <li><a href="/games">Games</a></li>
+    
     <li class="dropdown">
       <a href="#" > Dropdown </a>
       <div class="dropdown-content">
-        <a href="#">
+        <a href="/snake">
           <img src="/img/snake.png" />
           Snake
         </a>
-        <a href="#">
+        <a href="/tetris">
           <img src="/img/tetris.png" />
           Tetris
         </a>
-        <a href="#">
+        <a href="/asteroids">
           <img src="/img/asteroids.png" />
           Asteroids
         </a>
       </div>
     </li>
-    <li id="login" ></li>
 
+    <li id="login" ></li>
     <% if(!session_valid) { %>
     <li style="float: right"> <a href="/sign-up">Sign Up</a> </li>
       <li style="float: right"> <a href="/login">Log In</a> </li>
