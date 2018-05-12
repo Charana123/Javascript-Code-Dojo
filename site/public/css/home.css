@@ -70,9 +70,7 @@ a:link {
     display: inline-block;
     vertical-align: middle;
 
-    padding-bottom: 5px;
-    padding-top: 5px;
-    padding-left: 10px;
+    padding: 5px 20px 5px 10px;
 }
 
 /* ==== Navigation ============================================================ */
