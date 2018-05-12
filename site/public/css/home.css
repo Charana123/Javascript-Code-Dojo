@@ -52,73 +52,27 @@ a:link {
 }
 
 
-
-
-
-
-
-
-
-
-
+/* ==== Header ============================================================= */
 #header
 {
+    
+    float: left; 
+    width: 100%; /* 100% width of parent (body) */
+    clear: both; /* Do not allow floating elements on either side */
+
+    /* Text Style */
     font-size: 20px;
-    float: left;
-    width: 100%;
-    clear: both;
+    color: black;
+
+    /* Style */
+    /* margin-bottom: 5px; */
     border-top: 10px solid #222222;
     background: #222222 top left repeat;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#sidebar-wrapper {
-    width: 40%;
-    float: left;
-}
-
-#sidebar {
-    float: left;
-    padding: 0 20px;
-}
-
-/* Header */
-
 #header h1 { padding: 40px; }
 
-/* ==== Sidebar ============================================================ */
-/* ==== Navigation ============================================================ */
-.sidebar {
-    width: 100%;
-    margin-bottom: 5px;
-    color: black;
-    background-color: grey;
-}
-
-.sidebar ul {
+#header ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -126,7 +80,7 @@ a:link {
     border-width: 0;
 }
 
-.sidebar li {
+#header li {
     display: inline-block;
     vertical-align: middle;
 
