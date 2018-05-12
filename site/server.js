@@ -131,7 +131,7 @@ function handle(request, response) {
             break;
 
         case "/challenges":
-            loginFunc = forum.getAllPostsData;
+            loginFunc = forum.getAllChallengeData;
             defaultFunc = forum.getDefault;
             break;
 
