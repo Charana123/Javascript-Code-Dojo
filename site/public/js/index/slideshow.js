@@ -4,14 +4,14 @@ window.onload = function(){
     console.log("set timeout");
 }
 
-var slide_index = 1;
+var slide_index = 0;
 var showSlides = function(){
     var slides = document.querySelectorAll(".slide");
     slides.forEach(function(slide){
         slide.style.display = "none"; 
     })
     slides[slide_index].style.display = "block";
-    slide_index = (slide_index + 1) % slides.length;
+    // slide_index = (slide_index + 1) % slides.length;
 }
 
 // window.onload = function(){

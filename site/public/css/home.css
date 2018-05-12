@@ -51,28 +51,14 @@ a:link {
     padding-top: 5px;
 }
 
-
-/* ==== Header ============================================================= */
-#header
-{
-    
-    float: left; 
-    width: 100%; /* 100% width of parent (body) */
-    clear: both; /* Do not allow floating elements on either side */
-
-    /* Text Style */
-    font-size: 20px;
+/* ==== Sidebar ============================================================ */
+.sidebar {
+    width: 100%;
     color: black;
-
-    /* Style */
-    /* margin-bottom: 5px; */
-    border-top: 10px solid #222222;
-    background: #222222 top left repeat;
+    background-color: grey;
 }
 
-#header h1 { padding: 40px; }
-
-#header ul {
+.sidebar ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -80,7 +66,7 @@ a:link {
     border-width: 0;
 }
 
-#header li {
+.sidebar li {
     display: inline-block;
     vertical-align: middle;
 
@@ -90,7 +76,6 @@ a:link {
 }
 
 /* ==== Navigation ============================================================ */
-
 .navigation a {
     font-weight: bold;
     text-transform: uppercase;

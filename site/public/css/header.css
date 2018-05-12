@@ -1,3 +1,20 @@
+#header
+{
+    /* Layout style */
+    float: left;
+    width: 100%;
+    clear: both;
+
+    /* Padding and Margins */ 
+    margin: 0px;
+    padding: 0px;
+    padding-top: 10px;
+    
+    /* Header style */
+    font-size: 20px;
+    background: #222222 top left repeat;
+}
+
 #header li {
     margin-right: 20px;
 }
@@ -5,6 +22,10 @@
 #header div {
     color: white;
     margin-right: 100px;
+}
+
+a:visited {
+    color: #888888;
 }
 
 #profile-image
@@ -16,12 +37,51 @@
 
 #settings-image
 {
-    /* margin-left: 270px; */
-    border-radius: 00%;
+    border-radius: 50%;
     width: 30px;
     height: 30px;
 }
 
-a:visited {
-    color: #888888;
+/*==== DropDown =========================================================================== */
+.dropbtn {
+    display: inline-block;
+}
+
+.dropdown-content {
+    /* Dropdown functionality */
+    display: none; /* Hides the dropdown content */
+    position: absolute; /* Overlays content (similar to z-index: 1) */
+
+    /* Dropdown style */
+    background-color: #f9f9f9;
+    min-width: 200px;
+    max-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    /* Row-wise as opposed to inline */
+    display: block; /* display:block is required for width, height, padding and margin to work */
+
+    /* Dropdown element size */
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 50px;
+    max-height: 50px;
+    
+    /* Dropdown element style */
+    color: black;
+    text-align: center;
+    line-height: 50px;
+    vertical-align: middle;
+}
+
+/* Display dropdown content on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Emphasise dropdown button when displaying dropdown content */
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
 }
