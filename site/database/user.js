@@ -1,10 +1,13 @@
 "use strict"
 
+const crypto = require('crypto');
+
+const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 module.exports = {
     UserHandler: UserHandler
 };
 
-const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 function UserHandler(database) {
     return (function() {
@@ -16,6 +19,41 @@ function UserHandler(database) {
             this.email = email;
             this.image = {};
             this.cookie = "";
+        };
+
+        function generateSalt() {
+            return new Promise(function(resolve, reject) {
+                crypto.randomBytes(64, function(err, buffer) {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    resolve(buffer.toString('hex'));
+                });
+            });
+        };
+
+        function sha512(password, salt) {
+            var hash = crypto.createHmac('sha512', salt);
+            hash.update(password);
+            var hashedPassword = String(hash.digest('hex'));
+            return hashedPassword;
+        };
+
+        function saltHashPassword(password) {
+            return new Promise(function(resolve, reject) {
+
+                generateSalt().then(function(salt) {
+                    resolve({
+                        salt: salt,
+                        password: String(sha512(password, salt)),
+                    });
+
+                }, function(err) {
+                    reject(err);
+                });
+
+            });
         };
 
 
@@ -52,10 +90,17 @@ function UserHandler(database) {
 
 
         function newUser(db, email, username, password) {
+
             return new Promise(function(resolve, reject) {
-                db.newUser(email, username, password).then(function(username) {
-                    var user = new User(username, email);
-                    resolve(user);
+                saltHashPassword(password).then(function(sPwd) {
+                    db.newUser(email, username, sPwd.password, sPwd.salt).then(function(username) {
+                        var user = new User(username, email);
+                        resolve(user);
+
+                    }, function(err) {
+                        reject(err);
+                    });
+
                 }, function(err) {
                     reject(err);
                 });
@@ -71,7 +116,9 @@ function UserHandler(database) {
                         return;
                     }
 
-                    if (String(user[0].password) != String(password)) {
+                    var saltedPassword = sha512(password, user[0].salt);
+
+                    if (!(saltedPassword === user[0].password)) {
                         reject("incorrect password");
                         return;
                     }

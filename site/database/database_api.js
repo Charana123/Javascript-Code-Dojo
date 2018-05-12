@@ -1,11 +1,13 @@
 "use strict";
 
-var sqlite3 = require("sqlite3");
-var fs = require('fs');
+const sqlite3 = require("sqlite3");
+const fs = require('fs');
 
 const selectAll = "SELECT * FROM ";
 const insertInto = "INSERT INTO ";
 const deleteFrom = "DELETE FROM ";
+
+const ensureUserStr = "CREATE TABLE if not exists users (email TEXT, username TEXT, password TEXT, salt TEXT, image BLOB)"
 
 module.exports = {
     newDatabase: newDatabase
@@ -32,9 +34,9 @@ function deleteRowString(table, id) {
     return deleteFrom + table + " WHERE id = " + id + ";";
 }
 
-function insertUserString(email, username, password) {
-    return insertInto + "users (email, username, password) VALUES ('" + email +
-        "', '" + username + "', '"  + password + "');";
+function insertUserString(email, username, password, salt) {
+    return insertInto + "users (email, username, password, salt) VALUES ('" + email +
+        "', '" + username + "', '"  + password + "', '" + salt + "');";
 }
 
 function getRowsByFieldString(table, field, value) {
@@ -79,9 +81,9 @@ function newDatabase(dbName) {
             });
         };
 
-        var newUser = function(db, email, username, password) {
+        var newUser = function(db, email, username, password, salt) {
             return new Promise(function(resolve, reject) {
-                db.all(insertUserString(email, username, password), [], (err, user) => {
+                db.all(insertUserString(email, username, password, salt), [], (err, user) => {
                     if (err) {
                         reject("failed to create user " + username + ": " + err.message);
                     }
@@ -93,7 +95,7 @@ function newDatabase(dbName) {
         var ensure = function ensure(db) {
             console.log("Ensuring database tables");
             return new Promise(function(resolve, reject) {
-                db.all("CREATE TABLE if not exists users (email TEXT, username TEXT, password TEXT, image BLOB)", (err) => {
+                db.all(ensureUserStr, (err) => {
                     if (err) {
                         reject("failed to ensure user table " + err);
                     }
@@ -122,11 +124,8 @@ function newDatabase(dbName) {
             rowsByField:function(table, field, value) {
                 return rowsByField(db, table, field, value);
             },
-            newUser:function(email, username, password) {
-                return newUser(db, email, username, password);
-            },
-            newUser:function(email, username, password) {
-                return newUser(db, email, username, password);
+            newUser:function(email, username, password, salt) {
+                return newUser(db, email, username, password, salt);
             },
             ensure:function() {
                 return ensure(db);

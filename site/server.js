@@ -157,7 +157,6 @@ function handle(request, response) {
             defaultFunc = forum.getDefault;
             break;
 
-
         case "/forum":
             loginFunc = forum.getAllPostsData;
             defaultFunc = forum.getDefault;
@@ -276,11 +275,11 @@ function handle(request, response) {
 
     }
 
-    if (preFunc != null) {
+    if (preFunc) {
         preFunc.then(function() {
             loadEJS(request, url, loginFunc, defaultFunc, response);
         }, function(err) {
-            console.log("error occured: " + err);
+            console.log("error occured during pre func: " + err);
         });
     } else {
         loadEJS(request, url, loginFunc, defaultFunc, response);
