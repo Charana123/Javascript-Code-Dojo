@@ -57,18 +57,20 @@
 
 /*==== DropDown =========================================================================== */
 .dropdown {
-    /* position: absolute; */
+    position: absolute;
 }
 
-.dropbtn {
-    display: inline-block;
+/* Display dropdown content on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
 }
 
 .dropdown-content {
     /* Dropdown functionality */
     display: none; /* Hides the dropdown content */
     position: absolute; /* Overlays content (similar to z-index: 1) */
-    /* left: 0px; */
+    left: 0px;
+    top: 34px;
 
     /* Dropdown style */
     background-color: #f9f9f9;
@@ -94,7 +96,3 @@
     vertical-align: middle;
 }
 
-/* Display dropdown content on hover */
-.dropdown:hover .dropdown-content {
-    display: block;
-}
