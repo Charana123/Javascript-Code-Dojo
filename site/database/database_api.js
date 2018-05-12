@@ -7,11 +7,11 @@ const selectAll = "SELECT * FROM ";
 const insertInto = "INSERT INTO ";
 const deleteFrom = "DELETE FROM ";
 
-const ensureUserStr  = "CREATE TABLE if not exists users " +
+const ensureUserStr = "CREATE TABLE if not exists users " +
                        "(id INTEGER PRIMARY KEY, email TEXT, username TEXT," +
                        "password TEXT, salt TEXT, image BLOB)";
 
-const ensureForumStr = "CREATE TABLE if not exists forum " +
+const ensureChallengeStr = "CREATE TABLE if not exists challenges " +
                        "(user INTEGER" +
                       challengesFieldString(20) +
                       ", FOREIGN KEY(user) REFERENCES users(id))";
@@ -116,9 +116,9 @@ function newDatabase(dbName) {
                     if (err) {
                         reject("failed to ensure user table " + err);
                     }
-                    db.all(ensureForumStr, (err) => {
+                    db.all(ensureChallengeStr, (err) => {
                         if (err) {
-                            reject("failed to ensure forum table " + err);
+                            reject("failed to ensure challenges table " + err);
                         }
                         resolve();
                     });

@@ -6,3 +6,4 @@ ID | username | email | password | salt | challenges-linker
 
 Challenges
 -----------
+user (foreign key) | challenge_complete_0 | challenge_complete_1 | ... |

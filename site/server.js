@@ -13,6 +13,7 @@ var options = {
 
 var forum = require("./database/forum.js")
 var userApi = require("./database/user.js")
+var challengeAPI = require("./database/challenges.js")
 var files = require("./js/files.js")
 var cookies = require("./js/cookies.js").Cookies();
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
@@ -23,9 +24,11 @@ var docker = require("./docker/check_answer.js").newDockerChecker();
 const dbName = "./secrets/db.sqlite3";
 var db = require("./database/database_api.js").newDatabase(dbName);
 var userHandler;
+var challengeHandler;
 db.ensure().then((value) => {
     console.log("Database ensured");
     userHandler = userApi.UserHandler(db);
+    challengeHandler = challengeAPI.ChallengesHandler(db);
 }).catch((err) => {
     console.log("error: "+ err);
 });
@@ -70,13 +73,13 @@ function loadEJS(request, uri, loginFunction, defaultFunction, response){
                 console.log("failed to read ejs file: "+err);
             });
         }
-    
+
         if (UserSessions[cookie]) {
             console.log(JSON.stringify(UserSessions));
             readEJSFile(uri, loginFunction, response, UserSessions[cookie]);
         } else {
             readEJSFile(uri, defaultFunction, response);
-        }    
+        }
     })
     .catch(function(err) {
         console.log("failed to load EJS: " + err);
