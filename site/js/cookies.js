@@ -2,8 +2,6 @@
 
 const crypto = require('crypto');
 
-
-
 module.exports = {
     Cookies: Cookies
 };
