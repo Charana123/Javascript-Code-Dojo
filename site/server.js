@@ -239,7 +239,7 @@ function handle(request, response) {
                         return;
 
                     }).catch((err) => {
-                        reject(err);
+                        reject(err.message);
                         return;
 
                     });

@@ -151,46 +151,69 @@ function UserHandler(database) {
 
         var signUp = function signUp(email, username, pass1, pass2) {
             return new Promise(function(resolve, reject) {
-                var err = "";
+                var err = {
+                    noEmail: false,
+                    noUsername: false,
+                    noPasword1: false,
+                    noPasword2: false,
+                    passwordMatch: false,
+                    emailNotValid: false,
+                    message: ""
+                };
 
                 if (email.length == 0) {
-                    err += "No email provided.\n";
+                    err.message += "No email provided.\n";
+                    err.noEmail = true;
                 }
 
                 if (username.length == 0) {
-                    err += "No username provided.\n";
+                    err.message += "No username provided.\n";
+                    err.noUsername = true;
                 }
+
                 if (pass1.length == 0) {
-                    err += "No password provided.\n";
+                    err.message += "No password provided.\n";
+                    err.noPasword1 = true;
                 }
                 if (pass2.length == 0) {
-                    err += "No re-password provided.\n";
+                    err.message += "No re-password provided.\n";
+                    err.noPasword2 = true;
                 }
 
                 if (!passwordsMatch(pass1, pass2)) {
-                    err += "Passwords do not match.\n";
+                    err.message += "Passwords do not match.\n";
+                    err.passwordMatch = true;
                 }
 
                 if (!validEmail(email)) {
-                    err += "Not a valid email.\n";
+                    err.message += "Not a valid email.\n";
+                    err.emailNotValid = true;
                 }
 
-                if (err != "") {
+                if (err.message != "") {
                     reject(err);
                     return;
                 }
 
                 fieldAvailable(db, "username", username).then(function(available) {
+                    var err = {
+                        usernameAvail: true,
+                        emailAvail: true,
+                        message: ""
+                    };
+
                     if (!available) {
-                        err += "Username is already taken.\n";
+                        err.message += "Username is already taken.\n";
+                        err.usernameAvail = false;
                     }
 
                     fieldAvailable(db, "email", email).then(function(available) {
                         if (!available) {
-                            err += "Email is already taken.\n";
+                            err.message += "Email is already taken.\n";
+                            err.emailAvail = true;
                         }
 
-                        if (err != "") {
+                        if (err.message != "") {
                             reject(err);
                             return;
                         }
