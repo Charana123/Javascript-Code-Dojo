@@ -11,7 +11,7 @@ var options = {
     cert: fs.readFileSync("./secrets/server.crt"),
 };
 
-var forum = require("./database/forum.js")
+//var forum = require("./database/forum.js")
 var userApi = require("./database/user.js")
 var challengeAPI = require("./database/challenges.js")
 var files = require("./js/files.js")
@@ -221,10 +221,7 @@ function handle(request, response) {
                     pass1 = pass1.split('=')[1];
                     pass2 = pass2.split('=')[1];
 
-                    var returnResult;
-
                     userHandler.signUp(email, username, pass1, pass2).then((res) => {
-
                         resolve(res);
                         return;
 

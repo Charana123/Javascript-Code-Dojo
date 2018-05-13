@@ -57,12 +57,27 @@ function ChallengesHandler(database) {
             });
         };
 
+        var updateChallenge = function(db, userID, statusArr) {
+            return new Promise(function(resolve, reject) {
+                db.updateChallenge(userID, statusArr).then(function(challenge) {
+                    resolve(challenge);
+                    return;
+                }, function(err) {
+                    reject(err);
+                    return;
+                });
+            });
+        };
+
         return {
            challengesByUser:function(userID) {
                return challengesByUser(db, userID);
             },
            newChallenge:function(userID) {
                return newChallenge(db, userID);
+            },
+           updateChallenge:function(userID, statusArr) {
+               return newChallenge(db, userID, statusArr);
             },
         }
 

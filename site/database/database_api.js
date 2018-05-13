@@ -8,13 +8,21 @@ const insertInto = "INSERT INTO ";
 const deleteFrom = "DELETE FROM ";
 
 const ensureUserStr = "CREATE TABLE if not exists users " +
-                       "(id INTEGER PRIMARY KEY, email TEXT, username TEXT," +
-                       "password TEXT, salt TEXT, image BLOB)";
+    "(id INTEGER PRIMARY KEY, email TEXT, username TEXT," +
+    "password TEXT, salt TEXT, image BLOB)";
 
 const ensureChallengeStr = "CREATE TABLE if not exists challenges " +
-                       "(user INTEGER" +
-                      challengesFieldString(5) +
-                      ", FOREIGN KEY(user) REFERENCES users(id))";
+    "(user INTEGER" +
+    challengesFieldString(5) +
+    ", FOREIGN KEY(user) REFERENCES users(id))";
+
+const ensureForumPostStr = "CREATE TABLE if not exists forum_post " +
+    "(id INTEGER PRIMARY KEY, user INTEGER, body TEXT," +
+    "time DATETIME)";
+
+const ensureForumBodyStr = "CREATE TABLE if not exists forum_body " +
+    "(id INTEGER, user INTEGER, body TEXT," +
+    "time DATETIME, FOREIGN Key(id) REFERENCES forum_post(id))";
 
 module.exports = {
     newDatabase: newDatabase
@@ -56,9 +64,14 @@ function insertUserString(email, username, password, salt) {
         "', '" + username + "', '"  + password + "', '" + salt + "');";
 }
 
-function insertChallengeString(userId) {
+function insertChallengeStringZeros(userId) {
     return insertInto + "challenges (user, challenge_complete_0, challenge_complete_1, challenge_complete_2, challenge_complete_3, challenge_complete_4) VALUES ('" + userId +
         "', '" + 0 + "', '"  + 0 + "', '" + 0 + "', '" + 0 + "', '"  + 0 + "');";
+}
+
+function insertChallengeString(userId, statusArr) {
+    return insertInto + "challenges (user, challenge_complete_0, challenge_complete_1, challenge_complete_2, challenge_complete_3, challenge_complete_4) VALUES ('" + userId +
+        "', '" + statusArr[0] + "', '"  + statusArr[1] + "', '" + statusArr[2] + "', '" + statusArr[3] + "', '"  + statusArr[4] + "');";
 }
 
 function getRowsByFieldString(table, field, value) {
@@ -109,7 +122,6 @@ function newDatabase(dbName) {
                     if (err) {
                         reject("failed to create user " + username + ": " + err.message);
                     }
-                    console.dir(user);
                     resolve(user);
                 });
             });
@@ -117,10 +129,22 @@ function newDatabase(dbName) {
 
         var newChallenge = function(db, userId) {
             return new Promise(function(resolve, reject) {
-                db.all(insertChallengeString(userId), [], (err, challenge) => {
+                db.all(insertChallengeStringZeros(userId), [], (err, challenge) => {
                     if (err) {
                         reject("failed to create challenge record " + userId + ": " + err.message);
                     }
+                    resolve(challenge);
+                });
+            });
+        };
+
+        var updateChallenge = function(db, userId, statusArr) {
+            return new Promise(function(resolve, reject) {
+                db.all(updateChallenge(userId, statusArr), [], (err, challenge) => {
+                    if (err) {
+                        reject("failed to update challenge record " + userId + ": " + err.message);
+                    }
+
                     resolve(challenge);
                 });
             });
@@ -137,7 +161,17 @@ function newDatabase(dbName) {
                         if (err) {
                             reject("failed to ensure challenges table " + err);
                         }
-                        resolve();
+                        db.all(ensureForumPostStr, (err) => {
+                            if (err) {
+                                reject("failed to ensure forum_post table " + err);
+                            }
+                            db.all(ensureForumBodyStr, (err) => {
+                                if (err) {
+                                    reject("failed to ensure forum_post table " + err);
+                                }
+                                resolve();
+                            });
+                        });
                     });
                 });
             });
@@ -168,6 +202,9 @@ function newDatabase(dbName) {
             },
             newChallenge:function(userId) {
                 return newChallenge(db, userId);
+            },
+            updateChallenge:function(userId, statusArr) {
+                return newChallenge(db, userId, statusArr);
             },
             ensure:function() {
                 return ensure(db);
