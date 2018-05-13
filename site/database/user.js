@@ -96,11 +96,17 @@ function UserHandler(database) {
 
             return new Promise(function(resolve, reject) {
                 saltHashPassword(password).then(function(sPwd) {
-                    db.newUser(email, username, sPwd.password, sPwd.salt).then(function(user) {
-                        var user = new User(user.username, user.email, user.id);
-                        challengeHandler.newChallenge(user.id).then(function(challenge) {
-                            resolve(user);
-                            return;
+                    db.newUser(email, username, sPwd.password, sPwd.salt).then(function(res) {
+                        db.rowsByField("users", "username", username).then(function(user) {
+
+                            var userObj = new User(user[0].username, user[0].email, user[0].id);
+                            challengeHandler.newChallenge(userObj.id).then(function(challenge) {
+                                resolve(userObj);
+                                return;
+
+                            }, function(err) {
+                                reject(err);
+                            });
                         }, function(err) {
                             reject(err);
                             return;
@@ -190,8 +196,8 @@ function UserHandler(database) {
                             return;
                         }
 
-                        newUser(db, email, username, pass1).then(function(username) {
-                            resolve(res);
+                        newUser(db, email, username, pass1).then(function(user) {
+                            resolve(user);
 
                             return;
 

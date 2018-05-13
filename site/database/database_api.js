@@ -57,7 +57,7 @@ function insertUserString(email, username, password, salt) {
 }
 
 function insertChallengeString(userId) {
-    return insertInto + "challenges (user, challenge_complete_0, challenge_complete_1, challenge_complete2, challenge_complete3, challenge_complete4) VALUES ('" + userId +
+    return insertInto + "challenges (user, challenge_complete_0, challenge_complete_1, challenge_complete_2, challenge_complete_3, challenge_complete_4) VALUES ('" + userId +
         "', '" + 0 + "', '"  + 0 + "', '" + 0 + "', '" + 0 + "', '"  + 0 + "');";
 }
 
@@ -109,6 +109,7 @@ function newDatabase(dbName) {
                     if (err) {
                         reject("failed to create user " + username + ": " + err.message);
                     }
+                    console.dir(user);
                     resolve(user);
                 });
             });
