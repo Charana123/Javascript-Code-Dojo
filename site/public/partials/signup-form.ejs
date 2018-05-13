@@ -1,0 +1,57 @@
+<!-- <link rel="stylesheet" type="text/css" media="screen" href="/css/login.css" /> -->
+<link rel="stylesheet" type="text/css" media="screen" href="/css/signup-form.css" />
+
+<div id="signup-wrapper-wrapper" style="background-color: white;" >
+    <div id="signup-wrapper" >
+    <div id="signup-container">
+        <div id="signup-reasons" >
+            <div id="signup-header">
+                why <b> Scripter? </b>
+            </div>
+            <ul id="signup-list">
+                <li> 
+                    <span class="span2"> 
+                        <img src="/img/node-logo.png"> </img> 
+                    </span>
+                    <span> Node.JS </span> <br/>
+                    Learn node.js in a week!
+                 </li>
+                <li>
+                    <span class="span2"> 
+                        <img src="/img/collaborate.svg"> </img>
+                    </span>
+                    <span> Collaborate </span> <br/>
+                    Collaborate with users to find better solutions!
+                </li>
+                <li> 
+                    <span class="span2"> 
+                        <img src="/img/score.svg"> </img> 
+                    </span>
+                    <span> Points </span> <br/>
+                    Score points and win achievements! 
+                </li>
+            </ul>
+        </div>
+
+        <div id="signup-form-wrapper">
+            <form id="signup-form" method="post" action="/sign-up_submission">
+                <div id="signup-form-heading"> Join for free! </div>
+                <div class="column" id="label-column" >
+                    <div> Email </div>
+                    <div> Username </div>
+                    <div> Password </div>
+                    <div> Reenter Password </div>
+                </div>
+                <div class="column" id="field-column">
+                    <input class="short-field" type="text" placeholder="   Enter Username" name="uname"></input> <br/>
+                    <input class="long-field" type="text" placeholder="   Enter Email" name="email"></input> <br/>
+                    <input class="long-field" type="password" placeholder="   Enter Password" name="psw1"></input> <br/>
+                    <input class="long-field" type="password" placeholder="   Reenter Password" name="psw2"></input> <br/>
+                    <div> /* reCAPTCHA */ </div>
+                    <button type="submit" value="submit"> Sign Up </button>
+                </div>
+            </form>
+        </div>
+    </div>    
+    </div>                        
+</div>

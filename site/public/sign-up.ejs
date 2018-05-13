@@ -7,35 +7,16 @@
         <meta name="copyright" content="Copyright Goes Here" />
         <meta name="description" content="A website to learn JavaScript!" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
-        <link rel="stylesheet" type="text/css" media="screen" href="css/login.css" />
+        
     </head>
     <body>
-        <% include partials/header %>
+        <!-- <% include partials/header %> -->
         <div id="wrapper">
-            <h4>Sign Up</h4>
-
-            <form id="signupForm" method="post" action="/sign-up_submission">
-                <div class="container">
-                    <label><b>Email</b></label>
-                    <input type="text" placeholder="Enter Email" name="email"></input>
-
-                    <label><b>Username</b></label>
-                    <input type="text" placeholder="Enter Username" name="uname"></input>
-
-                    <label><b>Password</b></label>
-                    <input type="password" placeholder="Enter Password" name="psw1"></input>
-
-                    <label><b>Re-Enter Password</b></label>
-                    <input type="password" placeholder="Re-Enter Enter Password" name="psw2"></input>
-
-                    <button type="submit" value="Submit">Sign Up</button>
-
-                <div class="container" style="background-color:#f1f1f1">
-                    <button type="button" class="cancelbtn">Cancel</button>
-                    <span class="psw"><a href="login">Already have an account?</a></span>
+            <div id="content-wrapper">
+                <div id="content">
+                    <% include partials/signup-form.ejs %>
                 </div>
-                </div>
-            </form>
+            </div>
         </div>
     </body>
 </html>
