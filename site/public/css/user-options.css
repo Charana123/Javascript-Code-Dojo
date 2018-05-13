@@ -1,0 +1,60 @@
+#user-options-popup {
+    height: 100%;
+    width: 100%;
+
+    position: absolute;
+    background-color: transparent;
+
+    display: none;
+}
+
+#user-options {
+    width: 12.5%;
+    height: 25%;
+    background-color: white;
+
+    top: 60px;
+    left: 87.5%;
+    position: absolute;
+    z-index: 999;
+
+    border: 1px solid white;
+    border-radius: 10px;
+
+    animation-name: translation;
+    animation-duration: 0.4s;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+}
+
+#user-options a {
+    display: block;
+
+    width: 100%;
+    height: 67px;
+    background-color: grey;
+
+    border-width: 0;
+    border-bottom: 1px;
+    border-style: solid;
+    border-color: black;
+
+    text-align: center;
+    vertical-align: middle;
+    line-height: 67px;
+}
+
+
+
+@keyframes translation {
+    from {
+        left: 100%;
+    }
+    to {
+        left: 87.5%;
+    }
+}
+
+
+
+
