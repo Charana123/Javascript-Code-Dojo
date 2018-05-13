@@ -11,8 +11,6 @@ var options = {
     cert: fs.readFileSync("./secrets/server.crt"),
 };
 
-var forum = require("./database/forum.js")
-var userApi = require("./database/user.js")
 var files = require("./js/files.js")
 var cookies = require("./js/cookies.js").Cookies();
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
@@ -23,14 +21,33 @@ var docker = require("./docker/check_answer.js").newDockerChecker();
 const dbName = "./secrets/db.sqlite3";
 var db = require("./database/database_api.js").newDatabase(dbName);
 var userHandler;
+var challengeHandler;
+var forumHandler;
+
 db.ensure().then((value) => {
     console.log("Database ensured");
-    userHandler = userApi.UserHandler(db);
+    userHandler = require("./database/user.js").UserHandler(db);
+    challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
+    forumHandler = require("./database/forum.js").ForumHandler(db);
 }).catch((err) => {
     console.log("error: "+ err);
 });
 
 var UserSessions = {};
+
+var nothingFunctionOut = function() {
+    return new Promise(function(resolve, reject) {
+        var data = { session_valid: false};
+        resolve(data)
+    });
+}
+
+var nothingFunctionIn = function() {
+    return new Promise(function(resolve, reject) {
+        var data = { session_valid: true};
+        resolve(data)
+    });
+}
 
 start();
 
@@ -70,13 +87,13 @@ function loadEJS(request, uri, loginFunction, defaultFunction, response){
                 console.log("failed to read ejs file: "+err);
             });
         }
-    
+
         if (UserSessions[cookie]) {
             console.log(JSON.stringify(UserSessions));
             readEJSFile(uri, loginFunction, response, UserSessions[cookie]);
         } else {
             readEJSFile(uri, defaultFunction, response);
-        }    
+        }
     })
     .catch(function(err) {
         console.log("failed to load EJS: " + err);
@@ -88,8 +105,6 @@ function handle(request, response) {
 
     var url = decodeURIComponent(request.url.toString('utf-8'));
     url = url.toLowerCase();
-    
-    console.log("url " + url)
 
     if (url.endsWith("/") || url == "localhost:8080" || url == "127.0.0.1:8080") {
         url = "/index";
@@ -121,74 +136,74 @@ function handle(request, response) {
 
     switch (url) {
         case "/index":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/sign-up":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/challenges":
-            loginFunc = forum.getAllChallengeData;
-            defaultFunc = forum.getAllChallengeData;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/snake":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/tetris":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/asteroids":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
 
         case "/login":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/forum":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/new":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             url = "forum";
             break;
 
         case "/top":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             url = "forum";
             break;
 
         case "/hot":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             url = "forum";
             break;
 
         case "/general":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             url = "forum";
             break;
 
         case "/editor":
             var uri = url.substring(url.lastIndexOf("/") + 1);
-            loginFunc = forum.getChallengeInEditor(uri);
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             url="editor";
             break;
 
@@ -219,15 +234,12 @@ function handle(request, response) {
                     pass1 = pass1.split('=')[1];
                     pass2 = pass2.split('=')[1];
 
-                    var returnResult;
-
                     userHandler.signUp(email, username, pass1, pass2).then((res) => {
-
                         resolve(res);
                         return;
 
                     }).catch((err) => {
-                        reject(err);
+                        reject(err.message);
                         return;
 
                     });
@@ -235,8 +247,8 @@ function handle(request, response) {
             });
 
             url = "/index";
-            loginFunc = forum.getDefault;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/sign-in_submission":
@@ -263,13 +275,13 @@ function handle(request, response) {
             });
 
             url = "/index";
-            loginFunc = forum.getDefault;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         default:
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             url = "/index";
 
     }
@@ -363,8 +375,4 @@ function defineTypes() {
         docx : undefined,      // non-standard, platform dependent, use .pdf
     }
     return types;
-}
-
-function hello() {
-    console.log("Hello");
 }

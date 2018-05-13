@@ -1,3 +1,17 @@
-User
+user
 ----------
-ID | username | email | password
+id INTEGER PRIMARY KEY | username TEXT | email TEXT | password TEXT | salt TEXT | image
+BLOB
+
+challenges
+-----------
+user (foreign key) INTEGER | challenge_complete_0 INTEGER | challenge_complete_1
+INTEGER | ... |
+
+forum_post
+-----------
+id INTEGER PRIMARY KEY | user INTEGER | title TEXT | body TEXT | subject | time DATETIME
+
+forum_reply
+-----------
+id (foreign key) INTEGER | user INTEGER | body TEXT | time DATETIME
