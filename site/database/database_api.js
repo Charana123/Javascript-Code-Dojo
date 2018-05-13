@@ -25,6 +25,10 @@ const ensureForumReplyStr = "CREATE TABLE if not exists forum_reply " +
     "(id INTEGER, user INTEGER, body TEXT," +
     "time DATETIME, FOREIGN Key(id) REFERENCES forum_post(id))";
 
+const ensureQuestionStr = "CREATE TABLE if not exists questions " +
+    "(id INTEGER PRIMARY KEY, title TEXT, question TEXT, answer_file TEXT, "+
+    "start_code TEXT);";
+
 module.exports = {
     newDatabase: newDatabase
 };
@@ -72,11 +76,11 @@ function insertChallengeStringZeros(userId) {
 
 function updateChallengeString(userId, statusArr) {
     return update + "challenges SET challenge_complete_0 = " + statusArr[0]
-                  + ", challenge_complete_1 = " + statusArr[1]
-                  + ", challenge_complete_2 = " + statusArr[2]
-                  + ", challenge_complete_3 = " + statusArr[3]
-                  + ", challenge_complete_4 = " + statusArr[4]
-    + "WHERE user = " + userId + ";";
+        + ", challenge_complete_1 = " + statusArr[1]
+        + ", challenge_complete_2 = " + statusArr[2]
+        + ", challenge_complete_3 = " + statusArr[3]
+        + ", challenge_complete_4 = " + statusArr[4]
+        + "WHERE user = " + userId + ";";
 }
 
 function insertPostStr(userId, title, body, subject) {
@@ -87,6 +91,11 @@ function insertPostStr(userId, title, body, subject) {
 function insertReplyStr(postId, userId, body) {
     return insertInto + "forum_reply (id, user, body, time) VALUES(' " + postId +
         "', '" + userId + "', '" + body + "', datetime('now','localtime'));";
+}
+
+function insertQuestionStr(title, question, answer_file, start_code) {
+    return insertInto + "questions (title, question , answer_file, start_code) VALUES ('" + title +
+        "', '" + question + "', '"  + answer_file + "', '" + start_code + "');";
 }
 
 function getRowsByFieldString(table, field, value) {
@@ -197,32 +206,43 @@ function newDatabase(dbName) {
             });
         };
 
+        var newQuestion = function(db, title, question, answer_file, start_code) {
+            return new Promise(function(resolve, reject) {
+                db.all(insertQuestionStr(title, question, answer_file, start_code), [], (err, question) => {
+                    if (err) {
+                        reject("failed to create question record: " + err);
+                        return;
+                    }
+
+                    resolve(question);
+                    return;
+                });
+            });
+        };
+
         var ensure = function(db) {
             console.log("Ensuring database tables");
             return new Promise(function(resolve, reject) {
-                db.all(ensureUserStr, (err) => {
-                    if (err) {
-                        reject("failed to ensure user table " + err);
-                        return;
-                    }
-                    db.all(ensureChallengeStr, (err) => {
-                        if (err) {
-                            reject("failed to ensure challenges table " + err);
-                            return;
-                        }
-                        db.all(ensureForumPostStr, (err) => {
-                            if (err) {
-                                reject("failed to ensure forum_post table " + err);
-                                return;
-                            }
-                            db.all(ensureForumReplyStr, (err) => {
-                                if (err) {
-                                    reject("failed to ensure forum_post table " + err);
-                                }
-                                resolve();
-                            });
-                        });
-                    });
+
+                var promises = [];
+                var tables = [
+                    ensureUserStr,
+                    ensureChallengeStr,
+                    ensureForumPostStr,
+                    ensureForumReplyStr,
+                    ensureQuestionStr
+                ]
+
+                tables.forEach((table) => {
+                    promises.push(db.all(table));
+                });
+
+                Promise.all(promises).then(function(res) {
+                    resolve(res);
+                    return;
+                }, function(err) {
+                    reject("failed to ensure database tables: "+err);
+                    return;
                 });
             });
         };
@@ -261,6 +281,9 @@ function newDatabase(dbName) {
             },
             newForumReply:function(postId, userId, body) {
                 return newForumReply(db, postId, userId, body);
+            },
+            newQuestion:function(title, question, answer_file, start_code) {
+                return newForumReply(db, title, question, answer_file, start_code);
             },
             ensure:function() {
                 return ensure(db);

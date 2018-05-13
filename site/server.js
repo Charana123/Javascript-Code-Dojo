@@ -23,12 +23,14 @@ var db = require("./database/database_api.js").newDatabase(dbName);
 var userHandler;
 var challengeHandler;
 var forumHandler;
+var questionsHandler;
 
 db.ensure().then((value) => {
     console.log("Database ensured");
     userHandler = require("./database/user.js").UserHandler(db);
     challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
     forumHandler = require("./database/forum.js").ForumHandler(db);
+    questionsHandler = require("./database/questions.js").QuestionsHandler(db);
 }).catch((err) => {
     console.log("error: "+ err);
 });
