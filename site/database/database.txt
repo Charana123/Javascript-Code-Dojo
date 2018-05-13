@@ -3,7 +3,6 @@ user
 id INTEGER PRIMARY KEY | username TEXT | email TEXT | password TEXT | salt TEXT | image
 BLOB
 
-
 challenges
 -----------
 user (foreign key) INTEGER | challenge_complete_0 INTEGER | challenge_complete_1

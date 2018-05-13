@@ -18,7 +18,7 @@ const ensureChallengeStr = "CREATE TABLE if not exists challenges " +
     ", FOREIGN KEY(user) REFERENCES users(id))";
 
 const ensureForumPostStr = "CREATE TABLE if not exists forum_post " +
-    "(id INTEGER PRIMARY KEY, user INTEGER, body TEXT, subject TEXT," +
+    "(id INTEGER PRIMARY KEY, user INTEGER, title TEXT, body TEXT, subject TEXT," +
     "time DATETIME)";
 
 const ensureForumReplyStr = "CREATE TABLE if not exists forum_reply " +
@@ -79,9 +79,14 @@ function updateChallengeString(userId, statusArr) {
     + "WHERE user = " + userId + ";";
 }
 
-function insertPostStr(userId, title, body) {
-    return insertInto + "forum_post (user, title, body, time) VALUES(' " + userId +
-        "', '" + title + "', '" + body + "', datetime('now','localtime'));";
+function insertPostStr(userId, title, body, subject) {
+    return insertInto + "forum_post (user, title, body, subject, time) VALUES(' " + userId +
+        "', '" + title + "', '" + body + "', '" + subject + "', datetime('now','localtime'));";
+}
+
+function insertReplyStr(postId, userId, body) {
+    return insertInto + "forum_reply (id, user, body, time) VALUES(' " + postId +
+        "', '" + userId + "', '" + body + "', datetime('now','localtime'));";
 }
 
 function getRowsByFieldString(table, field, value) {
@@ -179,6 +184,19 @@ function newDatabase(dbName) {
             });
         };
 
+        var newForumReply = function(db, postId, userId, body) {
+            return new Promise(function(resolve, reject) {
+                db.all(insertReplyStr(postId, userId, body), [], (err, post) => {
+                    if (err) {
+                        reject("failed to create forum reply record " + userId + ": " + err);
+                        return;
+                    }
+                    resolve(post);
+                    return;
+                });
+            });
+        };
+
         var ensure = function(db) {
             console.log("Ensuring database tables");
             return new Promise(function(resolve, reject) {
@@ -240,6 +258,9 @@ function newDatabase(dbName) {
             },
             newForumPost:function(userId, title, body, subject) {
                 return newForumPost(db, userId, title, body, subject);
+            },
+            newForumReply:function(postId, userId, body) {
+                return newForumReply(db, postId, userId, body);
             },
             ensure:function() {
                 return ensure(db);

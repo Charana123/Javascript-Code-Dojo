@@ -14,7 +14,7 @@ function ForumHandler(database) {
 
         function getReplys(postId) {
             return new Promise(function (resolve, reject) {
-                db.rowsByField("form_reply", "id", postId).then(function(replys) {
+                db.rowsByField("forum_reply", "id", postId).then(function(replys) {
                     resolve(replys);
                     return;
                 }, function(err) {
@@ -50,20 +50,27 @@ function ForumHandler(database) {
 
         var getForumsByUser = function(db, userId) {
             return new Promise(function(resolve, reject) {
-                db.rowsByField("form_post", "user", userId).then(function(posts) {
-                    var fullForums = [];
+                db.rowsByField("forum_post", "user", userId).then(function(posts) {
+                    var promises = [];
+                    var fullForums = {};
 
-                    for (var post in posts) {
-                        getReplys(post.id).then(function(replys) {
-                            fullForums.push({post: post, replys: replys});
-                        }, function(err) {
-                            reject(err);
-                            return;
+                    posts.forEach((post) => {
+                        promises.push(getReplys(post.id));
+                        fullForums[post.id] = {post: post, replys: []};
+                    });
+
+
+                    Promise.all(promises).then(function(replys) {
+                        replys[0].forEach((reply) => {
+                            fullForums[reply.id].replys.push(reply);
                         });
-                    }
+                        resolve(fullForums);
+                        return;
 
-                    resolve(fullForums);
-                    return;
+                    }, function(err) {
+                        reject(err);
+                        return;
+                    });
 
                 }, function(err) {
                     reject("unable to get forum posts by user: "+err);
@@ -73,20 +80,27 @@ function ForumHandler(database) {
 
         var getForumsBySubject = function(db, subject) {
             return new Promise(function(resolve, reject) {
-                db.rowsByField("form_post", "subject", subject).then(function(posts) {
-                    var fullForums = [];
+                db.rowsByField("forum_post", "subject", subject).then(function(posts) {
+                    var promises = [];
+                    var fullForums = {};
 
-                    for (var post in posts) {
-                        getReplys(post.id).then(function(replys) {
-                            fullForums.push({post: post, replys: replys});
-                        }, function(err) {
-                            reject(err);
-                            return;
+                    posts.forEach((post) => {
+                        promises.push(getReplys(post.id));
+                        fullForums[post.id] = {post: post, replys: []};
+                    });
+
+
+                    Promise.all(promises).then(function(replys) {
+                        replys[0].forEach((reply) => {
+                            fullForums[reply.id].replys.push(reply);
                         });
-                    }
+                        resolve(fullForums);
+                        return;
 
-                    resolve(fullForums);
-                    return;
+                    }, function(err) {
+                        reject(err);
+                        return;
+                    });
 
                 }, function(err) {
                     reject("unable to get forum posts by subject: "+err);
@@ -99,7 +113,7 @@ function ForumHandler(database) {
                 return newPost(db, userId, title, body, subject);
             },
             newReply:function(postId, userId, body){
-                return newPost(db, postId, userId, title, body);
+                return newReply(db, postId, userId, body);
             },
             getForumsByUser:function(userId){
                 return getForumsByUser(db, userId);

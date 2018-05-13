@@ -11,9 +11,6 @@ var options = {
     cert: fs.readFileSync("./secrets/server.crt"),
 };
 
-var forumApi = require("./database/forum.js")
-var userApi = require("./database/user.js")
-var challengeAPI = require("./database/challenges.js")
 var files = require("./js/files.js")
 var cookies = require("./js/cookies.js").Cookies();
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
@@ -29,24 +26,28 @@ var forumHandler;
 
 db.ensure().then((value) => {
     console.log("Database ensured");
-    userHandler = userApi.UserHandler(db);
-    challengeHandler = challengeAPI.ChallengesHandler(db);
-    forumHandler = forumApi.ForumHandler(db);
+    userHandler = require("./database/user.js").UserHandler(db);
+    challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
+    forumHandler = require("./database/forum.js").ForumHandler(db);
 }).catch((err) => {
     console.log("error: "+ err);
 });
 
 var UserSessions = {};
 
+var nothingFunctionOut = function() {
+    return new Promise(function(resolve, reject) {
+        var data = { session_valid: false};
+        resolve(data)
+    });
+}
 
-var nothingFunction = function() {
+var nothingFunctionIn = function() {
     return new Promise(function(resolve, reject) {
         var data = { session_valid: true};
         resolve(data)
     });
 }
-
-
 
 start();
 
@@ -135,74 +136,74 @@ function handle(request, response) {
 
     switch (url) {
         case "/index":
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/sign-up":
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/challenges":
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/snake":
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/tetris":
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/asteroids":
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
 
         case "/login":
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/forum":
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/new":
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             url = "forum";
             break;
 
         case "/top":
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             url = "forum";
             break;
 
         case "/hot":
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             url = "forum";
             break;
 
         case "/general":
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             url = "forum";
             break;
 
         case "/editor":
             var uri = url.substring(url.lastIndexOf("/") + 1);
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             url="editor";
             break;
 
@@ -246,8 +247,8 @@ function handle(request, response) {
             });
 
             url = "/index";
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         case "/sign-in_submission":
@@ -274,13 +275,13 @@ function handle(request, response) {
             });
 
             url = "/index";
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             break;
 
         default:
-            loginFunc = nothingFunction;
-            defaultFunc = nothingFunction;
+            loginFunc = nothingFunctionIn;
+            defaultFunc = nothingFunctionOut;
             url = "/index";
 
     }

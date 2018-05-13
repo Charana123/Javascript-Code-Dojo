@@ -137,7 +137,7 @@ function UserHandler(database) {
                         return;
                     }
 
-                    var userObj = new User(user[0].username, user[0].email);
+                    var userObj = new User(user[0].username, user[0].email, user[0].id);
                     userObj.image = user.image;
 
                     resolve(userObj);
@@ -149,7 +149,7 @@ function UserHandler(database) {
         }
 
 
-        var signUp = function(email, username, pass1, pass2) {
+        var signUp = function signUp(email, username, pass1, pass2) {
             return new Promise(function(resolve, reject) {
                 var err = "";
 
