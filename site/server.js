@@ -11,7 +11,7 @@ var options = {
     cert: fs.readFileSync("./secrets/server.crt"),
 };
 
-//var forum = require("./database/forum.js")
+var forumApi = require("./database/forum.js")
 var userApi = require("./database/user.js")
 var challengeAPI = require("./database/challenges.js")
 var files = require("./js/files.js")
@@ -25,16 +25,28 @@ const dbName = "./secrets/db.sqlite3";
 var db = require("./database/database_api.js").newDatabase(dbName);
 var userHandler;
 var challengeHandler;
+var forumHandler;
 
 db.ensure().then((value) => {
     console.log("Database ensured");
     userHandler = userApi.UserHandler(db);
     challengeHandler = challengeAPI.ChallengesHandler(db);
+    forumHandler = forumApi.ForumHandler(db);
 }).catch((err) => {
     console.log("error: "+ err);
 });
 
 var UserSessions = {};
+
+
+var nothingFunction = function() {
+    return new Promise(function(resolve, reject) {
+        var data = { session_valid: true};
+        resolve(data)
+    });
+}
+
+
 
 start();
 
@@ -123,74 +135,74 @@ function handle(request, response) {
 
     switch (url) {
         case "/index":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             break;
 
         case "/sign-up":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             break;
 
         case "/challenges":
-            loginFunc = forum.getAllChallengeData;
-            defaultFunc = forum.getAllChallengeData;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             break;
 
         case "/snake":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             break;
 
         case "/tetris":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             break;
 
         case "/asteroids":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             break;
 
 
         case "/login":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             break;
 
         case "/forum":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             break;
 
         case "/new":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             url = "forum";
             break;
 
         case "/top":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             url = "forum";
             break;
 
         case "/hot":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             url = "forum";
             break;
 
         case "/general":
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             url = "forum";
             break;
 
         case "/editor":
             var uri = url.substring(url.lastIndexOf("/") + 1);
-            loginFunc = forum.getChallengeInEditor(uri);
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             url="editor";
             break;
 
@@ -234,8 +246,8 @@ function handle(request, response) {
             });
 
             url = "/index";
-            loginFunc = forum.getDefault;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             break;
 
         case "/sign-in_submission":
@@ -262,13 +274,13 @@ function handle(request, response) {
             });
 
             url = "/index";
-            loginFunc = forum.getDefault;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             break;
 
         default:
-            loginFunc = forum.getAllPostsData;
-            defaultFunc = forum.getDefault;
+            loginFunc = nothingFunction;
+            defaultFunc = nothingFunction;
             url = "/index";
 
     }
@@ -362,8 +374,4 @@ function defineTypes() {
         docx : undefined,      // non-standard, platform dependent, use .pdf
     }
     return types;
-}
-
-function hello() {
-    console.log("Hello");
 }

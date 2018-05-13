@@ -1,88 +1,113 @@
-var forum = function(){}
+"use strict"
 
-var Question = function(title, category, comments, views, activity){
-    this.title = title;
-    this.category = category;
-    this.comments = comments;
-    this.views = views;
-    this.activity = activity;
+const challengeAPI = require("./challenges.js")
+
+module.exports = {
+    ForumHandler: ForumHandler
+};
+
+function ForumHandler(database) {
+    return (function() {
+
+        var db = database;
+        var challengeHandler = challengeAPI.ChallengesHandler(db);
+
+        function getReplys(postId) {
+            return new Promise(function (resolve, reject) {
+                db.rowsByField("form_reply", "id", postId).then(function(replys) {
+                    resolve(replys);
+                    return;
+                }, function(err) {
+                    reject("unable to get forum replys by post ID: "+err);
+                    return;
+                });
+            });
+        };
+
+        var newPost = function(db, userId, title, body, subject) {
+            return new Promise(function(resolve, reject) {
+                db.newForumPost(userId, title, body, subject).then(function(res) {
+                    resolve(res);
+                    return;
+                }, function(err) {
+                    reject(err);
+                    return;
+                });
+            });
+        }
+
+        var newReply = function(db, postId, userId, body) {
+            return new Promise(function(resolve, reject) {
+                db.newForumReply(postId, userId, body).then(function(res) {
+                    resolve(res);
+                    return;
+                }, function(err) {
+                    reject(err);
+                    return;
+                });
+            });
+        }
+
+        var getForumsByUser = function(db, userId) {
+            return new Promise(function(resolve, reject) {
+                db.rowsByField("form_post", "user", userId).then(function(posts) {
+                    var fullForums = [];
+
+                    for (var post in posts) {
+                        getReplys(post.id).then(function(replys) {
+                            fullForums.push({post: post, replys: replys});
+                        }, function(err) {
+                            reject(err);
+                            return;
+                        });
+                    }
+
+                    resolve(fullForums);
+                    return;
+
+                }, function(err) {
+                    reject("unable to get forum posts by user: "+err);
+                });
+            });
+        }
+
+        var getForumsBySubject = function(db, subject) {
+            return new Promise(function(resolve, reject) {
+                db.rowsByField("form_post", "subject", subject).then(function(posts) {
+                    var fullForums = [];
+
+                    for (var post in posts) {
+                        getReplys(post.id).then(function(replys) {
+                            fullForums.push({post: post, replys: replys});
+                        }, function(err) {
+                            reject(err);
+                            return;
+                        });
+                    }
+
+                    resolve(fullForums);
+                    return;
+
+                }, function(err) {
+                    reject("unable to get forum posts by subject: "+err);
+                });
+            });
+        }
+
+        return {
+            newPost:function(userId, title, body, subject){
+                return newPost(db, userId, title, body, subject);
+            },
+            newReply:function(postId, userId, body){
+                return newPost(db, postId, userId, title, body);
+            },
+            getForumsByUser:function(userId){
+                return getForumsByUser(db, userId);
+            },
+            getForumsBySubject:function(subject){
+                return getForumsBySubject(db, subject);
+            },
+        }
+
+    }());
 }
-
-var ChallengeUser = function(passed, passed_percentage){
-    this.passed = passed;
-    this.passed_percentage = passed_percentage;
-}
-
-var Challenge = function(title, description, user){
-    this.title = title;
-    this.id = title + "-link"
-    this.description = description;
-    this.user = user;
-}
-
-forum.getChallengeInEditor = function(challenge_title){
-    return function(){
-        return new Promise(function(resolve, reject){
-
-            var editor_data = { 
-                challenge_title: "Challenge title", 
-                challenge_objective: "Challenge objective",
-                challenge_task: "Challenge task",
-                challenge_input_format: "Challenge input format",
-                challenge_output_format: "Challenge output format"
-            }
-            var data = { session_valid: true, editor_data: editor_data }
-            resolve(data)
-        })
-    }
-}
-
-
-forum.getAllPostsData = function(){
-    return new Promise(function(resolve, reject){
-        var question_1 = new Question("HTTP - Writing a server", "General", 5, 35, "26d")
-        var question_2 = new Question("'undefined' vs 'null'", "Challenge1", 3, 25, "5th Jan 2018")
-        var forum_data = [ question_1, question_2 ]
-        var data = { session_valid: true, forum_data: forum_data }
-        resolve(data)
-    })
-}
-
-forum.getAllChallengeData = function(){
-    return new Promise(function(resolve, reject){
-        var challenge1 = new Challenge("Title 1", "Description 1", new ChallengeUser(true, 100))
-        var challenge2 = new Challenge("Title 2", "Description 2", new ChallengeUser(false))
-        var challenges_data = [challenge1, challenge2]
-        var data = { session_valid: true, challenges: challenges_data }
-        resolve(data)
-    })
-}
-
-forum.getDefault = function(){
-    return new Promise(function(resolve, reject){
-        var data = { session_valid: false, forum_data: [] }
-        resolve(data)
-    })
-}
-
-forum.getTopPostsData = function(){
-    return forum.getAllPostsData()
-}
-
-forum.getNewPostsData = function(){
-    return forum.getAllPostsData()
-}
-
-forum.getHotPostsData = function(){
-    return forum.getAllPostsData()
-}
-
-forum.login = function(email, password){
-    return new Promise(function(resolve, reject){
-        if(email == "charana@yahoo.com" && password == "password123") resolve(true)
-        else reject(new Error("Incorrent field"))
-    })
-}
-
-module.exports = forum
-

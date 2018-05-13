@@ -9,7 +9,6 @@ module.exports = {
     UserHandler: UserHandler
 };
 
-
 function UserHandler(database) {
     return (function() {
 
@@ -150,7 +149,7 @@ function UserHandler(database) {
         }
 
 
-        var signUp = function signUp(email, username, pass1, pass2) {
+        var signUp = function(email, username, pass1, pass2) {
             return new Promise(function(resolve, reject) {
                 var err = "";
 

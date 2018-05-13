@@ -6,6 +6,7 @@ const fs = require('fs');
 const selectAll = "SELECT * FROM ";
 const insertInto = "INSERT INTO ";
 const deleteFrom = "DELETE FROM ";
+const update = "UPDATE ";
 
 const ensureUserStr = "CREATE TABLE if not exists users " +
     "(id INTEGER PRIMARY KEY, email TEXT, username TEXT," +
@@ -17,10 +18,10 @@ const ensureChallengeStr = "CREATE TABLE if not exists challenges " +
     ", FOREIGN KEY(user) REFERENCES users(id))";
 
 const ensureForumPostStr = "CREATE TABLE if not exists forum_post " +
-    "(id INTEGER PRIMARY KEY, user INTEGER, body TEXT," +
+    "(id INTEGER PRIMARY KEY, user INTEGER, body TEXT, subject TEXT," +
     "time DATETIME)";
 
-const ensureForumBodyStr = "CREATE TABLE if not exists forum_body " +
+const ensureForumReplyStr = "CREATE TABLE if not exists forum_reply " +
     "(id INTEGER, user INTEGER, body TEXT," +
     "time DATETIME, FOREIGN Key(id) REFERENCES forum_post(id))";
 
@@ -69,9 +70,18 @@ function insertChallengeStringZeros(userId) {
         "', '" + 0 + "', '"  + 0 + "', '" + 0 + "', '" + 0 + "', '"  + 0 + "');";
 }
 
-function insertChallengeString(userId, statusArr) {
-    return insertInto + "challenges (user, challenge_complete_0, challenge_complete_1, challenge_complete_2, challenge_complete_3, challenge_complete_4) VALUES ('" + userId +
-        "', '" + statusArr[0] + "', '"  + statusArr[1] + "', '" + statusArr[2] + "', '" + statusArr[3] + "', '"  + statusArr[4] + "');";
+function updateChallengeString(userId, statusArr) {
+    return update + "challenges SET challenge_complete_0 = " + statusArr[0]
+                  + ", challenge_complete_1 = " + statusArr[1]
+                  + ", challenge_complete_2 = " + statusArr[2]
+                  + ", challenge_complete_3 = " + statusArr[3]
+                  + ", challenge_complete_4 = " + statusArr[4]
+    + "WHERE user = " + userId + ";";
+}
+
+function insertPostStr(userId, title, body) {
+    return insertInto + "forum_post (user, title, body, time) VALUES(' " + userId +
+        "', '" + title + "', '" + body + "', datetime('now','localtime'));";
 }
 
 function getRowsByFieldString(table, field, value) {
@@ -83,22 +93,24 @@ function newDatabase(dbName) {
     return (function() {
         var db = getDatabase(dbName);
 
-        var rowById = function getRowById(db, table, id) {
+        var rowById = function(db, table, id) {
             return new Promise(function(resolve, reject) {
                 db.get(getRowByIdString(table, id), function(err, row) {
                     if (err) {
                         reject("failed to read " + id + " from table " + table + " in database: " + err.message);
+                        return;
                     }
                     resolve(row);
                 });
             });
         };
 
-        var deleteRow = function deleteRow(db, table, id) {
+        var deleteRow = function(db, table, id) {
             return new Promise(function deleteRow(db, table, id) {
                 db.all(deleteRowString(table, id), function (err, row) {
                     if (err) {
                         reject("failed to delete " + id + " from " + table + ": " + err.message);
+                        return;
                     }
                     resolve(id);
                 });
@@ -110,6 +122,7 @@ function newDatabase(dbName) {
                 db.all(getRowsByFieldString(table, field, value), [], (err, user) => {
                     if (err) {
                         reject("failed to find " + field + ":" + value + ": " + err.message);
+                        return;
                     }
                     resolve(user);
                 });
@@ -121,6 +134,7 @@ function newDatabase(dbName) {
                 db.all(insertUserString(email, username, password, salt), [], (err, user) => {
                     if (err) {
                         reject("failed to create user " + username + ": " + err.message);
+                        return;
                     }
                     resolve(user);
                 });
@@ -132,6 +146,7 @@ function newDatabase(dbName) {
                 db.all(insertChallengeStringZeros(userId), [], (err, challenge) => {
                     if (err) {
                         reject("failed to create challenge record " + userId + ": " + err.message);
+                        return;
                     }
                     resolve(challenge);
                 });
@@ -143,6 +158,7 @@ function newDatabase(dbName) {
                 db.all(updateChallenge(userId, statusArr), [], (err, challenge) => {
                     if (err) {
                         reject("failed to update challenge record " + userId + ": " + err.message);
+                        return;
                     }
 
                     resolve(challenge);
@@ -150,22 +166,38 @@ function newDatabase(dbName) {
             });
         };
 
-        var ensure = function ensure(db) {
+        var newForumPost = function(db, userId, title, body, subject) {
+            return new Promise(function(resolve, reject) {
+                db.all(insertPostStr(userId, title, body, subject), [], (err, post) => {
+                    if (err) {
+                        reject("failed to create forum post record " + userId + ": " + err);
+                        return;
+                    }
+                    resolve(post);
+                    return;
+                });
+            });
+        };
+
+        var ensure = function(db) {
             console.log("Ensuring database tables");
             return new Promise(function(resolve, reject) {
                 db.all(ensureUserStr, (err) => {
                     if (err) {
                         reject("failed to ensure user table " + err);
+                        return;
                     }
                     db.all(ensureChallengeStr, (err) => {
                         if (err) {
                             reject("failed to ensure challenges table " + err);
+                            return;
                         }
                         db.all(ensureForumPostStr, (err) => {
                             if (err) {
                                 reject("failed to ensure forum_post table " + err);
+                                return;
                             }
-                            db.all(ensureForumBodyStr, (err) => {
+                            db.all(ensureForumReplyStr, (err) => {
                                 if (err) {
                                     reject("failed to ensure forum_post table " + err);
                                 }
@@ -204,7 +236,10 @@ function newDatabase(dbName) {
                 return newChallenge(db, userId);
             },
             updateChallenge:function(userId, statusArr) {
-                return newChallenge(db, userId, statusArr);
+                return updateChallenge(db, userId, statusArr);
+            },
+            newForumPost:function(userId, title, body, subject) {
+                return newForumPost(db, userId, title, body, subject);
             },
             ensure:function() {
                 return ensure(db);

@@ -1,6 +1,6 @@
 user
 ----------
-id INTEGER | username TEXT | email TEXT | password TEXT | salt TEXT | image
+id INTEGER PRIMARY KEY | username TEXT | email TEXT | password TEXT | salt TEXT | image
 BLOB
 
 
@@ -11,7 +11,7 @@ INTEGER | ... |
 
 forum_post
 -----------
-id INTEGER | user INTEGER | title TEXT | body TEXT | time DATETIME
+id INTEGER PRIMARY KEY | user INTEGER | title TEXT | body TEXT | subject | time DATETIME
 
 forum_reply
 -----------
