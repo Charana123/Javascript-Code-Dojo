@@ -2,6 +2,7 @@
 
 const sqlite3 = require("sqlite3");
 const fs = require('fs');
+const questionsJSON = require("./questions.json");
 
 const selectAll = "SELECT * FROM ";
 const insertInto = "INSERT INTO ";
@@ -106,9 +107,8 @@ function insertReplyStr(postId, userId, body) {
         "', '" + userId + "', '" + body + "', datetime('now','localtime'));";
 }
 
-function insertQuestionStr(title, question, answer_file, start_code) {
-    return insertInto + "questions (title, question , answer_file, start_code) VALUES ('" + title +
-        "', '" + question + "', '"  + answer_file + "', '" + start_code + "');";
+function insertQuestionStr(id, title, question, answer_file, start_code) {
+    return insertInto + "questions (id, title, question , answer_file, start_code) VALUES (" + id + ",'" + title + "', '" + question + "', '"  + answer_file + "', '" + start_code + "');";
 }
 
 
@@ -147,12 +147,12 @@ function newDatabase(dbName) {
 
         var rowsByField = function(db, table, field, value) {
             return new Promise(function(resolve, reject) {
-                db.all(getRowsByFieldString(table, field, value), [], (err, user) => {
+                db.all(getRowsByFieldString(table, field, value), [], (err, res) => {
                     if (err) {
                         reject("failed to find " + field + ":" + value + ": " + err.message);
                         return;
                     }
-                    resolve(user);
+                    resolve(res);
                 });
             });
         };
@@ -220,9 +220,9 @@ function newDatabase(dbName) {
             });
         };
 
-        var newQuestion = function(db, title, question, answer_file, start_code) {
+        var newQuestion = function(db, id, title, question, answer_file, start_code) {
             return new Promise(function(resolve, reject) {
-                db.all(insertQuestionStr(title, question, answer_file, start_code), [], (err, question) => {
+                db.all(insertQuestionStr(id, title, question, answer_file, start_code), [], (err, question) => {
                     if (err) {
                         reject("failed to create question record: " + err);
                         return;
@@ -234,7 +234,7 @@ function newDatabase(dbName) {
             });
         };
 
-        var ensure = function(db) {
+        var ensureTables = function(db) {
             console.log("Ensuring database tables");
             return new Promise(function(resolve, reject) {
 
@@ -244,7 +244,7 @@ function newDatabase(dbName) {
                     ensureChallengeStr,
                     ensureForumPostStr,
                     ensureForumReplyStr,
-                    ensureQuestionStr
+                    ensureQuestionStr,
                 ]
 
                 tables.forEach((table) => {
@@ -253,10 +253,37 @@ function newDatabase(dbName) {
 
                 Promise.all(promises).then(function(res) {
                     resolve(res);
-                    return;
+
                 }, function(err) {
                     reject("failed to ensure database tables: "+err);
                     return;
+                });
+            });
+        };
+
+        var ensureQuestions = function(db) {
+            return new Promise(function(resolve, reject) {
+                rowsByField(db, "questions", "id", 1).then(function(res) {
+                    if (res.length != 0) {
+                        resolve(res);
+                        return;
+                    }
+
+                    var qs = [];
+
+                    questionsJSON.forEach((q) => {
+                        qs.push(newQuestion(db, q.id, q.title.replace(/\'/g,"''"),
+                            q.question.replace(/\'/g,"''"),
+                            q.answer_file, q.start_code.replace(/\'/g,"''")));
+                    });
+
+                    Promise.all(qs).then(function(res) {
+                        resolve(res);
+                        return;
+                    }, function(err) {
+                        reject("failed to ensure questions: "+err);
+                        return;
+                    });
                 });
             });
         };
@@ -267,7 +294,6 @@ function newDatabase(dbName) {
                     if (err) {
                         return console.error(err.message);
                     }
-
                     console.log("database closed successfully!");
                 });
             },
@@ -295,11 +321,14 @@ function newDatabase(dbName) {
             newForumReply:function(postId, userId, body) {
                 return newForumReply(db, postId, userId, body);
             },
-            newQuestion:function(title, question, answer_file, start_code) {
-                return newForumReply(db, title, question, answer_file, start_code);
+            newQuestion:function(id, title, question, answer_file, start_code) {
+                return newQuestion(db, id, title, question, answer_file, start_code);
             },
-            ensure:function() {
-                return ensure(db);
+            ensureTables:function() {
+                return ensureTables(db);
+            },
+            ensureQuestions:function() {
+                return ensureQuestions(db);
             },
         }
     }());

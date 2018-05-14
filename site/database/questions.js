@@ -10,9 +10,9 @@ function QuestionsHandler(database) {
 
         var db = database;
 
-        var newQuestion = function(db, title, question, answer_file, start_code) {
+        var newQuestion = function(db, id, title, question, answer_file, start_code) {
             return new Promise(function(resolve, reject) {
-                db.newQuestion(title, question, answer_file, start_code).then(function(question) {
+                db.newQuestion(id, title, question, answer_file, start_code).then(function(question) {
                     resolve(question);
                     return;
                 }, function(err) {
@@ -35,8 +35,8 @@ function QuestionsHandler(database) {
         };
 
         return {
-           newQuestion:function(title, question, answer_file, start_code) {
-               return newQuestion(db, title, question, answer_file, start_code);
+           newQuestion:function(id, title, question, answer_file, start_code) {
+               return newQuestion(db, id, title, question, answer_file, start_code);
             },
            getQuestion:function(questionId) {
                return getQuestion(db, questionId);
