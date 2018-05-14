@@ -19,7 +19,7 @@
             <div id="challenge-description">  <%= question.question %> </div>
         </div>
         <div id="challenges-element-right-col" class="column">
-            <% if(false){ %>
+            <% if(session_valid){ %>
             <div class="passed-percentage" > Passed:<%= question.user.passed_percentage %>% </div>
             <div class="try-again-button" onclick="redirect_challenge('<%=question.title%>')" >
             Try Again
