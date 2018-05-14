@@ -8,13 +8,15 @@ const insertInto = "INSERT INTO ";
 const deleteFrom = "DELETE FROM ";
 const update = "UPDATE ";
 
+const CHALLENGES_NUM = 6;
+
 const ensureUserStr = "CREATE TABLE if not exists users " +
     "(id INTEGER PRIMARY KEY, email TEXT, username TEXT," +
     "password TEXT, salt TEXT, image BLOB)";
 
 const ensureChallengeStr = "CREATE TABLE if not exists challenges " +
     "(user INTEGER" +
-    challengesFieldString(5) +
+    challengesFieldString(CHALLENGES_NUM) +
     ", FOREIGN KEY(user) REFERENCES users(id))";
 
 const ensureForumPostStr = "CREATE TABLE if not exists forum_post " +
@@ -31,11 +33,9 @@ module.exports = {
 
 function challengesFieldString(count) {
     var str = "";
-
     for (var i = 0; i < count; i++) {
         str += ", challenge_complete_" + i + " INTEGER"
     }
-
     return str;
 }
 
@@ -66,17 +66,30 @@ function insertUserString(email, username, password, salt) {
 }
 
 function insertChallengeStringZeros(userId) {
-    return insertInto + "challenges (user, challenge_complete_0, challenge_complete_1, challenge_complete_2, challenge_complete_3, challenge_complete_4) VALUES ('" + userId +
-        "', '" + 0 + "', '"  + 0 + "', '" + 0 + "', '" + 0 + "', '"  + 0 + "');";
+    var str = = insertInto + "challenges (user, ";
+    for (var i = 0; i < CHALLENGES_NUM; i++) {
+        str += "challenge_complete_" + i + ", ";
+    }
+
+    str +=") VALUES ('" + userId;
+    for (var i = 0; i < CHALLENGES_NUM; i++) {
+        str += "', '" + 0;
+    }
+    str += "');";
+
+    return str;
 }
 
 function updateChallengeString(userId, statusArr) {
-    return update + "challenges SET challenge_complete_0 = " + statusArr[0]
-                  + ", challenge_complete_1 = " + statusArr[1]
-                  + ", challenge_complete_2 = " + statusArr[2]
-                  + ", challenge_complete_3 = " + statusArr[3]
-                  + ", challenge_complete_4 = " + statusArr[4]
-    + "WHERE user = " + userId + ";";
+    var str = update + "challenges SET ";
+    str += "challenge_complete_0 = " + statusArr[0];
+
+    for (var i = 1; i < CHALLENGES_NUM; i++) {
+        str += ", challenge_complete_" + i + " = " + statusArr[i];
+    }
+    str += "WHERE user = " + userId + ";";
+
+    return str;
 }
 
 function insertPostStr(userId, title, body, subject) {
