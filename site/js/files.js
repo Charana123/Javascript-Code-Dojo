@@ -9,7 +9,7 @@ var files = function(){
 files.writeFile = function(filename, data){
     fs.writeFile(filename, data, function(err){
         if(err){
-            console.log(err.message)
+            console.log(err)
         }
     })
 }

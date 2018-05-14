@@ -52,6 +52,7 @@ db.ensureTables().then((value) => {
     console.log("error: "+ err);
 });
 
+
 var UserSessions = {};
 
 var nothingFunctionOut = new Promise(function(resolve, reject) {
@@ -213,7 +214,6 @@ function handle(request, response) {
                 deliver(response, type, content);
             })
             .catch(function(err){
-                console.log(file)
                 if (err) return fail(response, NotFound, "File not found");
             })
 
@@ -265,8 +265,8 @@ function handle(request, response) {
                     break;
 
                 case "/forum":
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = forumHandler.getAllPosts();
+                    defaultFunc = forumHandler.getAllPosts();
                     break;
 
                 case "/new":
