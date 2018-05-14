@@ -24,11 +24,23 @@ var userHandler;
 var challengeHandler;
 var forumHandler;
 
-db.ensure().then((value) => {
-    console.log("Database ensured");
-    userHandler = require("./database/user.js").UserHandler(db);
-    challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
-    forumHandler = require("./database/forum.js").ForumHandler(db);
+function sleep (time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+db.ensureTables().then((value) => {
+    sleep(500).then(() => {
+        db.ensureQuestions().then((value) => {
+            userHandler = require("./database/user.js").UserHandler(db);
+            challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
+            forumHandler = require("./database/forum.js").ForumHandler(db);
+
+            console.log("Database ensured");
+
+        }).catch((err) => {
+            console.log("error: "+ err);
+        });
+    });
 }).catch((err) => {
     console.log("error: "+ err);
 });
@@ -74,30 +86,30 @@ function checkSite() {
 
 function loadEJS(request, uri, loginFunction, defaultFunction, response){
     cookies.getCookie(request)
-    .then(function(cookie) {
-        var readEJSFile = function(uri, dataFunction, response, userObject){
-            files.readEJSFile(uri, dataFunction, response, userObject)
-            .then(function(contentHTML) {
-                    var type = types["html"]
-                    cookies.setCookie(response, cookie).then(function(response) {
-                        deliver(response, type, contentHTML)
+        .then(function(cookie) {
+            var readEJSFile = function(uri, dataFunction, response, userObject){
+                files.readEJSFile(uri, dataFunction, response, userObject)
+                    .then(function(contentHTML) {
+                        var type = types["html"]
+                        cookies.setCookie(response, cookie).then(function(response) {
+                            deliver(response, type, contentHTML)
+                        });
+                    })
+                    .catch(function(err) {
+                        console.log("failed to read ejs file: "+err);
                     });
-            })
-            .catch(function(err) {
-                console.log("failed to read ejs file: "+err);
-            });
-        }
+            }
 
-        if (UserSessions[cookie]) {
-            console.log(JSON.stringify(UserSessions));
-            readEJSFile(uri, loginFunction, response, UserSessions[cookie]);
-        } else {
-            readEJSFile(uri, defaultFunction, response);
-        }
-    })
-    .catch(function(err) {
-        console.log("failed to load EJS: " + err);
-    });
+            if (UserSessions[cookie]) {
+                console.log(JSON.stringify(UserSessions));
+                readEJSFile(uri, loginFunction, response, UserSessions[cookie]);
+            } else {
+                readEJSFile(uri, defaultFunction, response);
+            }
+        })
+        .catch(function(err) {
+            console.log("failed to load EJS: " + err);
+        });
 }
 
 // Serve a request by delivering a file.
