@@ -75,16 +75,16 @@ function insertUserString(email, username, password, salt) {
 }
 
 function insertChallengeStringZeros(userId) {
-    var str = insertInto + "challenges (user, ";
+    var str = insertInto + "challenges (user";
     for (var i = 0; i < CHALLENGES_NUM; i++) {
-        str += "challenge_complete_" + i + ", ";
+        str += ", challenge_complete_" + i;
     }
 
-    str +=") VALUES ('" + userId;
+    str +=") VALUES (" + userId;
     for (var i = 0; i < CHALLENGES_NUM; i++) {
-        str += "', '" + 0;
+        str += ", " + 0;
     }
-    str += "');";
+    str += ");";
 
     return str;
 }
@@ -190,7 +190,7 @@ function newDatabase(dbName) {
             return new Promise(function(resolve, reject) {
                 db.all(insertChallengeStringZeros(userId), [], (err, challenge) => {
                     if (err) {
-                        reject("failed to create challenge record " + userId + ": " + err.message);
+                        reject("failed to create challenge record " + userId + ": " + err);
                         return;
                     }
                     resolve(challenge);

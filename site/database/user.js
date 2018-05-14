@@ -92,7 +92,6 @@ function UserHandler(database) {
 
 
         function newUser(db, email, username, password) {
-
             return new Promise(function(resolve, reject) {
                 saltHashPassword(password).then(function(sPwd) {
                     db.newUser(email, username, sPwd.password, sPwd.salt).then(function(res) {
