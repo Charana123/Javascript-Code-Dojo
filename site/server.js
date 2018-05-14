@@ -1,5 +1,8 @@
 "use strict"
 
+const secretKey = "6LcLE1kUAAAAAPoRl_vsA0abLIieJxQc1Rz-GkbQ"
+const captchaUrl = "https://www.google.com/recaptcha/api/siteverify"
+
 var port = 8080;
 var verbose = true;
 
@@ -49,6 +52,69 @@ var nothingFunctionIn = function() {
     });
 }
 
+var signInPreFunc = function(request) {
+    return new Promise(function(resolve, reject) {
+        request.on('data', chunk => {
+            var [username, password] = chunk.toString().split('&');
+            username = username.split('=')[1];
+            password = password.split('=')[1];
+
+            userHandler.signIn(username, password).then((user) => {
+                var userCookie = request.headers["cookie"];
+                user.cookie = userCookie;
+                UserSessions[userCookie] = user;
+
+                resolve(user);
+                return;
+
+            }).catch((err) => {
+                reject(err);
+                return;
+
+            });
+        });
+    });
+};
+
+var signUpPreFunc = function(request) {
+    return new Promise(function(resolve, reject) {
+        request.on('data', chunk => {
+            var [username, email, pass1, pass2, captcha] = chunk.toString().split('&');
+            email = email.split('=')[1].replace("%40", "@");
+            username = username.split('=')[1];
+            pass1 = pass1.split('=')[1];
+            pass2 = pass2.split('=')[1];
+            captcha = captcha.split('=')[1];
+
+            https.get(captchaUrl+"?secret="+secretKey+"&response="+captcha, (res) => {
+                res.on('data', (d) => {
+                    d = JSON.parse(d.toString());
+                    if (d.success) {
+                        userHandler.signUp(email, username, pass1, pass2).then((res) => {
+                            resolve(res);
+                            return;
+
+                        }).catch((err) => {
+                            reject(err.message);
+                            return;
+
+                        });
+                    } else  {
+                        reject("invalid captcha response from client");
+                        return;
+                    }
+                });
+
+            }).on('error', (err) => {
+                reject(err);
+                return;
+            });
+        });
+    });
+
+
+};
+
 start();
 
 // Start the http service. Accept only requests from localhost, for security.
@@ -60,7 +126,7 @@ function start() {
     var service = https.createServer(options, handle);
     service.listen(port, "localhost");
     var address = "https://localhost";
-    if (port != 80) address = address + ":" + port;
+    if (port != 8080) address = address + ":" + port;
     console.log("Server running at", address);
 }
 
@@ -74,30 +140,30 @@ function checkSite() {
 
 function loadEJS(request, uri, loginFunction, defaultFunction, response){
     cookies.getCookie(request)
-    .then(function(cookie) {
-        var readEJSFile = function(uri, dataFunction, response, userObject){
-            files.readEJSFile(uri, dataFunction, response, userObject)
-            .then(function(contentHTML) {
-                    var type = types["html"]
-                    cookies.setCookie(response, cookie).then(function(response) {
-                        deliver(response, type, contentHTML)
+        .then(function(cookie) {
+            var readEJSFile = function(uri, dataFunction, response, userObject){
+                files.readEJSFile(uri, dataFunction, response, userObject)
+                    .then(function(contentHTML) {
+                        var type = types["html"]
+                        cookies.setCookie(response, cookie).then(function(response) {
+                            deliver(response, type, contentHTML)
+                        });
+                    })
+                    .catch(function(err) {
+                        console.log("failed to read ejs file: "+err);
                     });
-            })
-            .catch(function(err) {
-                console.log("failed to read ejs file: "+err);
-            });
-        }
+            }
 
-        if (UserSessions[cookie]) {
-            console.log(JSON.stringify(UserSessions));
-            readEJSFile(uri, loginFunction, response, UserSessions[cookie]);
-        } else {
-            readEJSFile(uri, defaultFunction, response);
-        }
-    })
-    .catch(function(err) {
-        console.log("failed to load EJS: " + err);
-    });
+            if (UserSessions[cookie]) {
+                console.log(JSON.stringify(UserSessions));
+                readEJSFile(uri, loginFunction, response, UserSessions[cookie]);
+            } else {
+                readEJSFile(uri, defaultFunction, response);
+            }
+        })
+        .catch(function(err) {
+            console.log("failed to load EJS: " + err);
+        });
 }
 
 // Serve a request by delivering a file.
@@ -226,54 +292,14 @@ function handle(request, response) {
             //    break;
 
         case "/sign-up_submission":
-            preFunc = new Promise(function(resolve, reject) {
-                request.on('data', chunk => {
-                    var [email, username, pass1, pass2] = chunk.toString().split('&');
-                    email = email.split('=')[1].replace("%40", "@");
-                    username = username.split('=')[1];
-                    pass1 = pass1.split('=')[1];
-                    pass2 = pass2.split('=')[1];
-
-                    userHandler.signUp(email, username, pass1, pass2).then((res) => {
-                        resolve(res);
-                        return;
-
-                    }).catch((err) => {
-                        reject(err.message);
-                        return;
-
-                    });
-                });
-            });
-
+            preFunc = signUpPreFunc(request);
             url = "/index";
             loginFunc = nothingFunctionIn;
             defaultFunc = nothingFunctionOut;
             break;
 
         case "/sign-in_submission":
-            preFunc = new Promise(function(resolve, reject) {
-                request.on('data', chunk => {
-                    var [username, password] = chunk.toString().split('&');
-                    username = username.split('=')[1];
-                    password = password.split('=')[1];
-
-                    userHandler.signIn(username, password).then((user) => {
-                        var userCookie = request.headers["cookie"];
-                        user.cookie = userCookie;
-                        UserSessions[userCookie] = user;
-
-                        resolve(user);
-                        return;
-
-                    }).catch((err) => {
-                        reject(err);
-                        return;
-
-                    });
-                });
-            });
-
+            preFunc = signInPreFunc(request);
             url = "/index";
             loginFunc = nothingFunctionIn;
             defaultFunc = nothingFunctionOut;
