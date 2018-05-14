@@ -27,11 +27,7 @@
 <div id="wrapper">
   <div id="content-wrapper">
     <div id="content">
-        <pre id="editor">
-          var a = "Hello";
-          var b = "World!";
-          console.log(a + " " + b);
-        </pre>
+        <pre id="editor"><%= data.start_code %></pre>
         <script src="/js/editor/ace.js" type="text/javascript" charset="utf-8"></script>
         <script>
             var editor = ace.edit("editor");
