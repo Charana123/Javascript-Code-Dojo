@@ -1,0 +1,42 @@
+[ {
+    "id": 1,
+    "title": "Hello World!",
+    "question": "Output to the text 'Hello World!'",
+    "answer_file": "1",
+    "start_code": "console.log('this might help..');"
+},
+{
+    "id": 2,
+    "title": "Arrays",
+    "question": "Output an array containing the values 1, 2, 3",
+    "answer_file": "2",
+    "start_code": "var arr = [10, 9, 5]; // this is how to initialise an array"
+},
+{
+    "id": 3,
+    "title": "Counting!",
+    "question": "Output the numbers 0 to 99, each on a new line.",
+    "answer_file": "3",
+    "start_code": "// hint: try using the for loop"
+},
+{
+    "id": 4,
+    "title": "String Reversal",
+    "question": "Reverse the string 'Reverse Me!",
+    "answer_file": "4",
+    "start_code": "console.log('Reverse Me!');"
+},
+{
+    "id": 5,
+    "title": "Years and Years!",
+    "question": "Output the years, each on a new line, where the 1st of January is a Sunday between the years 2000 and 2050.",
+    "answer_file": "5",
+    "start_code": "var d = new Date(year, 0, 1);"
+},
+{
+    "id": 6,
+    "title": "Fibonacci",
+    "question": "Print the Fibonacci sequence from 100 rounds, each on a new line.",
+    "answer_file": "6",
+    "start_code": "//No help this time!"
+} ]
