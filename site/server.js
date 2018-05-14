@@ -27,11 +27,23 @@ var userHandler;
 var challengeHandler;
 var forumHandler;
 
-db.ensure().then((value) => {
-    console.log("Database ensured");
-    userHandler = require("./database/user.js").UserHandler(db);
-    challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
-    forumHandler = require("./database/forum.js").ForumHandler(db);
+function sleep (time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+db.ensureTables().then((value) => {
+    sleep(500).then(() => {
+        db.ensureQuestions().then((value) => {
+            userHandler = require("./database/user.js").UserHandler(db);
+            challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
+            forumHandler = require("./database/forum.js").ForumHandler(db);
+
+            console.log("Database ensured");
+
+        }).catch((err) => {
+            console.log("error: "+ err);
+        });
+    });
 }).catch((err) => {
     console.log("error: "+ err);
 });
