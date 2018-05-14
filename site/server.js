@@ -300,6 +300,7 @@ function handle(request, response) {
 
                 case "/editor":
                     var uri = url.substring(url.lastIndexOf("/") + 1);
+                    console.log(uri);
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     url="editor";

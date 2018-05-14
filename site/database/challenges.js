@@ -36,15 +36,20 @@ function ChallengesHandler(database) {
         var challengesByUser = function(db, userID) {
             return new Promise(function(resolve, reject) {
                 db.rowsByField("challenges", "user", userID).then(function(challenge) {
-                    resolve({
-                        0: challenge[0].challenge_complete_0,
-                        1: challenge[0].challenge_complete_1,
-                        2: challenge[0].challenge_complete_2,
-                        3: challenge[0].challenge_complete_3,
-                        4: challenge[0].challenge_complete_4,
-                        5: challenge[0].challenge_complete_5,
-                    });
-                    return;
+                    if (challenge.length > 0 ) {
+                        resolve({
+                            0: challenge[0].challenge_complete_0,
+                            1: challenge[0].challenge_complete_1,
+                            2: challenge[0].challenge_complete_2,
+                            3: challenge[0].challenge_complete_3,
+                            4: challenge[0].challenge_complete_4,
+                            5: challenge[0].challenge_complete_5,
+                        });
+                        return;
+                    } else {
+                        resolve(challenge);
+                        return;
+                    }
                 }, function(err) {
                     reject("failed to get challenge from user id: "+err);
                     return;
