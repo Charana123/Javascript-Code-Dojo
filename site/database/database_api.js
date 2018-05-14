@@ -27,6 +27,10 @@ const ensureForumReplyStr = "CREATE TABLE if not exists forum_reply " +
     "(id INTEGER, user INTEGER, body TEXT," +
     "time DATETIME, FOREIGN Key(id) REFERENCES forum_post(id))";
 
+const ensureQuestionStr = "CREATE TABLE if not exists questions " +
+    "(id INTEGER PRIMARY KEY, title TEXT, question TEXT, answer_file TEXT, "+
+    "start_code TEXT);";
+
 module.exports = {
     newDatabase: newDatabase
 };
@@ -66,7 +70,7 @@ function insertUserString(email, username, password, salt) {
 }
 
 function insertChallengeStringZeros(userId) {
-    var str = = insertInto + "challenges (user, ";
+    var str = insertInto + "challenges (user, ";
     for (var i = 0; i < CHALLENGES_NUM; i++) {
         str += "challenge_complete_" + i + ", ";
     }
@@ -101,6 +105,12 @@ function insertReplyStr(postId, userId, body) {
     return insertInto + "forum_reply (id, user, body, time) VALUES(' " + postId +
         "', '" + userId + "', '" + body + "', datetime('now','localtime'));";
 }
+
+function insertQuestionStr(title, question, answer_file, start_code) {
+    return insertInto + "questions (title, question , answer_file, start_code) VALUES ('" + title +
+        "', '" + question + "', '"  + answer_file + "', '" + start_code + "');";
+}
+
 
 function getRowsByFieldString(table, field, value) {
     return selectAll + table + " WHERE " + field + " = '" + value + "';";
@@ -210,36 +220,46 @@ function newDatabase(dbName) {
             });
         };
 
-        var ensure = function(db) {
-            console.log("Ensuring database tables");
+        var newQuestion = function(db, title, question, answer_file, start_code) {
             return new Promise(function(resolve, reject) {
-                db.all(ensureUserStr, (err) => {
+                db.all(insertQuestionStr(title, question, answer_file, start_code), [], (err, question) => {
                     if (err) {
-                        reject("failed to ensure user table " + err);
+                        reject("failed to create question record: " + err);
                         return;
                     }
-                    db.all(ensureChallengeStr, (err) => {
-                        if (err) {
-                            reject("failed to ensure challenges table " + err);
-                            return;
-                        }
-                        db.all(ensureForumPostStr, (err) => {
-                            if (err) {
-                                reject("failed to ensure forum_post table " + err);
-                                return;
-                            }
-                            db.all(ensureForumReplyStr, (err) => {
-                                if (err) {
-                                    reject("failed to ensure forum_post table " + err);
-                                }
-                                resolve();
-                            });
-                        });
-                    });
+
+                    resolve(question);
+                    return;
                 });
             });
         };
 
+        var ensure = function(db) {
+            console.log("Ensuring database tables");
+            return new Promise(function(resolve, reject) {
+
+                var promises = [];
+                var tables = [
+                    ensureUserStr,
+                    ensureChallengeStr,
+                    ensureForumPostStr,
+                    ensureForumReplyStr,
+                    ensureQuestionStr
+                ]
+
+                tables.forEach((table) => {
+                    promises.push(db.all(table));
+                });
+
+                Promise.all(promises).then(function(res) {
+                    resolve(res);
+                    return;
+                }, function(err) {
+                    reject("failed to ensure database tables: "+err);
+                    return;
+                });
+            });
+        };
 
         return{
             close:function() {
@@ -274,6 +294,9 @@ function newDatabase(dbName) {
             },
             newForumReply:function(postId, userId, body) {
                 return newForumReply(db, postId, userId, body);
+            },
+            newQuestion:function(title, question, answer_file, start_code) {
+                return newForumReply(db, title, question, answer_file, start_code);
             },
             ensure:function() {
                 return ensure(db);
