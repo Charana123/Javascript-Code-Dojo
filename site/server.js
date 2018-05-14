@@ -28,6 +28,8 @@ var challengeHandler;
 var forumHandler;
 var questionsHandler;
 
+const CHALLENGES_NUM = 6;
+
 function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
@@ -125,9 +127,10 @@ var questionsAndUserProgress = function(questionsHandler, userId) {
     return new Promise(function(resolve, reject) {
         questionsHandler.getAllQuestions().then(function(questions) {
             challengeHandler.challengesByUser(userId).then(function(challenges) {
-                console.log(">>" + challenges);
-                console.log(">>" + userId);
-                resolve(questions, challenges);
+                for (var i = 0; i < CHALLENGES_NUM; i++) {
+                    questions[i].complete = challenges[i];
+                }
+                resolve(questions);
                 return;
             }, function(err) {
                 reject(err);
