@@ -150,6 +150,30 @@ var questionsAndUserProgress = function(questionsHandler, userId) {
     });
 };
 
+var challengeRequest = function(docker, id, request, response) {
+    return new Promise(function(resolve, reject) {
+        request.on("data", (data) => {
+            data = data.toString("utf-8");
+            files.writeFile("docker/task.js", data);
+            docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/"+id).then(function(ans) {
+                console.log("server got: " + ans);
+                if (ans == true) {
+                    ans = "correct!";
+                } else {
+                    ans = "incorrect!";
+                }
+
+                resolve({"ans": ans});
+                return;
+            }, function(err) {
+
+                reject(err);
+                return;
+            })
+        });
+    });
+}
+
 start();
 
 // Start the http service. Accept only requests from localhost, for security.
@@ -226,7 +250,7 @@ function handle(request, response) {
         return;
     }
 
-    var resolveUrl = function(url, request, userId) {
+    var resolveUrl = function(url, request, userId, response) {
         return new Promise(function(resolve) {
 
             var loginFunc = function(){};
@@ -325,6 +349,12 @@ function handle(request, response) {
                     defaultFunc = nothingFunctionOut;
                     break;
 
+                case "challenge_request":
+                    loginFunc = challengeRequest(docker, rest, request, response);
+                    defaultFunc = challengeRequest(docker, rest, request, response);
+                    url="editor";
+                    break;
+
                 default:
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
@@ -341,7 +371,7 @@ function handle(request, response) {
             userId = UserSessions[cookie].id;
         }
 
-        resolveUrl(url, request, userId).then(function(res) {
+        resolveUrl(url, request, userId, response).then(function(res) {
             var [url, loginFunc, defaultFunc, preFunc] = res;
 
             if (preFunc) {
