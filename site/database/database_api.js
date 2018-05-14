@@ -3,6 +3,8 @@
 const sqlite3 = require("sqlite3");
 const fs = require('fs');
 const questionsJSON = require("./questions.json");
+const postJSON = require("../dummy_data/posts.json");
+const replyJSON = require("../dummy_data/replys.json");
 
 const selectAll = "SELECT * FROM ";
 const insertInto = "INSERT INTO ";
@@ -22,7 +24,7 @@ const ensureChallengeStr = "CREATE TABLE if not exists challenges " +
 
 const ensureForumPostStr = "CREATE TABLE if not exists forum_post " +
     "(id INTEGER PRIMARY KEY, user INTEGER, title TEXT, body TEXT, subject TEXT," +
-    "time DATETIME)";
+    "views INTEGER, time DATETIME)";
 
 const ensureForumReplyStr = "CREATE TABLE if not exists forum_reply " +
     "(id INTEGER, user INTEGER, body TEXT," +
@@ -102,8 +104,13 @@ function updateChallengeString(userId, statusArr) {
 }
 
 function insertPostStr(userId, title, body, subject) {
-    return insertInto + "forum_post (user, title, body, subject, time) VALUES(' " + userId +
-        "', '" + title + "', '" + body + "', '" + subject + "', datetime('now','localtime'));";
+    return insertInto + "forum_post (user, title, body, subject, views, time) VALUES(" + userId +
+        ", " + title + "', '" + body + "', '" + subject + "', 0, datetime('now','localtime'));";
+}
+
+function insertPostStrWithId(id, userId, title, body, subject, views) {
+    return insertInto + "forum_post (id, user, title, body, subject, views, time) VALUES(" + id +
+        ", " +  userId + ", '" + title + "', '" + body + "', '" + subject + "', " + views + ", datetime('now','localtime'));";
 }
 
 function insertReplyStr(postId, userId, body) {
@@ -224,6 +231,19 @@ function newDatabase(dbName) {
             });
         };
 
+        var newForumPostWithId = function(db, id, userId, title, body, subject, views) {
+            return new Promise(function(resolve, reject) {
+                db.all(insertPostStrWithId(id, userId, title, body, subject, views), [], (err, post) => {
+                    if (err) {
+                        reject("failed to create forum post record " + userId + ": " + err);
+                        return;
+                    }
+                    resolve(post);
+                    return;
+                });
+            });
+        };
+
         var newForumReply = function(db, postId, userId, body) {
             return new Promise(function(resolve, reject) {
                 db.all(insertReplyStr(postId, userId, body), [], (err, post) => {
@@ -305,6 +325,44 @@ function newDatabase(dbName) {
             });
         };
 
+        var dummyForum = function(db) {
+            return new Promise(function(resolve, reject) {
+                rowsByField(db, "forum_post", "id", 1).then(function(res) {
+                    if (res.length != 0) {
+                        resolve(res);
+                        return;
+                    }
+
+                    var ps = [];
+                    postJSON.forEach((p) => {
+                        ps.push(newForumPostWithId(db, p.id, p.user, p.title, p.body, p.subject, p.views));
+                    });
+
+                    Promise.all(ps).then(function(res) {
+
+                        var rs = [];
+
+                        replyJSON.forEach((r) => {
+                            rs.push(newForumReply(db, r.id, r.user, r.body));
+                        });
+
+                        Promise.all(rs).then(function(res) {
+                            resolve(res);
+                            return;
+                        }, function(err) {
+                            reject("failed to ensure replys: "+err);
+                            return;
+                        });
+
+                    }, function(err) {
+                        console.log("HERE>"+err);
+                        reject("failed to ensure posts: "+err);
+                        return;
+                    });
+                });
+            });
+        };
+
         return{
             close:function() {
                 db.close((err) => {
@@ -349,6 +407,9 @@ function newDatabase(dbName) {
             },
             ensureQuestions:function() {
                 return ensureQuestions(db);
+            },
+            dummyForum:function() {
+                return dummyForum(db);
             },
         }
     }());

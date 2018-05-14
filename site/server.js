@@ -37,12 +37,17 @@ function sleep (time) {
 db.ensureTables().then((value) => {
     sleep(500).then(() => {
         db.ensureQuestions().then((value) => {
-            userHandler = require("./database/user.js").UserHandler(db);
-            challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
-            forumHandler = require("./database/forum.js").ForumHandler(db);
-            questionsHandler = require("./database/questions.js").QuestionsHandler(db);
+            db.dummyForum().then((value) => {
+                userHandler = require("./database/user.js").UserHandler(db);
+                challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
+                forumHandler = require("./database/forum.js").ForumHandler(db);
+                questionsHandler = require("./database/questions.js").QuestionsHandler(db);
+                console.log("Database ensured");
 
-            console.log("Database ensured");
+
+            }).catch((err) => {
+                console.log("error: "+err);
+            });
 
         }).catch((err) => {
             console.log("error: "+ err);
