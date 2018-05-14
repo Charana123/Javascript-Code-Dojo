@@ -2,7 +2,7 @@
 
 <div id="tree-view-heading"> Challenges </div>
 <ul id="tree-view-list">
-  <% challenges.forEach(function(challenge){ %>
-    <li id="<%= challenge.id %>" class="challenge-link"> <%= challenge.title %> </li>
+  <% data.forEach(function(question){ %>
+    <li id="<%= question.id %>" class="challenge-link"> <%= question.title %> </li>
   <% }); %>
 </ul>

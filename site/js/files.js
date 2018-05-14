@@ -27,8 +27,17 @@ files.readEJSFile = function(uri, getDataFunction, response, user){
     var EJSfile = "./public" + uri + ".ejs";
     return new Promise(function(resolve, reject) {
 
-        getDataFunction().then(function(data) {
-            ejs.renderFile(EJSfile, data, function(err, contentHTML){
+        getDataFunction.then(function(data) {
+            var clientData = {};
+            clientData.data = data;
+            if (user) {
+                clientData.session_valid = true;
+            } else {
+                clientData.session_valid = false;
+            }
+
+            console.log("clientData: " + JSON.stringify(clientData));
+            ejs.renderFile(EJSfile, clientData, function(err, contentHTML){
                 if(!err) {
                     resolve(contentHTML);
                     return;
