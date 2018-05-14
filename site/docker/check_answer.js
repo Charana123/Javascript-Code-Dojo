@@ -4,7 +4,6 @@ var cmd = require("node-cmd");
 var Promise = require('bluebird');
 
 const getAsync = Promise.promisify(cmd.get, { multiArgs: true, context: cmd})
-//const foo = newDockerChecker();
 
 const dockerBuildCmd = 'docker build -t mynode '
 const dockerRunCmd = 'docker run mynode'
@@ -112,4 +111,3 @@ function newDockerChecker() {
 
     }());
 }
-
