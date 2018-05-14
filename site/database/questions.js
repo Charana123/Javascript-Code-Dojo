@@ -25,7 +25,7 @@ function QuestionsHandler(database) {
         var getQuestion = function(db, questionId) {
             return new Promise(function (resolve, reject) {
                 db.rowsByField("questions", "id", questionId).then(function(question) {
-                    resolve(question);
+                    resolve(question[0]);
                     return;
                 }, function(err) {
                     reject("unable to get  question by ID: "+err);

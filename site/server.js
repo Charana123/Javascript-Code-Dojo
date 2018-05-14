@@ -174,6 +174,7 @@ function checkSite() {
 
 
 function loadEJS(request, uri, loginFunction, defaultFunction, response, cookie) {
+    uri = "/" + uri;
     var readEJSFile = function(uri, dataFunction, response, userObject){
 
         files.readEJSFile(uri, dataFunction, response, userObject)
@@ -225,97 +226,101 @@ function handle(request, response) {
         return;
     }
 
-    var resolveUrl = function(request, userId) {
+    var resolveUrl = function(url, request, userId) {
         return new Promise(function(resolve) {
 
             var loginFunc = function(){};
             var defaultFunc = function(){};
             var preFunc = false;
+            if (url[0] == '/') {
+                url=url.substring(1);
+            }
+
+            var rest;
+            [url, rest] = url.split("/");
 
             switch (url) {
-                case "/index":
+                case "index":
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     break;
 
-                case "/sign-up":
+                case "sign-up":
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     break;
 
-                case "/challenges":
+                case "challenges":
                     loginFunc = questionsAndUserProgress(questionsHandler, userId);
                     defaultFunc = questionsHandler.getAllQuestions();
                     break;
 
-                case "/snake":
+                case "snake":
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     break;
 
-                case "/tetris":
+                case "tetris":
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     break;
 
-                case "/asteroids":
+                case "asteroids":
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     break;
 
 
-                case "/login":
+                case "login":
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     break;
 
-                case "/forum":
+                case "forum":
                     loginFunc = forumHandler.getAllPosts();
                     defaultFunc = forumHandler.getAllPosts();
                     break;
 
-                case "/new":
+                case "new":
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     url = "forum";
                     break;
 
-                case "/top":
+                case "top":
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     url = "forum";
                     break;
 
-                case "/hot":
+                case "hot":
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     url = "forum";
                     break;
 
-                case "/general":
+                case "general":
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     url = "forum";
                     break;
 
-                case "/editor":
-                    var uri = url.substring(url.lastIndexOf("/") + 1);
-                    console.log(uri);
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                case "editor":
+                    loginFunc = questionsHandler.getQuestion(rest);
+                    defaultFunc = questionsHandler.getQuestion(rest);
                     url="editor";
                     break;
 
-                case "/sign-up_submission":
+                case "sign-up_submission":
                     preFunc = signUpPreFunc(request);
-                    url = "/index";
+                    url = "index";
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     break;
 
-                case "/sign-in_submission":
+                case "sign-in_submission":
                     preFunc = signInPreFunc(request);
-                    url = "/index";
+                    url = "index";
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
                     break;
@@ -323,7 +328,7 @@ function handle(request, response) {
                 default:
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
-                    url = "/index";
+                    url = "index";
             }
 
             resolve([url, loginFunc, defaultFunc, preFunc]);
@@ -336,7 +341,7 @@ function handle(request, response) {
             userId = UserSessions[cookie].id;
         }
 
-        resolveUrl(request, userId).then(function(res) {
+        resolveUrl(url, request, userId).then(function(res) {
             var [url, loginFunc, defaultFunc, preFunc] = res;
 
             if (preFunc) {
