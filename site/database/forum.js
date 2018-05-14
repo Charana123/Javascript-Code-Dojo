@@ -59,7 +59,6 @@ function ForumHandler(database) {
                         fullForums[post.id] = {post: post, replys: []};
                     });
 
-
                     Promise.all(promises).then(function(replys) {
                         replys[0].forEach((reply) => {
                             fullForums[reply.id].replys.push(reply);
@@ -119,8 +118,10 @@ function ForumHandler(database) {
                     });
 
                     Promise.all(promises).then(function(replys) {
-                        replys[0].forEach((reply) => {
-                            fullForums[reply.id].replys.push(reply);
+                        replys.forEach((group) => {
+                            group.forEach((reply) => {
+                                fullForums[reply.id].replys.push(reply);
+                            });
                         });
 
                         resolve(fullForums);
