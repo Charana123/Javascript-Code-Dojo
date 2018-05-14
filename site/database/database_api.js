@@ -61,6 +61,10 @@ function getRowByIdString(table, id) {
     return selectAll + table + " WHERE id = " + id + ";";
 }
 
+function getAllField(table) {
+    return selectAll + table + ";";
+}
+
 function deleteRowString(table, id) {
     return deleteFrom + table + " WHERE id = " + id + ";";
 }
@@ -120,6 +124,19 @@ function getRowsByFieldString(table, field, value) {
 function newDatabase(dbName) {
     return (function() {
         var db = getDatabase(dbName);
+
+        var getAll = function(db, table) {
+            return new Promise(function(resolve, reject) {
+                db.all(getAllField(table), function(err, res) {
+                    if (err) {
+                        reject("failed to read all from table " + table + " in database: " + err.message);
+                        return;
+                    }
+                    resolve(res);
+                });
+            });
+        };
+
 
         var rowById = function(db, table, id) {
             return new Promise(function(resolve, reject) {
@@ -299,6 +316,9 @@ function newDatabase(dbName) {
             },
             rowById:function(table, id) {
                 return rowById(db, table, id);
+            },
+            getAll:function(table) {
+                return getAll(db, table);
             },
             deleteById:function(table, id) {
                 return deleteRow(db, table, id);
