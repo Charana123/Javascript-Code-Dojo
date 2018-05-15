@@ -253,9 +253,8 @@ function UserHandler(database) {
             return new Promise(function(resolve, reject) {
                 var path = "'/imgs/" + id + ".jpeg'";
                 db.updateFieldByValue("users", "image", path, "id", id).then(function(res) {
-                console.dir(">>"+JSON.stringify(image));
-                    //path = fs.realpathSync('.').replace("'", "") + path;
-                    fs.writeFile("img.jpeg", image, 'binary', function(err){
+                    var base64Data = image.replace(/^data:image\/jpeg;base64,/, "");
+                    fs.writeFile("img.jpeg", base64Data, 'base64', function(err){
                         if (err) {
                             reject(err);
                             return;

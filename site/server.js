@@ -148,6 +148,7 @@ function resolveUrl(url, request, userId, response, server) {
             case "login":
                 loginFunc = respFuncs.nothingFunctionIn(request);
                 defaultFunc = respFuncs.nothingFunctionOut(request);
+                url = "index";
                 break;
 
             case "forum":

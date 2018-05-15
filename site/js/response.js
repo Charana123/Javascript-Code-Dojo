@@ -139,8 +139,13 @@ var challengeRequest = function(docker, id, request, response) {
 
 var uploadUserImage = function(userId, request, server) {
     return new Promise(function(resolve, reject) {
-        request.on("data", (data) => {
-            data = data.toString("utf-8");
+
+        var data = "";
+        request.on('data', function (chunk) {
+          if(!(chunk == undefined)) data += chunk;
+        });
+
+        request.on('end', function () {
             server.userHandler.uploadImage(userId, data).then(function(res) {
                 resolve(res);
             }, function(err) {

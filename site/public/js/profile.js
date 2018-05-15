@@ -26,10 +26,8 @@ window.addEventListener("load", function(){
                     img.src = e.target.result;
                     img.onload = function() {
                         ctx.drawImage(img, 0, 0, 512, 512);
-                        console.dir(img.src);
 
                         httpPostAsync("/image_submission", img.src).then(json_response => {
-                            console.log(json_response);
                         })
                     };
                 };
