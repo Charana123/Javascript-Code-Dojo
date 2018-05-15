@@ -1,6 +1,10 @@
 <link rel="stylesheet" href="/css/header.css" />
 
+<% if(!session_valid) { %>
 <% include user-options.ejs %>
+<% } else { %>
+<% include profile.ejs %>
+<% } %>
 <div class="sidebar navigation" id="header" >
   <ul>
     <li> <div id="header-logo"> Learn Javascript </div> </li>
