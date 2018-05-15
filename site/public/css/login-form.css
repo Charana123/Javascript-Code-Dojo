@@ -1,0 +1,106 @@
+/* ======= Form ========================================== */
+#login-form {
+    /* Layout style */
+    padding: 30px;
+    width: calc(100% - 60px);
+    height: calc(100% - 60px);
+    float: left;
+    border: 0px;
+
+    /* Default background color */
+    background-color: rgba(28, 28, 28, 0.98);
+    
+}
+
+/* This element defines a row */
+/* ======= Form Row ======================================= */
+#login-form > div {
+    height: 35px; 
+    width: 100%;
+    
+    margin-bottom: 10px;
+}
+
+/* ======= Form Image ======================================= */
+
+#login-form > div > div {
+    float: left;
+    /* dimensions minus padding and border widths */
+    width: calc(20% - 2px - 4px);
+    height: calc(100% - 2px - 4px);
+
+    padding: 2px;
+    border: 1px solid rgba(11, 11, 11, 0.8);
+
+    /* Vertically align image child */
+    display: flex;
+    align-content: center;
+}
+
+#login-form > div > div > img {
+    height: 60%;
+    width: 60%;
+    opacity: 0.5;
+
+    /* Horizontally align image in parent div */
+    margin: auto;
+}
+
+/* ========== Form Fields ==================================== */
+/* Left align placeholder text of input fields */
+::-webkit-input-placeholder { /* Safari, Chrome, Opera */
+    text-align: left;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+    text-align: left;  
+ }
+ 
+::-moz-placeholder {  /* Firefox 19+ */
+    text-align: left;  
+}
+
+#login-form > div > input {
+    /* Lean on the left of the row */
+    float: left;
+
+    width: 80%;
+    height: 100%;
+
+    /* Remove defaults (for non-div element) */
+    /* background color default for input is white */
+    background-color: #151515; 
+    color: white;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+
+    /* Center cursor/carrot position in input fields */
+    text-align: center;
+
+    /* Drop In Affect */
+    box-shadow: inset 0px 1px 5px rgba(0, 0, 0, 0.8);
+}
+
+/* ========== Form Button ==================================== */
+#login-form > div > button {
+    /* Lean on the left of the row */
+    float: left;
+    
+    width: 60%;
+    height: 100%;
+
+    /* Remove defaults (for non-div element) */
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+
+    color: white;
+    background-color: rgba(35, 35, 35, 1);
+
+    /* Popout Affect */
+    border: 1px solid rgba(40, 40, 40, 1);
+    box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.8); 
+
+    font-size: 15px;
+}
