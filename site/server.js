@@ -103,6 +103,126 @@ function loadEJS(request, uri, loginFunction, defaultFunction, response, cookie)
     }
 }
 
+function resolveUrl(url, request, userId, response, server) {
+    return new Promise(function(resolve) {
+
+        var loginFunc = function(){};
+        var defaultFunc = function(){};
+        var preFunc = false;
+        var errorUrl = "";
+        if (url[0] == '/') {
+            url=url.substring(1);
+        }
+
+        var rest;
+        [url, rest] = url.split("/");
+
+        switch (url) {
+            case "index":
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                break;
+
+            case "sign-up":
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                break;
+
+            case "challenges":
+                loginFunc = respFuncs.questionsAndUserProgress(userId, server);
+                defaultFunc = server.questionsHandler.getAllQuestions();
+                break;
+
+            case "snake":
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                break;
+
+            case "tetris":
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                break;
+
+            case "asteroids":
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                break;
+
+
+            case "login":
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                break;
+
+            case "forum":
+                loginFunc = server.forumHandler.getAllPosts();
+                defaultFunc = server.forumHandler.getAllPosts();
+                break;
+
+            case "new":
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                url = "forum";
+                break;
+
+            case "top":
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                url = "forum";
+                break;
+
+            case "hot":
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                url = "forum";
+                break;
+
+            case "general":
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                url = "forum";
+                break;
+
+            case "editor":
+                loginFunc = server.questionsHandler.getQuestion(rest);
+                defaultFunc = server.questionsHandler.getQuestion(rest);
+                url="editor";
+                break;
+
+            case "sign-up_submission":
+                preFunc = respFunc.signUpPreFunc(request);
+                url = "index";
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = nothingFunctionOut(request);
+                errorUrl = "sign-up";
+                break;
+
+            case "sign-in_submission":
+                preFunc = respFuncs.signInPreFunc(request, server);
+                url = "index";
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                errorUrl = "login";
+                break;
+
+            case "challenge_request":
+                loginFunc = respFuncs.challengeRequest(docker, rest, request, response);
+                defaultFunc = respFuncs.challengeRequest(docker, rest, request, response);
+                url="editor";
+                errorUrl = "challenges";
+                break;
+
+            default:
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                url = "index";
+        }
+
+        resolve([url, loginFunc, defaultFunc, preFunc, errorUrl]);
+    });
+};
+
+
 // Serve a request by delivering a file.
 function handle(request, response) {
 
@@ -132,132 +252,13 @@ function handle(request, response) {
         return;
     }
 
-    var resolveUrl = function(url, request, userId, response) {
-        return new Promise(function(resolve) {
-
-            var loginFunc = function(){};
-            var defaultFunc = function(){};
-            var preFunc = false;
-            var errorUrl = "";
-            if (url[0] == '/') {
-                url=url.substring(1);
-            }
-
-            var rest;
-            [url, rest] = url.split("/");
-
-            switch (url) {
-                case "index":
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = respFuncs.nothingFunctionOut(request);
-                    break;
-
-                case "sign-up":
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = respFuncs.nothingFunctionOut(request);
-                    break;
-
-                case "challenges":
-                    loginFunc = respFuncs.questionsAndUserProgress(userId, server);
-                    defaultFunc = server.questionsHandler.getAllQuestions();
-                    break;
-
-                case "snake":
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = respFuncs.nothingFunctionOut(request);
-                    break;
-
-                case "tetris":
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = respFuncs.nothingFunctionOut(request);
-                    break;
-
-                case "asteroids":
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = respFuncs.nothingFunctionOut(request);
-                    break;
-
-
-                case "login":
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = respFuncs.nothingFunctionOut(request);
-                    break;
-
-                case "forum":
-                    loginFunc = server.forumHandler.getAllPosts();
-                    defaultFunc = server.forumHandler.getAllPosts();
-                    break;
-
-                case "new":
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = respFuncs.nothingFunctionOut(request);
-                    url = "forum";
-                    break;
-
-                case "top":
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = respFuncs.nothingFunctionOut(request);
-                    url = "forum";
-                    break;
-
-                case "hot":
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = respFuncs.nothingFunctionOut(request);
-                    url = "forum";
-                    break;
-
-                case "general":
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = respFuncs.nothingFunctionOut(request);
-                    url = "forum";
-                    break;
-
-                case "editor":
-                    loginFunc = server.questionsHandler.getQuestion(rest);
-                    defaultFunc = server.questionsHandler.getQuestion(rest);
-                    url="editor";
-                    break;
-
-                case "sign-up_submission":
-                    preFunc = respFunc.signUpPreFunc(request);
-                    url = "index";
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
-                    errorUrl = "sign-up";
-                    break;
-
-                case "sign-in_submission":
-                    preFunc = respFuncs.signInPreFunc(request, server);
-                    url = "index";
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = respFuncs.nothingFunctionOut(request);
-                    errorUrl = "login";
-                    break;
-
-                case "challenge_request":
-                    loginFunc = respFuncs.challengeRequest(docker, rest, request, response);
-                    defaultFunc = respFuncs.challengeRequest(docker, rest, request, response);
-                    url="editor";
-                    errorUrl = "challenges";
-                    break;
-
-                default:
-                    loginFunc = respFuncs.nothingFunctionIn(request);
-                    defaultFunc = respFuncs.nothingFunctionOut(request);
-                    url = "index";
-            }
-
-            resolve([url, loginFunc, defaultFunc, preFunc, errorUrl]);
-        });
-    };
-
     cookies.getCookie(request).then(function(cookie) {
         var userId = 0;
         if (server.UserSessions[cookie]) {
             userId = server.UserSessions[cookie].id;
         }
 
-        resolveUrl(url, request, userId, response).then(function(res) {
+        resolveUrl(url, request, userId, response, server).then(function(res) {
             var [url, loginFunc, defaultFunc, preFunc, errorUrl] = res;
 
             if (preFunc) {
