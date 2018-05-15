@@ -2,6 +2,10 @@
 
 const CHALLENGES_NUM = 6;
 const files = require("./files.js")
+const https = require("https");
+
+const secretKey = "6LcLE1kUAAAAAPoRl_vsA0abLIieJxQc1Rz-GkbQ"
+const captchaUrl = "https://www.google.com/recaptcha/api/siteverify"
 
 var nothingFunctionOut = function(request) {
     return new Promise(function(resolve, reject) {
@@ -56,35 +60,35 @@ var signUpPreFunc = function(request, server) {
             username = username.split('=')[1];
             pass1 = pass1.split('=')[1];
             pass2 = pass2.split('=')[1];
-            //captcha = captcha.split('=')[1];
+            captcha = captcha.split('=')[1];
 
-            //https.get(captchaUrl+"?secret="+secretKey+"&response="+captcha, (res) => {
-            //    res.on('data', (d) => {
-            //        d = JSON.parse(d.toString());
-            //        if (d.success) {
-            server.userHandler.signUp(email, username, pass1, pass2).then(function(user) {
-                var userCookie = request.headers["cookie"];
-                user.cookie = userCookie;
-                server.UserSessions[userCookie] = user;
-                resolve(user);
+            https.get(captchaUrl+"?secret="+secretKey+"&response="+captcha, (res) => {
+                res.on('data', (d) => {
+                    d = JSON.parse(d.toString());
+                    if (d.success) {
+                        server.userHandler.signUp(email, username, pass1, pass2).then(function(user) {
+                            var userCookie = request.headers["cookie"];
+                            user.cookie = userCookie;
+                            server.UserSessions[userCookie] = user;
+                            resolve(user);
+                            return;
+
+                        }).catch((err) => {
+                            reject(err.message);
+                            return;
+
+                        });
+                    } else  {
+                        reject("invalid captcha response from client");
+                        return;
+                    }
+                });
+
+            }).on('error', (err) => {
+                reject(err);
                 return;
-
-            }).catch((err) => {
-                reject(err.message);
-                return;
-
             });
-            //    } else  {
-            //        reject("invalid captcha response from client");
-            //        return;
-            //    }
-            //});
-
-        }).on('error', (err) => {
-            reject(err);
-            return;
         });
-        //});
     });
 };
 

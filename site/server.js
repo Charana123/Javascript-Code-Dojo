@@ -1,8 +1,5 @@
 "use strict"
 
-const secretKey = "6LcLE1kUAAAAAPoRl_vsA0abLIieJxQc1Rz-GkbQ"
-const captchaUrl = "https://www.google.com/recaptcha/api/siteverify"
-
 var port = 8080;
 var verbose = true;
 
@@ -189,10 +186,10 @@ function resolveUrl(url, request, userId, response, server) {
                 break;
 
             case "sign-up_submission":
-                preFunc = respFunc.signUpPreFunc(request);
+                preFunc = respFuncs.signUpPreFunc(request, server);
                 url = "index";
                 loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = nothingFunctionOut(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
                 errorUrl = "sign-up";
                 break;
 
