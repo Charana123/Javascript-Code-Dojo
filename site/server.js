@@ -115,8 +115,11 @@ var signUpPreFunc = function(request) {
             //    res.on('data', (d) => {
             //        d = JSON.parse(d.toString());
             //        if (d.success) {
-            userHandler.signUp(email, username, pass1, pass2).then(function(res) {
-                resolve(res);
+            userHandler.signUp(email, username, pass1, pass2).then(function(user) {
+                var userCookie = request.headers["cookie"];
+                user.cookie = userCookie;
+                UserSessions[userCookie] = user;
+                resolve(user);
                 return;
 
             }).catch((err) => {
