@@ -22,7 +22,7 @@
             <% if(session_valid){ %>
             <% var complete = "Not yet!"; if (question.complete) complete = "Complete!" %>
             <div class="passed-percentage" > Passed: <%= complete %> </div>
-            <div class="try-again-button" onclick="redirect_challenge('<%=question.title%>')" >
+            <div class="try-again-button" onclick="redirect_challenge('<%=question.id%>')" >
             Try Again
             </div>
             <% } else { %>

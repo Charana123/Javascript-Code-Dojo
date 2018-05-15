@@ -1,6 +1,7 @@
 "use strict"
 
 const CHALLENGES_NUM = 6;
+const files = require("./files.js")
 
 var nothingFunctionOut = function(request) {
     return new Promise(function(resolve, reject) {
@@ -141,4 +142,3 @@ module.exports = {
     questionsAndUserProgress: questionsAndUserProgress,
     challengeRequest: challengeRequest,
 }
-
