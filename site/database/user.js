@@ -16,11 +16,11 @@ function UserHandler(database) {
         var db = database;
         var challengeHandler = challengeAPI.ChallengesHandler(db);
 
-        function User(username, email, id) {
+        function User(username, email, id, image) {
             this.id = id;
             this.username = username;
             this.email = email;
-            this.image = {};
+            this.image = image;
             this.cookie = "";
         };
 
@@ -98,7 +98,7 @@ function UserHandler(database) {
                     db.newUser(email, username, sPwd.password, sPwd.salt).then(function(res) {
                         db.rowsByField("users", "username", username).then(function(user) {
 
-                            var userObj = new User(user[0].username, user[0].email, user[0].id);
+                            var userObj = new User(user[0].username, user[0].email, user[0].id, user[0].image);
                             challengeHandler.newChallenge(userObj.id).then(function(challenge) {
                                 resolve(userObj);
                                 return;
@@ -137,8 +137,7 @@ function UserHandler(database) {
                         return;
                     }
 
-                    var userObj = new User(user[0].username, user[0].email, user[0].id);
-                    userObj.image = user.image;
+                    var userObj = new User(user[0].username, user[0].email, user[0].id, user[0].image);
 
                     resolve(userObj);
 
@@ -251,15 +250,16 @@ function UserHandler(database) {
 
         var uploadImage = function(db, id, image) {
             return new Promise(function(resolve, reject) {
-                var path = "'/imgs/" + id + ".jpeg'";
+                var path = "'profile_pics/" + id + ".jpeg'";
                 db.updateFieldByValue("users", "image", path, "id", id).then(function(res) {
                     var base64Data = image.replace(/^data:image\/jpeg;base64,/, "");
-                    fs.writeFile("img.jpeg", base64Data, 'base64', function(err){
+                    var filePath ="./public/profile_pics/"+id+".jpeg"
+                    fs.writeFile(filePath, base64Data, 'base64', function(err){
                         if (err) {
                             reject(err);
                             return;
                         }
-                        resolve('File saved.');
+                        resolve("/profile_pics/"+id+".jpeg");
                         return;
                     })
                 }, function(err) {

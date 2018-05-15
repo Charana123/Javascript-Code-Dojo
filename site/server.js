@@ -39,6 +39,11 @@ db.ensureTables().then((value) => {
                 server.forumHandler = require("./database/forum.js").ForumHandler(db);
                 server.questionsHandler = require("./database/questions.js").QuestionsHandler(db);
                 console.log("Database ensured");
+                var dir = './public/profile_pics';
+
+                if (!fs.existsSync(dir)){
+                    fs.mkdirSync(dir);
+                }
 
 
             }).catch((err) => {
@@ -199,7 +204,7 @@ function resolveUrl(url, request, userId, response, server) {
                 url = "index";
                 loginFunc = respFuncs.nothingFunctionIn(request);
                 defaultFunc = respFuncs.nothingFunctionOut(request);
-                errorUrl = "login";
+                errorUrl = "index";
                 break;
 
             case "challenge_request":
@@ -267,7 +272,7 @@ function handle(request, response) {
             var [url, loginFunc, defaultFunc, preFunc, errorUrl] = res;
 
             if (preFunc) {
-                preFunc.then(function() {
+                preFunc.then(function(res) {
                     loadEJS(request, url, loginFunc, defaultFunc, response, cookie);
                     return;
 

@@ -223,7 +223,6 @@ function newDatabase(dbName) {
 
         var updateFieldByValue = function(db, table, field, value, where, id) {
             return new Promise(function(resolve, reject) {
-                console.dir(updateFieldByValueStr(table, field, value, where, id));
                 db.all(updateFieldByValueStr(table, field, value, where, id), [], (err, res) => {
                     if (err) {
                         reject("failed to update record " + id + ": " + err);
@@ -371,7 +370,6 @@ function newDatabase(dbName) {
                         });
 
                     }, function(err) {
-                        console.log("HERE>"+err);
                         reject("failed to ensure posts: "+err);
                         return;
                     });
