@@ -60,15 +60,19 @@ db.ensureTables().then((value) => {
 
 var UserSessions = {};
 
-var nothingFunctionOut = new Promise(function(resolve, reject) {
-    var data = {};
-    resolve(data);
-});
+var nothingFunctionOut = function(request) {
+    return new Promise(function(resolve, reject) {
+        var data = {};
+        resolve(data);
+    });
+};
 
-var nothingFunctionIn = new Promise(function(resolve, reject) {
-    var data = {};
-    resolve(data);
-});
+var nothingFunctionIn = function(request) {
+    return new Promise(function(resolve, reject) {
+        var data = {};
+        resolve(data);
+    });
+};
 
 var signInPreFunc = function(request) {
     return new Promise(function(resolve, reject) {
@@ -278,13 +282,13 @@ function handle(request, response) {
 
             switch (url) {
                 case "index":
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     break;
 
                 case "sign-up":
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     break;
 
                 case "challenges":
@@ -293,24 +297,24 @@ function handle(request, response) {
                     break;
 
                 case "snake":
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     break;
 
                 case "tetris":
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     break;
 
                 case "asteroids":
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     break;
 
 
                 case "login":
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     break;
 
                 case "forum":
@@ -319,26 +323,26 @@ function handle(request, response) {
                     break;
 
                 case "new":
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     url = "forum";
                     break;
 
                 case "top":
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     url = "forum";
                     break;
 
                 case "hot":
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     url = "forum";
                     break;
 
                 case "general":
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     url = "forum";
                     break;
 
@@ -351,16 +355,16 @@ function handle(request, response) {
                 case "sign-up_submission":
                     preFunc = signUpPreFunc(request);
                     url = "index";
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     errorUrl = "sign-up";
                     break;
 
                 case "sign-in_submission":
                     preFunc = signInPreFunc(request);
                     url = "index";
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     errorUrl = "login";
                     break;
 
@@ -372,8 +376,8 @@ function handle(request, response) {
                     break;
 
                 default:
-                    loginFunc = nothingFunctionIn;
-                    defaultFunc = nothingFunctionOut;
+                    loginFunc = nothingFunctionIn(request);
+                    defaultFunc = nothingFunctionOut(request);
                     url = "index";
             }
 
