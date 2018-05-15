@@ -219,7 +219,6 @@ function UserHandler(database) {
 
                         newUser(db, email, username, pass1).then(function(user) {
                             resolve(user);
-
                             return;
 
                         }, function(err) {

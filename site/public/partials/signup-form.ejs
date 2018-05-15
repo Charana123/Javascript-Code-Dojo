@@ -47,13 +47,26 @@
                     <input class="long-field" type="password" placeholder="   Enter Password" name="psw1"></input> <br/>
                     <input class="long-field" type="password" placeholder="   Reenter Password" name="psw2"></input> <br/>
 
-                    <div class="container">
-                        <% if (data.err) { %>
-                        <div> <%= data.err %> </div>
-                        <% } %>
+                    <% if (data.err) { %>
+                    <div id="signup-error"> <%= data.err %> </div>
+                    <% } %>
+                    <script>
+                        function toggleShow() {
+                            var popup = document.getElementById("captcha-popup");
+                            popup.classList.toggle("show");
+                        }
+                    </script>
+                    <div class="popup">
+                        <div id="re-captcha-tickbox">
+                            <input type="checkbox" onclick="toggleShow()" />
+                            <span> I'm not a robot </span>
+                            <img src="/img/reCAPTCHA.png" />
+                        </div>
+                        <div id="captcha-popup" class="g-recaptcha popup-content" data-sitekey="6LcLE1kUAAAAAMh0NkiVqW8WRRjSN2tk-cOecqbb">
+                            please wait ...
+                        </div>
                     </div>
-
-                    <div class="g-recaptcha" data-sitekey="6LcLE1kUAAAAAMh0NkiVqW8WRRjSN2tk-cOecqbb"></div>
+                    
                     <button type="submit" value="submit"> Sign Up </button>
                 </div>
             </form>
@@ -61,3 +74,5 @@
     </div>
     </div>
 </div>
+
+<!-- <div class="g-recaptcha" data-sitekey="6LcLE1kUAAAAAMh0NkiVqW8WRRjSN2tk-cOecqbb"></div> -->

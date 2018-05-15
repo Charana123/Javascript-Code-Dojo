@@ -1,5 +1,5 @@
 #signup-wrapper-wrapper {
-    height: 600px;
+    height: 100%;
     width: 100%;
 
     /* Background */
@@ -8,14 +8,14 @@
     /* background-color: black;  */
     background-image: url("/img/fence-background.png");
 
-    position: relative;
+    position: absolute;
     z-index: 0;
 }
 
 #signup-wrapper-wrapper::after {
     content: "";
 
-    height: 600px;
+    height: 100%;
     width: 100%;
     
     background: linear-gradient(to right, #000000, #777777);
@@ -50,7 +50,7 @@
 }
 
 #signup-container {
-    height: 80%; 
+    height: 60%; 
     width: 70%; 
 
     /* Horizontal element align */
@@ -134,11 +134,11 @@ span:first-child {
 
 #signup-form {
     /* margin: 2.5%; */
-    width: 90%;
+    width: calc(100% - 5% - 5%);
     height: calc(100% - 5% - 5%);
     padding: 5%;
-    /* width: 100%;
-    height: 100%; */
+
+    border: 0px;
 }
 
 #signup-form-heading {
@@ -185,14 +185,133 @@ span:first-child {
     font-size: 15px;
     color: white;
 
+    /* Remove default styling */
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+
     border-radius: 2px;
     background-color: grey;
 }
 
+/*========= Form fields ============================== */
 .short-field {
     width: 170px;
 }
 
 .long-field {
     width: 230px;
+}
+
+#signup-error {
+    font-size: 16px;
+    color: rgb(248, 80, 80);
+}
+
+/* ======= Popup ================================================== */
+.popup {
+    /* Popup Content is relative to Popup Container */ 
+    position: relative;
+    display: block;
+
+    width: 100%;
+    height: 60px;
+}
+
+#re-captcha-tickbox {
+    display: flex;
+    align-items: center;
+
+    /* Popout Affect */
+    border: 1px solid rgba(128, 128, 128, 0.6);
+    box-shadow: 0px 0px 5px 1px rgba(128, 128, 128, 0.6); 
+}
+
+#re-captcha-tickbox input[type=checkbox] {
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    
+    width: 20px;
+    height: 30px;
+    zoom: 2;
+
+    margin-left: 5px;
+}
+
+#re-captcha-tickbox * {
+    float: left;
+}
+
+#re-captcha-tickbox span {
+    margin-left: 10px;
+    font-size: 14px;
+    height: 20px;
+}
+
+#re-captcha-tickbox img {
+    margin-left: 80px;
+    width: 50px;
+    height: 50px;
+}
+
+/* Popup contents */
+.popup .popup-content {
+    /* Color style */
+    font-size: 16px;
+    color: #fff;
+
+    /* Styling */
+    border-radius: 5px;
+    background-color: rgba(35, 35, 35, 0.95);
+
+    /* Layout styling */
+    padding: 20px;
+    height: calc(421px + 60px);
+    width: 300px;
+
+    /* Setting absolute location */ 
+    z-index: 1;
+    position: absolute;
+    right: 102%;
+    bottom: calc(50% - 210px);
+
+    /* Default visibility (toggled by toggling .show class) */
+    visibility: hidden;
+}
+
+/* Popup arrow */
+.popup .popup-content::after {
+    content: "";
+
+    /* Setting absolute location */ 
+    z-index: 1;
+    position: absolute;
+    right: -20px;
+    bottom: calc(50% - 20px - 40px);
+    background-color: transparent;
+
+    /* Arrow affect */
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent transparent rgba(35, 35, 35, 0.95);
+}
+
+/* Toggle popup container visibility in javascript */
+.popup .show {
+    visibility: visible;
+
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
 }

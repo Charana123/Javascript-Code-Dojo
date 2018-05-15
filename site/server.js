@@ -82,7 +82,6 @@ function checkSite() {
 function loadEJS(request, uri, loginFunction, defaultFunction, response, cookie) {
     uri = "/" + uri;
     var readEJSFile = function(uri, dataFunction, response, userObject){
-
         files.readEJSFile(uri, dataFunction, response, userObject)
             .then(function(contentHTML) {
                 var type = types["html"]
