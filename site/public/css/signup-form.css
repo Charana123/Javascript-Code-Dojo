@@ -1,0 +1,198 @@
+#signup-wrapper-wrapper {
+    height: 600px;
+    width: 100%;
+
+    /* Background */
+    /* linear-gradient(to right top, rgb(65, 115, 142), rgb(255, 255, 255)); */
+    /* ,  */
+    /* background-color: black;  */
+    background-image: url("/img/fence-background.png");
+
+    position: relative;
+    z-index: 0;
+}
+
+#signup-wrapper-wrapper::after {
+    content: "";
+
+    height: 600px;
+    width: 100%;
+    
+    background: linear-gradient(to right, #000000, #777777);
+    opacity: 0.5;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    z-index: 1;
+}
+
+#signup-wrapper {
+
+    position: relative;
+    z-index: 2;
+
+    /* z-index: 0; */
+    height: 100%;
+    width: 100%;
+
+    /* Vertically align elements */
+    display: flex;
+    align-items: center;
+
+    /* Text color */
+    color: white;
+
+    /* Background */
+    -webkit-backdrop-filter: grayscale(0%) blur(1px);
+    backdrop-filter: grayscale(0%) blur(1px);
+}
+
+#signup-container {
+    height: 80%; 
+    width: 70%; 
+
+    /* Horizontal element align */
+    margin:auto; 
+}
+
+#signup-reasons {
+    background-color: transparent;
+    float: left;
+    width: 40%;
+}
+
+#signup-header {
+    /* Default for <div> elements */
+    display: block;
+    /* Horizontal align */
+    width: 75%;
+    margin: auto;
+    /* Text Styling */
+    font-size: 30px;
+}
+
+#signup-list {
+    /* Display on seperate line */
+    display:block;
+    /* Remove unordered-list styling */
+    padding: 0;
+    list-style-type: none;
+    /* Horizontal align */
+    width: 75%;
+    margin: auto;
+    /* Layout Styling */
+    margin-top: 10px;
+}
+
+/* #signup-list .span2 { */
+span:first-child {    
+    float: left;
+    /* Vertical Align Content */
+    display: flex;
+    align-content: center;
+
+    /* Layout style */
+    height: 60px;
+    width: 60px;
+    margin-right: 10px;
+
+    /* Circular white container */
+    border-radius: 50px;
+    background-color: white;
+}
+
+#signup-list span ~ span {
+    font-size: 18px;
+    color: lightcoral;
+    /* font-weight: bold; */
+}
+
+#signup-list li {
+    margin-top: 50px;
+    height: 60px;
+}
+
+#signup-list img {
+    margin: auto;
+    height: 40px;
+    width: 40px;
+}
+
+#signup-form-wrapper {
+    /* Make inline (floating with no margin/padding)
+        but support height/width attributes */
+    float: left;
+    height: 100%;
+    width: 60%;
+
+    color: #555555;
+    background-color: white;
+    border-radius: 2px;
+}
+
+#signup-form {
+    /* margin: 2.5%; */
+    width: 90%;
+    height: calc(100% - 5% - 5%);
+    padding: 5%;
+    /* width: 100%;
+    height: 100%; */
+}
+
+#signup-form-heading {
+    font-size: 20px;
+}
+
+.column {
+    float: left;
+    margin-top: 20px;
+}
+
+#label-column {
+    width: 33%;
+    text-align: right;
+    padding-right: 2%;
+}
+
+#label-column > div {
+    margin-top: 27px;
+    font-size: 18px;
+    /* font-family: cursive; */
+}
+
+#field-column {
+    width: 60%;
+}
+
+#field-column > input {
+    margin-top: 10px;
+    height: 35px;
+
+    border-radius: 5px;
+    border: 1px solid grey;
+    box-shadow: inset 0px 0px 3px grey;
+}
+
+#field-column > input:focus {
+    box-shadow: none;
+}
+
+#field-column > button {
+    width: 100px;
+    height: 40px;
+    font-size: 15px;
+    color: white;
+
+    border-radius: 2px;
+    background-color: grey;
+}
+
+.short-field {
+    width: 170px;
+}
+
+.long-field {
+    width: 230px;
+}
