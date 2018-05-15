@@ -1,33 +1,15 @@
-#login-form-popup {
-    /* Takes width of screen */
-    position: absolute;
-    height: 100%;
-    width: 100%;
-
-    /* See semi-transparent black background below */
-    background-color: transparent;
-
-    /* display: none; */
-}
-
 /* ======= Form ========================================== */
 #login-form {
     /* Layout style */
     padding: 30px;
-    width: 15%;
-    height: 20%;
-    
-    /* Position on screen */
-    left: 100px;
-    top: 100px;
-    position: absolute;
-    z-index: 999;
+    width: calc(100% - 60px);
+    height: calc(100% - 60px);
+    float: left;
+    border: 0px;
 
     /* Default background color */
     background-color: rgba(28, 28, 28, 0.98);
-    /* Pop Out Affect */
-    border: 1px solid rgba(11, 11, 11, 0.8);
-    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.8); 
+    
 }
 
 /* This element defines a row */
