@@ -61,11 +61,13 @@ db.ensureTables().then((value) => {
 var UserSessions = {};
 
 var nothingFunctionOut = new Promise(function(resolve, reject) {
-    resolve()
+    var data = {};
+    resolve(data);
 });
 
 var nothingFunctionIn = new Promise(function(resolve, reject) {
-    resolve()
+    var data = {};
+    resolve(data);
 });
 
 var signInPreFunc = function(request) {
@@ -89,6 +91,13 @@ var signInPreFunc = function(request) {
 
             });
         });
+    });
+};
+
+var errorFunc = function(err) {
+    return new Promise(function(resolve, reject) {
+        var error = {err};
+        resolve(error);
     });
 };
 
@@ -256,6 +265,7 @@ function handle(request, response) {
             var loginFunc = function(){};
             var defaultFunc = function(){};
             var preFunc = false;
+            var errorUrl = "";
             if (url[0] == '/') {
                 url=url.substring(1);
             }
@@ -340,6 +350,7 @@ function handle(request, response) {
                     url = "index";
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
+                    errorUrl = "sign-up";
                     break;
 
                 case "sign-in_submission":
@@ -347,12 +358,14 @@ function handle(request, response) {
                     url = "index";
                     loginFunc = nothingFunctionIn;
                     defaultFunc = nothingFunctionOut;
+                    errorUrl = "login";
                     break;
 
                 case "challenge_request":
                     loginFunc = challengeRequest(docker, rest, request, response);
                     defaultFunc = challengeRequest(docker, rest, request, response);
                     url="editor";
+                    errorUrl = "challenges";
                     break;
 
                 default:
@@ -361,7 +374,7 @@ function handle(request, response) {
                     url = "index";
             }
 
-            resolve([url, loginFunc, defaultFunc, preFunc]);
+            resolve([url, loginFunc, defaultFunc, preFunc, errorUrl]);
         });
     };
 
@@ -372,7 +385,7 @@ function handle(request, response) {
         }
 
         resolveUrl(url, request, userId, response).then(function(res) {
-            var [url, loginFunc, defaultFunc, preFunc] = res;
+            var [url, loginFunc, defaultFunc, preFunc, errorUrl] = res;
 
             if (preFunc) {
                 preFunc.then(function() {
@@ -381,6 +394,8 @@ function handle(request, response) {
 
                 }, function(err) {
                     console.log("error occured during pre func: " + err);
+                    url = errorUrl;
+                    loadEJS(request, url, errorFunc(err), errorFunc(err), response, cookie);
                     return;
                 });
 
