@@ -35,6 +35,7 @@ files.readEJSFile = function(uri, getDataFunction, response, user){
             } else {
                 clientData.session_valid = false;
             }
+            clientData.user = user;
 
             console.log("clientData: " + JSON.stringify(clientData));
             ejs.renderFile(EJSfile, clientData, function(err, contentHTML){

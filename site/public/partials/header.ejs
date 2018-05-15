@@ -30,8 +30,12 @@
     <% if(!session_valid) { %>
       <li style="float: right"> <img  id="profile-image" src="/img/default-avatar.svg" /> </li>
     <% } else { %>
-      <li style="float: right"> <img  id="profile-image" src="/img/death.jpg" /> </li>
-      <li style="float: right"  > <img id="settings-image" src="/img/settings-cog.svg" /> </li>
+        <% if(user.img) { %>
+            <li style="float: right"> <img  id="profile-image" src=<%= user.img %> /> </li>
+        <% } else { %>
+            <li style="float: right"> <img  id="profile-image" src="/img/default-avatar.svg" /> </li>
+        <% } %>
+        <li style="float: right"  > <img id="settings-image" src="/img/settings-cog.svg" /> </li>
     <% } %>
   </ul>
 
