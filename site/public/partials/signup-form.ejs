@@ -48,6 +48,11 @@
                     <input class="long-field" type="password" placeholder="   Enter Password" name="psw1"></input> <br/>
                     <input class="long-field" type="password" placeholder="   Reenter Password" name="psw2"></input> <br/>
 
+                    <div class="container">
+                        <% if (data.err) { %>
+                        <div> <%= data.err %> </div>
+                        <% } %>
+                    </div>
 
                     <div class="g-recaptcha" data-sitekey="6LcLE1kUAAAAAMh0NkiVqW8WRRjSN2tk-cOecqbb"></div>
                     <button type="submit" value="submit"> Sign Up </button>
