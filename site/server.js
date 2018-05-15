@@ -16,6 +16,8 @@ var options = {
 
 var files = require("./js/files.js")
 var cookies = require("./js/cookies.js").Cookies();
+const respFuncs = require("./js/response.js");
+
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
 
@@ -23,12 +25,9 @@ var docker = require("./docker/check_answer.js").newDockerChecker();
 
 const dbName = "./secrets/db.sqlite3";
 var db = require("./database/database_api.js").newDatabase(dbName);
-var userHandler;
-var challengeHandler;
-var forumHandler;
-var questionsHandler;
 
-const CHALLENGES_NUM = 6;
+var server = {};
+server.UserSessions = {};
 
 function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
@@ -38,10 +37,10 @@ db.ensureTables().then((value) => {
     sleep(500).then(() => {
         db.ensureQuestions().then((value) => {
             db.dummyForum().then((value) => {
-                userHandler = require("./database/user.js").UserHandler(db);
-                challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
-                forumHandler = require("./database/forum.js").ForumHandler(db);
-                questionsHandler = require("./database/questions.js").QuestionsHandler(db);
+                server.userHandler = require("./database/user.js").UserHandler(db);
+                server.challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
+                server.forumHandler = require("./database/forum.js").ForumHandler(db);
+                server.questionsHandler = require("./database/questions.js").QuestionsHandler(db);
                 console.log("Database ensured");
 
 
@@ -56,139 +55,6 @@ db.ensureTables().then((value) => {
 }).catch((err) => {
     console.log("error: "+ err);
 });
-
-
-var UserSessions = {};
-
-var nothingFunctionOut = function(request) {
-    return new Promise(function(resolve, reject) {
-        var data = {};
-        resolve(data);
-    });
-};
-
-var nothingFunctionIn = function(request) {
-    return new Promise(function(resolve, reject) {
-        var data = {};
-        resolve(data);
-    });
-};
-
-var signInPreFunc = function(request) {
-    return new Promise(function(resolve, reject) {
-        request.on('data', chunk => {
-            var [username, password] = chunk.toString().split('&');
-            username = username.split('=')[1];
-            password = password.split('=')[1];
-
-            userHandler.signIn(username, password).then((user) => {
-                var userCookie = request.headers["cookie"];
-                user.cookie = userCookie;
-                UserSessions[userCookie] = user;
-
-                resolve(user);
-                return;
-
-            }).catch((err) => {
-                reject(err);
-                return;
-
-            });
-        });
-    });
-};
-
-var errorFunc = function(err) {
-    return new Promise(function(resolve, reject) {
-        var error = {err};
-        resolve(error);
-    });
-};
-
-var signUpPreFunc = function(request) {
-    return new Promise(function(resolve, reject) {
-        request.on('data', chunk => {
-            var [username, email, pass1, pass2, captcha] = chunk.toString().split('&');
-            email = email.split('=')[1].replace("%40", "@");
-            username = username.split('=')[1];
-            pass1 = pass1.split('=')[1];
-            pass2 = pass2.split('=')[1];
-            //captcha = captcha.split('=')[1];
-
-            //https.get(captchaUrl+"?secret="+secretKey+"&response="+captcha, (res) => {
-            //    res.on('data', (d) => {
-            //        d = JSON.parse(d.toString());
-            //        if (d.success) {
-            userHandler.signUp(email, username, pass1, pass2).then(function(user) {
-                var userCookie = request.headers["cookie"];
-                user.cookie = userCookie;
-                UserSessions[userCookie] = user;
-                resolve(user);
-                return;
-
-            }).catch((err) => {
-                reject(err.message);
-                return;
-
-            });
-            //    } else  {
-            //        reject("invalid captcha response from client");
-            //        return;
-            //    }
-            //});
-
-        }).on('error', (err) => {
-            reject(err);
-            return;
-        });
-        //});
-    });
-};
-
-var questionsAndUserProgress = function(questionsHandler, userId) {
-    return new Promise(function(resolve, reject) {
-        questionsHandler.getAllQuestions().then(function(questions) {
-            challengeHandler.challengesByUser(userId).then(function(challenges) {
-                for (var i = 0; i < CHALLENGES_NUM; i++) {
-                    questions[i].complete = challenges[i];
-                }
-                resolve(questions);
-                return;
-            }, function(err) {
-                reject(err);
-                return;
-            });
-
-        }, function(err) {
-            reject(err);
-            return;
-        });
-    });
-};
-
-var challengeRequest = function(docker, id, request, response) {
-    return new Promise(function(resolve, reject) {
-        request.on("data", (data) => {
-            data = data.toString("utf-8");
-            files.writeFile("docker/task.js", data);
-            docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/"+id).then(function(ans) {
-                console.log("server got: " + ans);
-                if (ans == true) {
-                    ans = "correct!";
-                } else {
-                    ans = "incorrect!";
-                }
-
-                resolve({"ans": ans});
-                return;
-            }, function(err) {
-
-                reject(err);
-                return;
-            })
-        });
-    });
-}
 
 start();
 
@@ -229,9 +95,9 @@ function loadEJS(request, uri, loginFunction, defaultFunction, response, cookie)
             });
     };
 
-    if (UserSessions[cookie]) {
-        console.log(JSON.stringify(UserSessions));
-        readEJSFile(uri, loginFunction, response, UserSessions[cookie]);
+    if (server.UserSessions[cookie]) {
+        console.log(JSON.stringify(server.UserSessions));
+        readEJSFile(uri, loginFunction, response, server.UserSessions[cookie]);
     } else {
         readEJSFile(uri, defaultFunction, response);
     }
@@ -282,102 +148,102 @@ function handle(request, response) {
 
             switch (url) {
                 case "index":
-                    loginFunc = nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
+                    defaultFunc = respFuncs.nothingFunctionOut(request);
                     break;
 
                 case "sign-up":
-                    loginFunc = nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
+                    defaultFunc = respFuncs.nothingFunctionOut(request);
                     break;
 
                 case "challenges":
-                    loginFunc = questionsAndUserProgress(questionsHandler, userId);
-                    defaultFunc = questionsHandler.getAllQuestions();
+                    loginFunc = respFuncs.questionsAndUserProgress(userId, server);
+                    defaultFunc = server.questionsHandler.getAllQuestions();
                     break;
 
                 case "snake":
-                    loginFunc = nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
+                    defaultFunc = respFuncs.nothingFunctionOut(request);
                     break;
 
                 case "tetris":
-                    loginFunc = nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
+                    defaultFunc = respFuncs.nothingFunctionOut(request);
                     break;
 
                 case "asteroids":
-                    loginFunc = nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
+                    defaultFunc = respFuncs.nothingFunctionOut(request);
                     break;
 
 
                 case "login":
-                    loginFunc = nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
+                    defaultFunc = respFuncs.nothingFunctionOut(request);
                     break;
 
                 case "forum":
-                    loginFunc = forumHandler.getAllPosts();
-                    defaultFunc = forumHandler.getAllPosts();
+                    loginFunc = server.forumHandler.getAllPosts();
+                    defaultFunc = server.forumHandler.getAllPosts();
                     break;
 
                 case "new":
-                    loginFunc = nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
+                    defaultFunc = respFuncs.nothingFunctionOut(request);
                     url = "forum";
                     break;
 
                 case "top":
-                    loginFunc = nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
+                    defaultFunc = respFuncs.nothingFunctionOut(request);
                     url = "forum";
                     break;
 
                 case "hot":
-                    loginFunc = nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
+                    defaultFunc = respFuncs.nothingFunctionOut(request);
                     url = "forum";
                     break;
 
                 case "general":
-                    loginFunc = nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
+                    defaultFunc = respFuncs.nothingFunctionOut(request);
                     url = "forum";
                     break;
 
                 case "editor":
-                    loginFunc = questionsHandler.getQuestion(rest);
-                    defaultFunc = questionsHandler.getQuestion(rest);
+                    loginFunc = server.questionsHandler.getQuestion(rest);
+                    defaultFunc = server.questionsHandler.getQuestion(rest);
                     url="editor";
                     break;
 
                 case "sign-up_submission":
-                    preFunc = signUpPreFunc(request);
+                    preFunc = respFunc.signUpPreFunc(request);
                     url = "index";
-                    loginFunc = nothingFunctionIn(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
                     defaultFunc = nothingFunctionOut(request);
                     errorUrl = "sign-up";
                     break;
 
                 case "sign-in_submission":
-                    preFunc = signInPreFunc(request);
+                    preFunc = respFuncs.signInPreFunc(request, server);
                     url = "index";
-                    loginFunc = nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
+                    defaultFunc = respFuncs.nothingFunctionOut(request);
                     errorUrl = "login";
                     break;
 
                 case "challenge_request":
-                    loginFunc = challengeRequest(docker, rest, request, response);
-                    defaultFunc = challengeRequest(docker, rest, request, response);
+                    loginFunc = respFuncs.challengeRequest(docker, rest, request, response);
+                    defaultFunc = respFuncs.challengeRequest(docker, rest, request, response);
                     url="editor";
                     errorUrl = "challenges";
                     break;
 
                 default:
-                    loginFunc = nothingFunctionIn(request);
-                    defaultFunc = nothingFunctionOut(request);
+                    loginFunc = respFuncs.nothingFunctionIn(request);
+                    defaultFunc = respFuncs.nothingFunctionOut(request);
                     url = "index";
             }
 
@@ -387,8 +253,8 @@ function handle(request, response) {
 
     cookies.getCookie(request).then(function(cookie) {
         var userId = 0;
-        if (UserSessions[cookie]) {
-            userId = UserSessions[cookie].id;
+        if (server.UserSessions[cookie]) {
+            userId = server.UserSessions[cookie].id;
         }
 
         resolveUrl(url, request, userId, response).then(function(res) {
