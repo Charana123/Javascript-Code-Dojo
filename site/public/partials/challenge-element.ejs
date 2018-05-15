@@ -8,26 +8,26 @@
     }
 </script>
 
-<% challenges.forEach(function(challenge) { %>
-    <div id="<%= challenge.title %>" class="challenge-element">
-        <div id="challenges-element-left-col" class="column"> 
-            <div> 
+<% data.forEach(function(question) { %>
+    <div id="<%= question.title %>" class="challenge-element">
+        <div id="challenges-element-left-col" class="column">
+            <div>
                 <img class="completed-image" src="../img/checked.svg" />
-                <div class="challenge-heading" > <%= challenge.title %> </div> 
+                <div class="challenge-heading" > <%= question.title %> </div>
             </div>
             <br/>
-            <div id="challenge-description">  <%= challenge.description %> </div>
+            <div id="challenge-description">  <%= question.question %> </div>
         </div>
-        <div id="challenges-element-right-col" class="column"> 
-            <% if(challenge.user.passed){ %>
-            <div class="passed-percentage" > Passed:<%= challenge.user.passed_percentage %>% </div>
-            <div class="try-again-button" onclick="redirect_challenge('<%=challenge.title%>')" > 
-            Try Again 
+        <div id="challenges-element-right-col" class="column">
+            <% if(session_valid){ %>
+            <% var complete = "Not yet!"; if (question.complete) complete = "Complete!" %>
+            <div class="passed-percentage" > Passed: <%= complete %> </div>
+            <div class="try-again-button" onclick="redirect_challenge('<%=question.title%>')" >
+            Try Again
             </div>
-            <% } %>
-            <% if(!challenge.user.passed){ %>
+            <% } else { %>
                 <div class="passed-percentage" >  </div>
-                <div class="solve-button" onclick="redirect_challenge('<%=challenge.title%>')"> Solve </div>
+                <div class="solve-button" onclick="redirect_challenge('<%= question.id %>')"> Solve </div>
             <% } %>
         </div>
     </div>

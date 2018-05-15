@@ -42,14 +42,16 @@
   </ul>
 </div>
 
-<% forum_data.forEach(function(user){ %>
+<% Object.keys(data).forEach(function(k){ %>
+<% var post = data[k].post %>
+<% var replys = data[k].replys %>
   <div class="sidebar">
     <ul>
-      <li id="question-title"> <%= user.title %> </li>
-      <li id="question-category"> <%= user.category %> </li>
-      <li id="question-comments"> <%= user.comments %> </li>
-      <li id="question-views"> <%= user.views %> </li>
-      <li id="question-activity"> <%= user.activity %> </li>
+      <li id="question-title"> <%= post.title %> </li>
+      <li id="question-category"> <%= post.subject %> </li>
+      <li id="question-comments"> <%= replys.length %> </li>
+      <li id="question-views"> <%= post.views %> </li>
+      <li id="question-activity"> <%= post.activity %> </li>
     </ul>
   </div>
 <% }) %>

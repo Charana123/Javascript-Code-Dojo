@@ -27,11 +27,7 @@
 <div id="wrapper">
   <div id="content-wrapper">
     <div id="content">
-        <pre id="editor">
-          var a = "Hello";
-          var b = "World!";
-          console.log(a + " " + b);
-        </pre>
+        <pre id="editor"><%= data.start_code %></pre>
         <script src="/js/editor/ace.js" type="text/javascript" charset="utf-8"></script>
         <script>
             var editor = ace.edit("editor");
@@ -40,12 +36,23 @@
             editor.renderer.setCursorStyle("smooth");
             editor.session.setUseWrapMode(true);
             editor.session.setWrapLimitRange(80, 80);
+
+            var submitCode = function(){
+                document.getElementById("submitButton").style.visibility = "hidden";
+                document.getElementById("loader").style.visibility = "visible";
+                var user_script_container = ace.edit("editor");
+                httpPostAsync("/challenge_request/" + <%= data.id %>, user_script_container.getValue())
+                    .then(json_response => {
+                            document.getElementById("loader").style.visibility = "hidden";
+                            document.getElementById("submitButton").style.visibility = "visible";
+                            })
+            }
         </script>
         <button id="submitButton" class="buttonload" onclick="submitCode()">
             --Submit--
         </button>
         <div id="loader" class="loader"></div>
-        <div id="response"> </div>
+        <div id="resAns"> The answer is: </div>
     </div>
   </div>
 </div>

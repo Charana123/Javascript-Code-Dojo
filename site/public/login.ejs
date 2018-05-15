@@ -26,6 +26,12 @@
 
                     <button type="submit" value="Submit">Log In</button>
 
+                    <div class="container">
+                        <% if (data.err) { %>
+                        <errorText> <%= data.err %> </errorText>
+                        <% } %>
+                    </div>
+
                     <div class="container" style="background-color:#f1f1f1">
                         <button type="button" class="cancelbtn">Cancel</button>
                         <span class="psw"><a href="#">Forgot password?</a></span>

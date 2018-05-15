@@ -7,7 +7,7 @@ window.onload = function(){
 
     // On window load get cookie "session"
     var sessionCookieValue = getCookie("session")
-    console.log(sessionCookieValue)
+    console.log(sessionCookie);
 
 
     //Set category select handler

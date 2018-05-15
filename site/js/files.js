@@ -1,5 +1,4 @@
 var bluebird = require("bluebird")
-// var fs = bluebird.promisifyAll(require("fs"))
 var fs = require("fs")
 var ejs = require("ejs")
 
@@ -8,16 +7,9 @@ var files = function(){
 }
 
 files.writeFile = function(filename, data){
-    // fs.writeFileAsync(filename, data)
-    //     .then(value => {
-
-    //     })
-    //     .catch(err => {
-    //         console.log(err.message)
-    //     })
     fs.writeFile(filename, data, function(err){
         if(err){
-            console.log(err.message)
+            console.log(err)
         }
     })
 }
@@ -35,8 +27,17 @@ files.readEJSFile = function(uri, getDataFunction, response, user){
     var EJSfile = "./public" + uri + ".ejs";
     return new Promise(function(resolve, reject) {
 
-        getDataFunction().then(function(data) {
-            ejs.renderFile(EJSfile, data, function(err, contentHTML){
+        getDataFunction.then(function(data) {
+            var clientData = {};
+            clientData.data = data;
+            if (user) {
+                clientData.session_valid = true;
+            } else {
+                clientData.session_valid = false;
+            }
+
+            console.log("clientData: " + JSON.stringify(clientData));
+            ejs.renderFile(EJSfile, clientData, function(err, contentHTML){
                 if(!err) {
                     resolve(contentHTML);
                     return;
