@@ -137,6 +137,19 @@ var challengeRequest = function(docker, id, request, response) {
     });
 }
 
+var uploadUserImage = function(userId, request, server) {
+    return new Promise(function(resolve, reject) {
+        request.on("data", (data) => {
+            data = data.toString("utf-8");
+            server.userHandler.uploadImage(userId, data).then(function(res) {
+                resolve(res);
+            }, function(err) {
+                reject(err);
+            });
+        });
+    });
+};
+
 module.exports = {
     nothingFunctionOut: nothingFunctionOut,
     nothingFunctionIn: nothingFunctionIn,
@@ -145,4 +158,5 @@ module.exports = {
     errorFunc: errorFunc,
     questionsAndUserProgress: questionsAndUserProgress,
     challengeRequest: challengeRequest,
+    uploadUserImage: uploadUserImage,
 }

@@ -15,7 +15,7 @@ const CHALLENGES_NUM = 6;
 
 const ensureUserStr = "CREATE TABLE if not exists users " +
     "(id INTEGER PRIMARY KEY, email TEXT, username TEXT," +
-    "password TEXT, salt TEXT, image BLOB)";
+    "password TEXT, salt TEXT, image TEXT)";
 
 const ensureChallengeStr = "CREATE TABLE if not exists challenges " +
     "(user INTEGER" +
@@ -103,6 +103,10 @@ function updateChallengeString(userId, statusArr) {
     return str;
 }
 
+function updateFieldByValueStr(table, field, value, where, id) {
+    return update + table + " SET " + field + " = " + value + " WHERE " + where + " = " + id + ";";
+};
+
 function insertPostStr(userId, title, body, subject) {
     return insertInto + "forum_post (user, title, body, subject, views, time) VALUES(" + userId +
         ", " + title + "', '" + body + "', '" + subject + "', 0, datetime('now','localtime'));";
@@ -121,7 +125,6 @@ function insertReplyStr(postId, userId, body) {
 function insertQuestionStr(id, title, question, answer_file, start_code) {
     return insertInto + "questions (id, title, question , answer_file, start_code) VALUES (" + id + ",'" + title + "', '" + question + "', '"  + answer_file + "', '" + start_code + "');";
 }
-
 
 function getRowsByFieldString(table, field, value) {
     return selectAll + table + " WHERE " + field + " = '" + value + "';";
@@ -214,6 +217,19 @@ function newDatabase(dbName) {
                     }
 
                     resolve(challenge);
+                });
+            });
+        };
+
+        var updateFieldByValue = function(db, table, field, value, where, id) {
+            return new Promise(function(resolve, reject) {
+                console.dir(updateFieldByValueStr(table, field, value, where, id));
+                db.all(updateFieldByValueStr(table, field, value, where, id), [], (err, res) => {
+                    if (err) {
+                        reject("failed to update record " + id + ": " + err);
+                        return;
+                    }
+                    resolve(res);
                 });
             });
         };
@@ -383,6 +399,9 @@ function newDatabase(dbName) {
             },
             rowsByField:function(table, field, value) {
                 return rowsByField(db, table, field, value);
+            },
+            updateFieldByValue:function(table, field, value, where, id) {
+                return updateFieldByValue(db, table, field, value, where, id);
             },
             newUser:function(email, username, password, salt) {
                 return newUser(db, email, username, password, salt);

@@ -2,6 +2,7 @@
 
 const crypto = require('crypto');
 const challengeAPI = require("./challenges.js")
+const fs = require("fs")
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -246,7 +247,27 @@ function UserHandler(database) {
                     reject(err);
                 });
             });
-        }
+        };
+
+        var uploadImage = function(db, id, image) {
+            return new Promise(function(resolve, reject) {
+                var path = "'/imgs/" + id + ".jpeg'";
+                db.updateFieldByValue("users", "image", path, "id", id).then(function(res) {
+                console.dir(">>"+JSON.stringify(image));
+                    //path = fs.realpathSync('.').replace("'", "") + path;
+                    fs.writeFile("img.jpeg", image, 'binary', function(err){
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        resolve('File saved.');
+                        return;
+                    })
+                }, function(err) {
+                    reject(err);
+                });
+            });
+        };
 
         return {
             signUp:function(email, username, pass1, pass2) {
@@ -254,6 +275,9 @@ function UserHandler(database) {
             },
             signIn:function(username, password) {
                 return signIn(username, password);
+            },
+            uploadImage:function(id, image) {
+                return uploadImage(db, id, image);
             },
         }
     }());

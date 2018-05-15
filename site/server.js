@@ -208,6 +208,14 @@ function resolveUrl(url, request, userId, response, server) {
                 errorUrl = "challenges";
                 break;
 
+            case "image_submission":
+                preFunc = respFuncs.uploadUserImage(userId, request, server);
+                url = "index";
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                errorUrl = "index";
+                break;
+
             default:
                 loginFunc = respFuncs.nothingFunctionIn(request);
                 defaultFunc = respFuncs.nothingFunctionOut(request);
@@ -265,7 +273,7 @@ function handle(request, response) {
                 }, function(err) {
                     console.log("error occured during pre func: " + err);
                     url = errorUrl;
-                    loadEJS(request, url, errorFunc(err), errorFunc(err), response, cookie);
+                    loadEJS(request, url, respFuncs.errorFunc(err), respFuncs.errorFunc(err), response, cookie);
                     return;
                 });
 
