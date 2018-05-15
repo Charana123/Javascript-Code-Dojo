@@ -12,7 +12,11 @@
     <div id="<%= question.title %>" class="challenge-element">
         <div id="challenges-element-left-col" class="column">
             <div>
+                <% if(question.complete){ %>
                 <img class="completed-image" src="../img/checked.svg" />
+                <% } else { %>
+                <img class="completed-image" src="../img/cross.svg" />
+                <% } %>
                 <div class="challenge-heading" > <%= question.title %> </div>
             </div>
             <br/>
