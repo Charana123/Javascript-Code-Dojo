@@ -6,28 +6,37 @@
   <meta name="author" content="Joshua Van Leeuwen and Charana Nandasena" />
   <meta name="copyright" content="Copyright Goes Here" />
   <meta name="description" content="A website to learn JavaScript!" />
-  <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
-  <link rel="stylesheet" type="text/css" media="screen" href="css/forum.css" />
-  <script type="text/javascript" src="js/cookies.js" async="async"> </script>
-  <script type="text/javascript" src="js/forum_cookies.js" async="async"> </script>
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/home.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/forum.css" />
 </head>
 
 <body>
 
 <% include partials/header %>
 
-<div class="sidebar navigation">
-  <ul>
-  </ul>
-</div>
-
 <div class="topbar">
   <ul>
     <li id="question-title"> <%= data.title %> </li>
     <li id="question-category"> <%= data.subject %> </li>
     <li id="question-views"> <%= data.time %> </li>
+    <li id="question-views"> user: <%= data.user %> </li>
   </ul>
 </div>
+
+<% Object.keys(data.replys).forEach(function(k){ %>
+<% var reply = data.replys[k] %>
+  <div class="sidebar">
+
+    <div class="forum-container">
+        <ul>
+            <li id="question-title"> <%= reply.body %> </li>
+            <li id="question-category"> user: <%= reply.user %> </li>
+            <li id="question-comments"> <%= reply.body %> </li>
+            <li id="question-activity"> <%= reply.time %> </li>
+        </ul>
+    </div>
+  </div>
+<% }) %>
 
 </body>
 </html>

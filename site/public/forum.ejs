@@ -8,8 +8,6 @@
   <meta name="description" content="A website to learn JavaScript!" />
   <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="css/forum.css" />
-  <script type="text/javascript" src="js/cookies.js" async="async"> </script>
-  <script type="text/javascript" src="js/forum_cookies.js" async="async"> </script>
 </head>
 
 <body>
@@ -48,7 +46,7 @@
   <div class="sidebar">
 
     <div class="forum-container">
-        <a  href="forum_post/<%= post.id %>">
+        <a  href="/forum_post/<%= post.id %>">
             <ul>
                 <li id="question-title"> <%= post.title %>
                 </li>
