@@ -40,25 +40,7 @@
   </ul>
 </div>
 
-<% Object.keys(data).forEach(function(k){ %>
-<% var post = data[k].post %>
-<% var replys = data[k].replys %>
-  <div class="sidebar">
-
-    <div class="forum-container">
-        <a  href="/forum_post/<%= post.id %>">
-            <ul>
-                <li id="question-title"> <%= post.title %>
-                </li>
-                <li id="question-category"> <%= post.subject %> </li>
-                <li id="question-comments"> <%= replys.length %> </li>
-                <li id="question-views"> <%= post.views %> </li>
-                <li id="question-activity"> <%= post.time %> </li>
-            </ul>
-        </a>
-    </div>
-  </div>
-<% }) %>
+<% include partials/forum-list %>
 
 </body>
 </html>

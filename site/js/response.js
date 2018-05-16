@@ -30,6 +30,10 @@ var signInPreFunc = function(request, server) {
 
             server.userHandler.signIn(username, password).then((user) => {
                 var userCookie = request.headers["cookie"];
+                if (userCookie.indexOf(';') > -1) {
+                    userCookie = userCookie.substr(0, userCookie.indexOf(';'));
+                }
+
                 user.cookie = userCookie;
                 server.UserSessions[userCookie] = user;
 
@@ -68,6 +72,9 @@ var signUpPreFunc = function(request, server) {
                     if (d.success) {
                         server.userHandler.signUp(email, username, pass1, pass2).then(function(user) {
                             var userCookie = request.headers["cookie"];
+                            if (userCookie.indexOf(';') > -1) {
+                                userCookie = userCookie.substr(0, userCookie.indexOf(';'));
+                            }
                             user.cookie = userCookie;
                             server.UserSessions[userCookie] = user;
                             resolve(user);

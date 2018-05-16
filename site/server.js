@@ -96,8 +96,13 @@ function loadEJS(request, uri, loginFunction, defaultFunction, response, cookie)
             });
     };
 
+
+    if (cookie.indexOf(';') > -1) {
+        cookie = cookie.substr(0, cookie.indexOf(';'));
+    }
+
     if (server.UserSessions[cookie]) {
-        console.log(JSON.stringify(server.UserSessions));
+        console.dir(JSON.stringify(server.UserSessions));
         readEJSFile(uri, loginFunction, response, server.UserSessions[cookie]);
     } else {
         readEJSFile(uri, defaultFunction, response);
@@ -223,9 +228,9 @@ function resolveUrl(url, request, userId, response, server) {
                 break;
 
             case "forum_post":
-                url = "post";
                 loginFunc = respFuncs.postRequest(rest, server);
                 defaultFunc = respFuncs.postRequest(rest, server);
+                url = "forum_post";
                 break;
 
             default:
@@ -270,6 +275,9 @@ function handle(request, response) {
 
     cookies.getCookie(request).then(function(cookie) {
         var userId = 0;
+        if (cookie.indexOf(';') > -1) {
+            cookie = cookie.substr(0, cookie.indexOf(';'));
+        }
         if (server.UserSessions[cookie]) {
             userId = server.UserSessions[cookie].id;
         }
