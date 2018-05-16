@@ -39,13 +39,22 @@
 <% }) %>
 
 <% if (session_valid) { %>
-  <div class="sidebar">
-    <div class="forum-container">
-        <ul>
-            <li id="question-title"> HERE </li>
-        </ul>
-    </div>
-  </div>
+    <body>
+        <div id="wrapper">
+            <div id="content-wrapper">
+                <div id="content">
+            <form id="reply-form" method="post" action="/reply_submission/<%= data.id %>">
+                <div class="column" id="field-column">
+                    <input class="long-field" type="text" placeholder="" name="reply"></input> <br/>
+                    <input id="postId" name="postId" type="hidden" value="<%= data.id %>"> </input>
+
+                    <button type="submit" value="submit"> Reply </button>
+                </div>
+            </form>
+                </div>
+            </div>
+        </div>
+        </body>
 <% } %>
 
 </body>

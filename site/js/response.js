@@ -175,6 +175,25 @@ var uploadUserImage = function(userId, request, server) {
     });
 };
 
+var replySubmission = function(request, userId, server) {
+    return new Promise(function(resolve, reject) {
+        request.on('data', data => {
+            data = data.toString("utf-8");
+            'Reply=Hello%21&postId=1'
+            var [reply, postId] = data.toString().split('&');
+            // We need to format this reply with the special characters
+            reply = reply.split('=')[1];
+            postId = postId.split('=')[1];
+
+            server.forumHandler.newReply(postId, userId, reply).then(function(res) {
+                resolve(res);
+            }, function(err) {
+                reject(err);
+            });
+        });
+    });
+};
+
 module.exports = {
     nothingFunctionOut: nothingFunctionOut,
     nothingFunctionIn: nothingFunctionIn,
@@ -185,4 +204,5 @@ module.exports = {
     challengeRequest: challengeRequest,
     uploadUserImage: uploadUserImage,
     postRequest: postRequest,
+    replySubmission: replySubmission,
 }

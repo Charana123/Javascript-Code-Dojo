@@ -233,6 +233,14 @@ function resolveUrl(url, request, userId, response, server) {
                 url = "forum_post";
                 break;
 
+            case "reply_submission":
+                preFunc = respFuncs.replySubmission(request, userId, server);
+                loginFunc = respFuncs.postRequest(rest, server);
+                defaultFunc = respFuncs.postRequest(rest, server);
+                url = "forum_post";
+                errorUrl = "forum_post";
+                break;
+
             default:
                 loginFunc = respFuncs.nothingFunctionIn(request);
                 defaultFunc = respFuncs.nothingFunctionOut(request);
