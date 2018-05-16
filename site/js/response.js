@@ -137,6 +137,27 @@ var challengeRequest = function(docker, id, request, response) {
     });
 }
 
+var uploadUserImage = function(userId, request, server) {
+    return new Promise(function(resolve, reject) {
+
+        var data = "";
+        request.on('data', function (chunk) {
+          if(!(chunk == undefined)) data += chunk;
+        });
+
+        request.on('end', function () {
+            server.userHandler.uploadImage(userId, data).then(function(res) {
+                var userCookie = request.headers["cookie"];
+                var user = server.UserSessions[userCookie];
+                user.image = res;
+                resolve(user);
+            }, function(err) {
+                reject(err);
+            });
+        });
+    });
+};
+
 module.exports = {
     nothingFunctionOut: nothingFunctionOut,
     nothingFunctionIn: nothingFunctionIn,
@@ -145,4 +166,5 @@ module.exports = {
     errorFunc: errorFunc,
     questionsAndUserProgress: questionsAndUserProgress,
     challengeRequest: challengeRequest,
+    uploadUserImage: uploadUserImage,
 }

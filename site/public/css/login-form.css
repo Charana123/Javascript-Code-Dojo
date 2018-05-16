@@ -9,7 +9,7 @@
 
     /* Default background color */
     background-color: rgba(28, 28, 28, 0.98);
-    
+
 }
 
 /* This element defines a row */
@@ -17,7 +17,7 @@
 #login-form > div {
     height: 35px; 
     width: 100%;
-    
+
     margin-bottom: 10px;
 }
 
@@ -86,7 +86,7 @@
 #login-form > div > button {
     /* Lean on the left of the row */
     float: left;
-    
+
     width: 60%;
     height: 100%;
 

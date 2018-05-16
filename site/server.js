@@ -39,6 +39,11 @@ db.ensureTables().then((value) => {
                 server.forumHandler = require("./database/forum.js").ForumHandler(db);
                 server.questionsHandler = require("./database/questions.js").QuestionsHandler(db);
                 console.log("Database ensured");
+                var dir = './public/profile_pics';
+
+                if (!fs.existsSync(dir)){
+                    fs.mkdirSync(dir);
+                }
 
 
             }).catch((err) => {
@@ -148,6 +153,7 @@ function resolveUrl(url, request, userId, response, server) {
             case "login":
                 loginFunc = respFuncs.nothingFunctionIn(request);
                 defaultFunc = respFuncs.nothingFunctionOut(request);
+                url = "index";
                 break;
 
             case "forum":
@@ -198,7 +204,7 @@ function resolveUrl(url, request, userId, response, server) {
                 url = "index";
                 loginFunc = respFuncs.nothingFunctionIn(request);
                 defaultFunc = respFuncs.nothingFunctionOut(request);
-                errorUrl = "login";
+                errorUrl = "index";
                 break;
 
             case "challenge_request":
@@ -206,6 +212,14 @@ function resolveUrl(url, request, userId, response, server) {
                 defaultFunc = respFuncs.challengeRequest(docker, rest, request, response);
                 url="editor";
                 errorUrl = "challenges";
+                break;
+
+            case "image_submission":
+                preFunc = respFuncs.uploadUserImage(userId, request, server);
+                url = "index";
+                loginFunc = respFuncs.nothingFunctionIn(request);
+                defaultFunc = respFuncs.nothingFunctionOut(request);
+                errorUrl = "index";
                 break;
 
             default:
@@ -258,14 +272,14 @@ function handle(request, response) {
             var [url, loginFunc, defaultFunc, preFunc, errorUrl] = res;
 
             if (preFunc) {
-                preFunc.then(function() {
+                preFunc.then(function(res) {
                     loadEJS(request, url, loginFunc, defaultFunc, response, cookie);
                     return;
 
                 }, function(err) {
                     console.log("error occured during pre func: " + err);
                     url = errorUrl;
-                    loadEJS(request, url, errorFunc(err), errorFunc(err), response, cookie);
+                    loadEJS(request, url, respFuncs.errorFunc(err), respFuncs.errorFunc(err), response, cookie);
                     return;
                 });
 
