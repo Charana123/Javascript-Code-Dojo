@@ -24,6 +24,10 @@ function ForumHandler(database) {
             });
         };
 
+        var sortReplsyByTime = function(x, y) {
+            return y.time - x.time;
+        };
+
         var newPost = function(db, userId, title, body, subject) {
             return new Promise(function(resolve, reject) {
                 db.newForumPost(userId, title, body, subject).then(function(res) {
@@ -52,7 +56,7 @@ function ForumHandler(database) {
             return new Promise(function(resolve, reject) {
                 db.rowsByField("forum_post", "id", postId).then(function(posts) {
                     getReplys(posts[0].id).then(function(replys) {
-                        posts[0].replys = replys;
+                        posts[0].replys = replys.sort(sortReplsyByTime);
                         resolve(posts[0]);
                         return;
                     }, function(err) {
@@ -77,7 +81,9 @@ function ForumHandler(database) {
                         fullForums[post.id] = {post: post, replys: []};
                     });
 
-                    Promise.all(promises).then(function(replys) {
+                    Promise.all(promises).then(function(resp) {
+                        var replys = resp[0];
+                        replys.sort
                         replys[0].forEach((reply) => {
                             fullForums[reply.id].replys.push(reply);
                         });
