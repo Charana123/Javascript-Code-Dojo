@@ -32,7 +32,7 @@
   </ul>
 </div>
 
-<div class="sidebar">
+<div class="topbar">
   <ul>
     <li id="question-title"> Title </li>
     <li id="question-category"> Category </li>
@@ -46,13 +46,16 @@
 <% var post = data[k].post %>
 <% var replys = data[k].replys %>
   <div class="sidebar">
-    <ul>
-      <li id="question-title"> <%= post.title %> </li>
-      <li id="question-category"> <%= post.subject %> </li>
-      <li id="question-comments"> <%= replys.length %> </li>
-      <li id="question-views"> <%= post.views %> </li>
-      <li id="question-activity"> <%= post.activity %> </li>
-    </ul>
+
+    <div class="forum-container">
+        <ul>
+            <li id="question-title"> <%= post.title %> </li>
+            <li id="question-category"> <%= post.subject %> </li>
+            <li id="question-comments"> <%= replys.length %> </li>
+            <li id="question-views"> <%= post.views %> </li>
+            <li id="question-activity"> <%= post.activity %> </li>
+        </ul>
+    </div>
   </div>
 <% }) %>
 
