@@ -106,11 +106,11 @@ function loadEJS(request, uri, loginFunction, defaultFunction, response, cookie)
 
 function resolveUrl(url, request, userId, response, server) {
     return new Promise(function(resolve) {
-
         var loginFunc = function(){};
         var defaultFunc = function(){};
         var preFunc = false;
         var errorUrl = "";
+
         if (url[0] == '/') {
             url=url.substring(1);
         }
@@ -220,6 +220,12 @@ function resolveUrl(url, request, userId, response, server) {
                 loginFunc = respFuncs.nothingFunctionIn(request);
                 defaultFunc = respFuncs.nothingFunctionOut(request);
                 errorUrl = "index";
+                break;
+
+            case "forum_post":
+                url = "post";
+                loginFunc = respFuncs.postRequest(rest, server);
+                defaultFunc = respFuncs.postRequest(rest, server);
                 break;
 
             default:

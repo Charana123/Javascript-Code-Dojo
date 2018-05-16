@@ -48,6 +48,24 @@ function ForumHandler(database) {
             });
         };
 
+        var getPost = function(db, postId) {
+            return new Promise(function(resolve, reject) {
+                db.rowsByField("forum_post", "id", postId).then(function(posts) {
+                    getReplys(posts[0].id).then(function(replys) {
+                        posts[0].replys = replys;
+                        resolve(posts[0]);
+                        return;
+                    }, function(err) {
+                        reject(err);
+                        return;
+                    });
+                }, function(err) {
+                    reject(err);
+                    return;
+                });
+            });
+        };
+
         var getForumsByUser = function(db, userId) {
             return new Promise(function(resolve, reject) {
                 db.rowsByField("forum_post", "user", userId).then(function(posts) {
@@ -155,6 +173,9 @@ function ForumHandler(database) {
             },
             getAllPosts:function(){
                 return getAllPosts(db);
+            },
+            getPost:function(postId){
+                return getPost(db, postId);
             },
         }
 

@@ -135,7 +135,17 @@ var challengeRequest = function(docker, id, request, response) {
             })
         });
     });
-}
+};
+
+var postRequest = function(postId, server) {
+    return new Promise(function(resolve, reject) {
+        server.forumHandler.getPost(postId).then(function(post) {
+            resolve(post);
+        }, function(err) {
+            reject(err);
+        });
+    });
+};
 
 var uploadUserImage = function(userId, request, server) {
     return new Promise(function(resolve, reject) {
@@ -167,4 +177,5 @@ module.exports = {
     questionsAndUserProgress: questionsAndUserProgress,
     challengeRequest: challengeRequest,
     uploadUserImage: uploadUserImage,
+    postRequest: postRequest,
 }

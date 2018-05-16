@@ -1,5 +1,6 @@
 #question-title {
-    width: 600px
+    font-weight: bold;
+    width: 400px;
 }
 
 #question-category {
