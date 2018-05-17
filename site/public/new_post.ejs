@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>Learn JavaScript!</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="author" content="Joshua Van Leeuwen and Charana Nandasena" />
+        <meta name="copyright" content="Copyright Goes Here" />
+        <meta name="description" content="A website to learn JavaScript!" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/login.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/css/new-post-form.css" />
+    </head>
+    <% include partials/header %>
+    <body>
+        <div id="wrapper">
+            <div id="content-wrapper">
+                <div id="content">
+
+                    <div id="new-post-form-wrapper">
+
+                        <form id="new-post-form" method="post" action="/new_post_submission">
+                            <div id="new-post-form-heading"> New Post! </div>
+                            <div class="column" id="label-column" >
+                                <div> Subject </div>
+                                <div> Title </div>
+                                <div> Body </div>
+                            </div>
+                            <div class="column" id="field-column">
+                                <input class="short-field" type="text" placeholder="Subject" name="subject"></input> <br/>
+                                <input class="short-field" type="text" placeholder="Title" name="title"></input> <br/>
+                                <input class="long-field" type="text" placeholder="Body" name="body"></input> <br/>
+
+                                <button type="submit" value="submit"> Sign Up </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </body>
+</html>

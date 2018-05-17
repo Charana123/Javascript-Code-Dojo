@@ -109,7 +109,7 @@ function updateFieldByValueStr(table, field, value, where, id) {
 
 function insertPostStr(userId, title, body, subject) {
     return insertInto + "forum_post (user, title, body, subject, views, time) VALUES(" + userId +
-        ", " + title + "', '" + body + "', '" + subject + "', 0, datetime('now','localtime'));";
+        ", '" + title + "', '" + body + "', '" + subject + "', 0, datetime('now','localtime'));";
 }
 
 function insertPostStrWithId(id, userId, title, body, subject, views) {

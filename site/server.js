@@ -111,8 +111,8 @@ function loadEJS(request, uri, loginFunction, defaultFunction, response, cookie)
 
 function resolveUrl(url, request, userId, response, server) {
     return new Promise(function(resolve) {
-        var loginFunc = function(){};
-        var defaultFunc = function(){};
+        var loginFunc = respFuncs.nothingFunctionIn(request);
+        var defaultFunc = respFuncs.nothingFunctionOut(request);
         var preFunc = false;
         var errorUrl = "";
 
@@ -125,13 +125,9 @@ function resolveUrl(url, request, userId, response, server) {
 
         switch (url) {
             case "index":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 break;
 
             case "sign-up":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 break;
 
             case "challenges":
@@ -140,24 +136,16 @@ function resolveUrl(url, request, userId, response, server) {
                 break;
 
             case "snake":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 break;
 
             case "tetris":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 break;
 
             case "asteroids":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 break;
 
 
             case "login":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 url = "index";
                 break;
 
@@ -167,26 +155,18 @@ function resolveUrl(url, request, userId, response, server) {
                 break;
 
             case "new":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 url = "forum";
                 break;
 
             case "top":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 url = "forum";
                 break;
 
             case "hot":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 url = "forum";
                 break;
 
             case "general":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 url = "forum";
                 break;
 
@@ -199,16 +179,12 @@ function resolveUrl(url, request, userId, response, server) {
             case "sign-up_submission":
                 preFunc = respFuncs.signUpPreFunc(request, server);
                 url = "index";
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 errorUrl = "sign-up";
                 break;
 
             case "sign-in_submission":
                 preFunc = respFuncs.signInPreFunc(request, server);
                 url = "index";
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 errorUrl = "index";
                 break;
 
@@ -222,8 +198,6 @@ function resolveUrl(url, request, userId, response, server) {
             case "image_submission":
                 preFunc = respFuncs.uploadUserImage(userId, request, server);
                 url = "index";
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 errorUrl = "index";
                 break;
 
@@ -241,9 +215,18 @@ function resolveUrl(url, request, userId, response, server) {
                 errorUrl = "forum_post";
                 break;
 
+            case "new_post":
+                break;
+
+            case "new_post_submission":
+                preFunc = respFuncs.newPostSubmission(request, userId, server);
+                url = "forum";
+                errorUrl = "forum";
+                loginFunc = server.forumHandler.getAllPosts();
+                defaultFunc = server.forumHandler.getAllPosts();
+                break;
+
             default:
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 url = "index";
         }
 

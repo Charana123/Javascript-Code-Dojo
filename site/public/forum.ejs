@@ -27,6 +27,9 @@
     <li><a href="new">New</a></li>
     <li><a href="top">Top</a></li>
     <li><a href="hot">Hot</a></li>
+<% if (session_valid) { %>
+    <li><a href="new_post">[New Post]</a></li>
+<% } %>
   </ul>
 </div>
 

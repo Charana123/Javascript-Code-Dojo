@@ -179,7 +179,6 @@ var replySubmission = function(request, userId, server) {
     return new Promise(function(resolve, reject) {
         request.on('data', data => {
             data = data.toString("utf-8");
-            'Reply=Hello%21&postId=1'
             var [reply, postId] = data.toString().split('&');
             // We need to format this reply with the special characters
             reply = reply.split('=')[1];
@@ -189,6 +188,27 @@ var replySubmission = function(request, userId, server) {
                 resolve(res);
             }, function(err) {
                 reject(err);
+            });
+        });
+    });
+};
+
+var newPostSubmission = function(request, userId, server) {
+    return new Promise(function(resolve, reject) {
+        request.on('data', data => {
+            data = data.toString("utf-8");
+            //"subject=This+is+a+subject&title=This+is+a+title&body=This+is+a+body"
+            var [subject, title, body] = data.toString().split('&');
+            // We need to format this reply with the special characters
+            subject = subject.split('=')[1].replace(/\+/g, " ");
+            title = title.split('=')[1].replace(/\+/g, " ");
+            body = body.split('=')[1].replace(/\+/g, " ");
+
+            server.forumHandler.newPost(userId, title, body, subject).then(function(res){
+                resolve(res);
+            }, function(err) {
+                reject(err);
+                return;
             });
         });
     });
@@ -205,4 +225,5 @@ module.exports = {
     uploadUserImage: uploadUserImage,
     postRequest: postRequest,
     replySubmission: replySubmission,
+    newPostSubmission: newPostSubmission,
 }
