@@ -6,4 +6,3 @@ site/docker/nohup.out
 site/docker/output
 node_modules
 site/secrets/db.sqlite3
-site/public/profile_pics

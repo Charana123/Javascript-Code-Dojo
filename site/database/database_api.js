@@ -5,6 +5,7 @@ const fs = require('fs');
 const questionsJSON = require("./questions.json");
 const postJSON = require("../dummy_data/posts.json");
 const replyJSON = require("../dummy_data/replys.json");
+const userJSON = require("../dummy_data/users.json");
 
 const selectAll = "SELECT * FROM ";
 const insertInto = "INSERT INTO ";
@@ -74,6 +75,11 @@ function deleteRowString(table, id) {
 function insertUserString(email, username, password, salt) {
     return insertInto + "users (email, username, password, salt) VALUES ('" + email +
         "', '" + username + "', '"  + password + "', '" + salt + "');";
+}
+
+function insertUserWithImageString(email, username, password, salt, image) {
+    return insertInto + "users (email, username, password, salt, image) VALUES ('" + email +
+        "', '" + username + "', '"  + password + "', '" + salt + "', '" + image + "');";
 }
 
 function insertChallengeStringZeros(userId) {
@@ -187,6 +193,18 @@ function newDatabase(dbName) {
         var newUser = function(db, email, username, password, salt) {
             return new Promise(function(resolve, reject) {
                 db.all(insertUserString(email, username, password, salt), [], (err, user) => {
+                    if (err) {
+                        reject("failed to create user " + username + ": " + err.message);
+                        return;
+                    }
+                    resolve(user);
+                });
+            });
+        };
+
+        var newUserWithImage = function(db, email, username, password, salt, image) {
+            return new Promise(function(resolve, reject) {
+                db.all(insertUserWithImageString(email, username, password, salt, image), [], (err, user) => {
                     if (err) {
                         reject("failed to create user " + username + ": " + err.message);
                         return;
@@ -359,6 +377,11 @@ function newDatabase(dbName) {
 
                         replyJSON.forEach((r) => {
                             rs.push(newForumReply(db, r.id, r.user, r.body));
+                        });
+
+                        userJSON.forEach((u) => {
+                            rs.push(newUserWithImage(db, u.email, u.username, u.password, u.salt, u.image));
+
                         });
 
                         Promise.all(rs).then(function(res) {

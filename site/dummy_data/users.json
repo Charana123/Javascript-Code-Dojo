@@ -1,0 +1,16 @@
+[ {
+    "id": 1,
+    "username": "dummyUser1",
+    "email": "dummyUser1@foo.com",
+    "password": "foo",
+    "salt": "foo",
+    "image": "profile_pics/1.jpeg"
+},
+{
+    "id": 2,
+    "username": "dummyUser2",
+    "email": "dummyUser2@foo.com",
+    "password": "foo",
+    "salt": "foo",
+    "image": "profile_pics/2.jpeg"
+} ]
