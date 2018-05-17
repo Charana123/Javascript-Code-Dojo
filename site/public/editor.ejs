@@ -49,7 +49,14 @@
             output.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
 
 
+            var back = function() {
+                window.location='/challenges';
+            }
+
+
+
             var submitCode = function(){
+                document.getElementById("submitButton").style.visibility = "hidden";
                 document.getElementById("submitButton").style.visibility = "hidden";
                 document.getElementById("loader").style.visibility = "visible";
                 var user_script_container = ace.edit("editor");
@@ -71,6 +78,9 @@
         </script>
         <button id="submitButton" class="buttonload" onclick="submitCode()">
             --Submit--
+        </button>
+        <button id="submitButton" class="buttonload" onclick="back()">
+            Head back to challenges
         </button>
         <div id="loader" class="loader"></div>
         <div id="resAns"> </div>
