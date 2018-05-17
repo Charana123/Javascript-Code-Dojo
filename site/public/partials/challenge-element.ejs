@@ -6,17 +6,24 @@
         var challenge_uri = title.split(' ').join('-');
         window.location='/editor/' + challenge_uri;
     }
+
+    var sign_up = function() {
+        window.location='/sign-up';
+    }
+
 </script>
 
 <% data.forEach(function(question) { %>
     <div id="<%= question.title %>" class="challenge-element">
         <div id="challenges-element-left-col" class="column">
             <div>
+            <% if(session_valid){ %>
                 <% if(question.complete){ %>
                 <img class="completed-image" src="../img/checked.svg" />
                 <% } else { %>
                 <img class="completed-image" src="../img/cross.svg" />
                 <% } %>
+            <% } %>
                 <div class="challenge-heading" > <%= question.title %> </div>
             </div>
             <br/>
@@ -30,8 +37,7 @@
             Try Again
             </div>
             <% } else { %>
-                <div class="passed-percentage" >  </div>
-                <div class="solve-button" onclick="redirect_challenge('<%= question.id %>')"> Solve </div>
+                <div class="sign-up-button" onclick="sign_up()" > Sign up to try! </div>
             <% } %>
         </div>
     </div>

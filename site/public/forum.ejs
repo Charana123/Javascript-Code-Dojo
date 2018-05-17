@@ -8,8 +8,6 @@
   <meta name="description" content="A website to learn JavaScript!" />
   <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="css/forum.css" />
-  <script type="text/javascript" src="js/cookies.js" async="async"> </script>
-  <script type="text/javascript" src="js/forum_cookies.js" async="async"> </script>
 </head>
 
 <body>
@@ -29,32 +27,24 @@
     <li><a href="new">New</a></li>
     <li><a href="top">Top</a></li>
     <li><a href="hot">Hot</a></li>
+<% if (session_valid) { %>
+    <li><a href="new_post">[New Post]</a></li>
+<% } %>
   </ul>
 </div>
 
-<div class="sidebar">
+<div class="topbar">
   <ul>
     <li id="question-title"> Title </li>
     <li id="question-category"> Category </li>
     <li id="question-comments"> Comments </li>
     <li id="question-views"> Views </li>
-    <li id="question-activity"> Activity </li>
+    <li id="question-activity"> Date </li>
+    <li id="question-activity"> User </li>
   </ul>
 </div>
 
-<% Object.keys(data).forEach(function(k){ %>
-<% var post = data[k].post %>
-<% var replys = data[k].replys %>
-  <div class="sidebar">
-    <ul>
-      <li id="question-title"> <%= post.title %> </li>
-      <li id="question-category"> <%= post.subject %> </li>
-      <li id="question-comments"> <%= replys.length %> </li>
-      <li id="question-views"> <%= post.views %> </li>
-      <li id="question-activity"> <%= post.activity %> </li>
-    </ul>
-  </div>
-<% }) %>
+<% include partials/forum-list %>
 
 </body>
 </html>

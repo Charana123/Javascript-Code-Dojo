@@ -1,0 +1,318 @@
+#new-post-wrapper-wrapper {
+    height: 100%;
+    width: 100%;
+
+    /* Background */
+    /* linear-gradient(to right top, rgb(65, 115, 142), rgb(255, 255, 255)); */
+    /* ,  */
+    /* background-color: black;  */
+    background-image: url("/img/fence-background.png");
+
+    position: absolute;
+    z-index: 0;
+}
+
+#new-post-wrapper-wrapper::after {
+    content: "";
+
+    height: 100%;
+    width: 100%;
+
+    background: linear-gradient(to right, #000000, #777777);
+    opacity: 0.5;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    z-index: 1;
+}
+
+#new-post-wrapper {
+
+    position: relative;
+    z-index: 2;
+
+    /* z-index: 0; */
+    height: 100%;
+    width: 100%;
+
+    /* Vertically align elements */
+    display: flex;
+    align-items: center;
+
+    /* Text color */
+    color: white;
+
+    /* Background */
+    -webkit-backdrop-filter: grayscale(0%) blur(1px);
+    backdrop-filter: grayscale(0%) blur(1px);
+}
+
+#new-post-container {
+    height: 60%; 
+    width: 70%; 
+
+    /* Horizontal element align */
+    margin:auto; 
+}
+
+#new-post-reasons {
+    background-color: transparent;
+    float: left;
+    width: 40%;
+}
+
+#new-post-header {
+    /* Default for <div> elements */
+    display: block;
+    /* Horizontal align */
+    width: 75%;
+    margin: auto;
+    /* Text Styling */
+    font-size: 30px;
+}
+
+#new-post-list {
+    /* Display on seperate line */
+    display:block;
+    /* Remove unordered-list styling */
+    padding: 0;
+    list-style-type: none;
+    /* Horizontal align */
+    width: 75%;
+    margin: auto;
+    /* Layout Styling */
+    margin-top: 10px;
+}
+
+/* #new-post-list .span2 { */
+span:first-child {    
+    float: left;
+    /* Vertical Align Content */
+    display: flex;
+    align-content: center;
+
+    /* Layout style */
+    height: 60px;
+    width: 60px;
+    margin-right: 10px;
+
+    /* Circular white container */
+    border-radius: 50px;
+    background-color: white;
+}
+
+#new-post-list span ~ span {
+    font-size: 18px;
+    color: lightcoral;
+    /* font-weight: bold; */
+}
+
+#new-post-list li {
+    margin-top: 50px;
+    height: 60px;
+}
+
+#new-post-list img {
+    margin: auto;
+    height: 40px;
+    width: 40px;
+}
+
+#new-post-form-wrapper {
+    /* Make inline (floating with no margin/padding)
+        but support height/width attributes */
+    float: left;
+    height: 100%;
+    width: 60%;
+
+    color: #555555;
+    background-color: white;
+    border-radius: 2px;
+}
+
+#new-post-form {
+    /* margin: 2.5%; */
+    width: calc(100% - 5% - 5%);
+    height: calc(100% - 5% - 5%);
+    padding: 5%;
+
+    border: 0px;
+}
+
+#new-post-form-heading {
+    font-size: 20px;
+}
+
+.column {
+    float: left;
+    margin-top: 20px;
+}
+
+#label-column {
+    width: 33%;
+    text-align: right;
+    padding-right: 2%;
+}
+
+#label-column > div {
+    margin-top: 27px;
+    font-size: 18px;
+    /* font-family: cursive; */
+}
+
+#field-column {
+    width: 60%;
+}
+
+#field-column > input {
+    margin-top: 10px;
+    height: 35px;
+
+    border-radius: 5px;
+    border: 1px solid grey;
+    box-shadow: inset 0px 0px 3px grey;
+}
+
+#field-column > input:focus {
+    box-shadow: none;
+}
+
+#field-column > button {
+    width: 100px;
+    height: 40px;
+    font-size: 15px;
+    color: white;
+
+    /* Remove default styling */
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+
+    border-radius: 2px;
+    background-color: grey;
+}
+
+/*========= Form fields ============================== */
+.short-field {
+    width: 170px;
+}
+
+.long-field {
+    width: 500px;
+    height : 500px;
+}
+
+#new-post-error {
+    font-size: 16px;
+    color: rgb(248, 80, 80);
+}
+
+/* ======= Popup ================================================== */
+.popup {
+    /* Popup Content is relative to Popup Container */ 
+    position: relative;
+    display: block;
+
+    width: 100%;
+    height: 60px;
+}
+
+#re-captcha-tickbox {
+    display: flex;
+    align-items: center;
+
+    /* Popout Affect */
+    border: 1px solid rgba(128, 128, 128, 0.6);
+    box-shadow: 0px 0px 5px 1px rgba(128, 128, 128, 0.6); 
+}
+
+#re-captcha-tickbox input[type=checkbox] {
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+
+    width: 20px;
+    height: 30px;
+    zoom: 2;
+
+    margin-left: 5px;
+}
+
+#re-captcha-tickbox * {
+    float: left;
+}
+
+#re-captcha-tickbox span {
+    margin-left: 10px;
+    font-size: 14px;
+    height: 20px;
+}
+
+#re-captcha-tickbox img {
+    margin-left: 80px;
+    width: 50px;
+    height: 50px;
+}
+
+/* Popup contents */
+.popup .popup-content {
+    /* Color style */
+    font-size: 16px;
+    color: #fff;
+
+    /* Styling */
+    border-radius: 5px;
+    background-color: rgba(35, 35, 35, 0.95);
+
+    /* Layout styling */
+    padding: 20px;
+    height: calc(421px + 60px);
+    width: 300px;
+
+    /* Setting absolute location */ 
+    z-index: 1;
+    position: absolute;
+    right: 102%;
+    bottom: calc(50% - 210px);
+
+    /* Default visibility (toggled by toggling .show class) */
+    visibility: hidden;
+}
+
+/* Popup arrow */
+.popup .popup-content::after {
+    content: "";
+
+    /* Setting absolute location */ 
+    z-index: 1;
+    position: absolute;
+    right: -20px;
+    bottom: calc(50% - 20px - 40px);
+    background-color: transparent;
+
+    /* Arrow affect */
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent transparent rgba(35, 35, 35, 0.95);
+}
+
+/* Toggle popup container visibility in javascript */
+.popup .show {
+    visibility: visible;
+
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+}

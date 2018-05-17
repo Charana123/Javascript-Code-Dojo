@@ -2,6 +2,7 @@
 
 const CHALLENGES_NUM = 6;
 const files = require("./files.js")
+const fs = require("fs")
 const https = require("https");
 
 const secretKey = "6LcLE1kUAAAAAPoRl_vsA0abLIieJxQc1Rz-GkbQ"
@@ -30,6 +31,10 @@ var signInPreFunc = function(request, server) {
 
             server.userHandler.signIn(username, password).then((user) => {
                 var userCookie = request.headers["cookie"];
+                if (userCookie.indexOf(';') > -1) {
+                    userCookie = userCookie.substr(0, userCookie.indexOf(';'));
+                }
+
                 user.cookie = userCookie;
                 server.UserSessions[userCookie] = user;
 
@@ -68,6 +73,9 @@ var signUpPreFunc = function(request, server) {
                     if (d.success) {
                         server.userHandler.signUp(email, username, pass1, pass2).then(function(user) {
                             var userCookie = request.headers["cookie"];
+                            if (userCookie.indexOf(';') > -1) {
+                                userCookie = userCookie.substr(0, userCookie.indexOf(';'));
+                            }
                             user.cookie = userCookie;
                             server.UserSessions[userCookie] = user;
                             resolve(user);
@@ -113,46 +121,122 @@ var questionsAndUserProgress = function(userId, server) {
     });
 };
 
-var challengeRequest = function(docker, id, request, response) {
+var challengeRequest = function(server, userId, id, request, response) {
     return new Promise(function(resolve, reject) {
-        request.on("data", (data) => {
+        var data = "";
+        request.on('data', function (chunk) {
+            if(!(chunk == undefined)) data += chunk;
+        });
+
+        request.on('end', function () {
+
             data = data.toString("utf-8");
             files.writeFile("docker/task.js", data);
-            docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/"+id).then(function(ans) {
+            server.docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/"+id).then(function(res) {
+                var ans = res;
                 console.log("server got: " + ans);
-                if (ans == true) {
+                if (ans) {
                     ans = "correct!";
                 } else {
                     ans = "incorrect!";
                 }
 
-                resolve({"ans": ans});
-                return;
+                fs.readFile('docker/output', 'utf8', function (err, content) {
+                    if (err) {
+                        reject({"ans": false, output: "ERROR: "+err});
+                        return;
+                    }
+                    if(res && !(userId == 0)) {
+                        server.challengeHandler.updateChallenge(userId, id-1, 1).then(function(res) {
+                            resolve({"ans": ans, output: content});
+                            return;
+
+                        }, function(err) {
+                            reject({"ans": false, output: "ERROR: "+err});
+                            return;
+                        });
+                    } else {
+                        resolve({"ans": ans, output: content});
+                        return;
+                    }
+                });
             }, function(err) {
 
-                reject(err);
+                reject({"ans": false, output: "ERROR: "+err});
                 return;
             })
         });
     });
-}
+};
+
+var postRequest = function(postId, server) {
+    return new Promise(function(resolve, reject) {
+        server.forumHandler.getPost(postId).then(function(post) {
+            resolve(post);
+        }, function(err) {
+            reject(err);
+        });
+    });
+};
 
 var uploadUserImage = function(userId, request, server) {
     return new Promise(function(resolve, reject) {
 
         var data = "";
         request.on('data', function (chunk) {
-          if(!(chunk == undefined)) data += chunk;
+            if(!(chunk == undefined)) data += chunk;
         });
 
         request.on('end', function () {
             server.userHandler.uploadImage(userId, data).then(function(res) {
                 var userCookie = request.headers["cookie"];
                 var user = server.UserSessions[userCookie];
+                if (res[0] == '/') {
+                    res = res.substring(1);
+                }
                 user.image = res;
                 resolve(user);
             }, function(err) {
                 reject(err);
+            });
+        });
+    });
+};
+
+var replySubmission = function(request, userId, server) {
+    return new Promise(function(resolve, reject) {
+        request.on('data', data => {
+            data = data.toString("utf-8");
+            var [reply, postId] = data.toString().split('&');
+            // We need to format this reply with the special characters
+            reply = reply.split('=')[1];
+            postId = postId.split('=')[1];
+
+            server.forumHandler.newReply(postId, userId, reply).then(function(res) {
+                resolve(res);
+            }, function(err) {
+                reject(err);
+            });
+        });
+    });
+};
+
+var newPostSubmission = function(request, userId, server) {
+    return new Promise(function(resolve, reject) {
+        request.on('data', data => {
+            data = data.toString("utf-8");
+            //"subject=This+is+a+subject&title=This+is+a+title&body=This+is+a+body"
+            var [subject, title, body] = data.toString().split('&');
+            // We need to format this reply with the special characters
+            subject = subject.split('=')[1].replace(/\+/g, " ");
+            title = title.split('=')[1].replace(/\+/g, " ");
+            body = body.split('=')[1].replace(/\+/g, " ");
+
+            server.forumHandler.newPost(userId, title, body, subject).then(function(res){
+                resolve(res);
+            }, function(err) {
+                reject(err);
+                return;
             });
         });
     });
@@ -167,4 +251,7 @@ module.exports = {
     questionsAndUserProgress: questionsAndUserProgress,
     challengeRequest: challengeRequest,
     uploadUserImage: uploadUserImage,
+    postRequest: postRequest,
+    replySubmission: replySubmission,
+    newPostSubmission: newPostSubmission,
 }

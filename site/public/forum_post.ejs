@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <title>Learn JavaScript!</title>
+  <meta name="author" content="Joshua Van Leeuwen and Charana Nandasena" />
+  <meta name="copyright" content="Copyright Goes Here" />
+  <meta name="description" content="A website to learn JavaScript!" />
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/home.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/forum.css" />
+</head>
+
+<body>
+
+<% include partials/header %>
+
+<div class="topbar">
+  <ul>
+    <li id="question-title"> <%= data.title %> </li>
+    <li id="question-category"> <%= data.subject %> </li>
+    <li id="question-views"> <%= data.time %> </li>
+    <li id="question-views"> <%= data.body %> </li>
+    <li id="question-views"> [<%= data.userData.username %>] </li>
+    <li > <img  id="profile-image" src="/<%= data.userData.image %>"/> </li>
+  </ul>
+</div>
+
+<% Object.keys(data.replys).forEach(function(k){ %>
+<% var reply = data.replys[k] %>
+  <div class="sidebar">
+
+    <div class="forum-container">
+        <ul>
+            <li id="question-title"> <%= reply.body %> </li>
+            <li id="question-comments"> <%= reply.body %> </li>
+            <li id="question-activity"> <%= reply.time %> </li>
+            <li id="question-category"> [<%= reply.userData.username %>]</li>
+            <li > <img  id="profile-image" src="/<%= reply.userData.image %>"/> </li>
+        </ul>
+    </div>
+  </div>
+<% }) %>
+
+<% if (session_valid) { %>
+    <body>
+        <div id="wrapper">
+            <div id="content-wrapper">
+                <div id="content">
+            <form id="reply-form" method="post" action="/reply_submission/<%= data.id %>">
+                <div class="column" id="field-column">
+                    <input class="long-field" type="text" placeholder="" name="reply"></input> <br/>
+                    <input id="postId" name="postId" type="hidden" value="<%= data.id %>"> </input>
+
+                    <button type="submit" value="submit"> Reply </button>
+                </div>
+            </form>
+                </div>
+            </div>
+        </div>
+        </body>
+<% } %>
+
+</body>
+</html>

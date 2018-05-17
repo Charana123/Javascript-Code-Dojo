@@ -15,13 +15,36 @@ function ForumHandler(database) {
         function getReplys(postId) {
             return new Promise(function (resolve, reject) {
                 db.rowsByField("forum_reply", "id", postId).then(function(replys) {
-                    resolve(replys);
-                    return;
+                    var promises = [];
+
+                    replys.forEach((r) => {
+                        promises.push(db.rowsByField("users", "id", r.user));
+                    });
+
+                    Promise.all(promises).then(function(users) {
+                        users.forEach(function(u) {
+                            replys.forEach((r, i) => {
+                                if (r.user == u[0].id) {
+                                    replys[i].userData = u[0];
+                                }
+                            });
+                        });
+
+                        resolve(replys);
+                        return;
+                    }, function(err) {
+                        reject(err);
+                        return;
+                    });
                 }, function(err) {
                     reject("unable to get forum replys by post ID: "+err);
                     return;
                 });
             });
+        };
+
+        var sortReplsyByTime = function(x, y) {
+            return y.time - x.time;
         };
 
         var newPost = function(db, userId, title, body, subject) {
@@ -48,6 +71,53 @@ function ForumHandler(database) {
             });
         };
 
+        var increaseViews = function(db, postId) {
+            return new Promise(function(resolve, reject) {
+                db.updateFieldByValue
+
+            });
+        };
+
+        var increaseViews = function(db, post) {
+            return new Promise(function(resolve, reject) {
+                db.updateFieldByValue("forum_post", "views", post.views+1, "id", post.id).then(function(res) {
+                    resolve(post);
+                }, function(err) {
+
+                });
+            });
+        };
+
+        var getPost = function(db, postId) {
+            return new Promise(function(resolve, reject) {
+                db.rowsByField("forum_post", "id", postId).then(function(posts) {
+                    db.rowsByField("users", "id", posts[0].user).then(function(user) {
+                        posts[0].userData = user[0];
+                        getReplys(posts[0].id).then(function(replys) {
+                            posts[0].replys = replys.sort(sortReplsyByTime);
+                            increaseViews(db, posts[0]).then(function(post) {
+                                resolve(posts[0]);
+                                return;
+                            }, function(err) {
+                                reject(err)
+                                return;
+                            });
+
+                        }, function(err) {
+                            reject(err);
+                            return;
+                        });
+                    }, function(err) {
+                        reject(err);
+                        return;
+                    });
+                }, function(err) {
+                    reject(err);
+                    return;
+                });
+            });
+        };
+
         var getForumsByUser = function(db, userId) {
             return new Promise(function(resolve, reject) {
                 db.rowsByField("forum_post", "user", userId).then(function(posts) {
@@ -59,7 +129,9 @@ function ForumHandler(database) {
                         fullForums[post.id] = {post: post, replys: []};
                     });
 
-                    Promise.all(promises).then(function(replys) {
+                    Promise.all(promises).then(function(resp) {
+                        var replys = resp[0];
+                        replys.sort
                         replys[0].forEach((reply) => {
                             fullForums[reply.id].replys.push(reply);
                         });
@@ -114,7 +186,7 @@ function ForumHandler(database) {
 
                     posts.forEach((post) => {
                         promises.push(getReplys(post.id));
-                        fullForums[post.id] = {post: post, replys: []};
+                        fullForums[post.id] = {post: post, user: {}, replys: []};
                     });
 
                     Promise.all(promises).then(function(replys) {
@@ -124,8 +196,29 @@ function ForumHandler(database) {
                             });
                         });
 
-                        resolve(fullForums);
-                        return;
+                        promises = [];
+
+                        Object.keys(fullForums).forEach((f) => {
+                            promises.push(db.rowsByField("users", "id", fullForums[f].post.user));
+                        });
+
+                        Promise.all(promises).then(function(users) {
+
+                            users.forEach(function(u) {
+                                Object.keys(fullForums).forEach((f) => {
+                                    if (fullForums[f].post.user == u[0].id) {
+                                        fullForums[f].user = u[0];
+                                    }
+                                });
+                            });
+
+                            resolve(fullForums);
+                            return;
+
+                        }, function(err) {
+                            reject(err);
+                            return;
+                        });
 
                     }, function(err) {
                         reject(err);
@@ -155,6 +248,9 @@ function ForumHandler(database) {
             },
             getAllPosts:function(){
                 return getAllPosts(db);
+            },
+            getPost:function(postId){
+                return getPost(db, postId);
             },
         }
 

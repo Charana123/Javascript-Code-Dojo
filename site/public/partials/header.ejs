@@ -35,7 +35,7 @@
       <li style="float: right"> <img  id="profile-image" src="/img/default-avatar.svg" /> </li>
     <% } else { %>
         <% if(user.image) { %>
-            <li style="float: right"> <img  id="profile-image" src="<%= user.image %>"/> </li>
+            <li style="float: right"> <img  id="profile-image" src="/<%= user.image %>"/> </li>
         <% } else { %>
             <li style="float: right"> <img  id="profile-image" src="/img/default-avatar.svg" /> </li>
         <% } %>

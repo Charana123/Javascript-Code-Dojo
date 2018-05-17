@@ -1,0 +1,21 @@
+<% Object.keys(data).forEach(function(k){ %>
+<% var post = data[k].post %>
+<% var replys = data[k].replys %>
+<% var user = data[k].user %>
+  <div class="sidebar">
+
+    <div class="forum-container">
+        <li> <a  href="/forum_post/<%= post.id %>">
+            <ul>
+                <li id="question-title"> <%= post.title %>
+                </li>
+                <li id="question-category"> <%= post.subject %> </li>
+                <li id="question-comments"> <%= replys.length %> </li>
+                <li id="question-views"> <%= post.views %> </li>
+                <li id="question-activity"> <%= post.time %> </li>
+                <li id="question-activity"> <img  id="profile-image" src="/<%= user.image %>"/> [<%= user.username %>] </li>
+            </ul>
+        </a> </li>
+    </div>
+  </div>
+<% }) %>

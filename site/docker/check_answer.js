@@ -36,8 +36,8 @@ function newDockerChecker() {
                     console.log(data);
                     resolve(data);
                 }).catch(err => {
-                    console.log(err);
-                    reject(err);
+                    console.dir(err.message);
+                    reject('failed to run code, is the code runnable?');
                 });
             });
         };

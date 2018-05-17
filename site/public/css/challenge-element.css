@@ -2,6 +2,8 @@
     padding-top: 15px;
     padding-left: 25px;
 
+    margin-top: 10px;
+
     border-style: solid;
     border-color: white;
     border-width: 1px;
@@ -43,6 +45,27 @@
     font-size: 16px;
 }
 
+.sign-up-button {
+    /* button-div layout in parent div */
+    float: right;
+    margin-top: 15px;
+    width: 120px;
+    height: 40px;
+
+    /* making the div look like a button lol */
+    border-radius: 10px;
+
+    /* text attributes */
+    background-color: #AA44AA;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+
+    /* center text */
+    text-align: center;
+    line-height: 40px;
+}
+
 .solve-button, .try-again-button {
     /* button-div layout in parent div */
     float: right;
@@ -63,4 +86,3 @@
     text-align: center;
     line-height: 40px;
 }
-

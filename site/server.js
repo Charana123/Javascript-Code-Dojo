@@ -18,8 +18,6 @@ const respFuncs = require("./js/response.js");
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
 
-var docker = require("./docker/check_answer.js").newDockerChecker();
-
 const dbName = "./secrets/db.sqlite3";
 var db = require("./database/database_api.js").newDatabase(dbName);
 
@@ -38,6 +36,8 @@ db.ensureTables().then((value) => {
                 server.challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
                 server.forumHandler = require("./database/forum.js").ForumHandler(db);
                 server.questionsHandler = require("./database/questions.js").QuestionsHandler(db);
+                server.docker = require("./docker/check_answer.js").newDockerChecker();
+
                 console.log("Database ensured");
                 var dir = './public/profile_pics';
 
@@ -96,21 +96,27 @@ function loadEJS(request, uri, loginFunction, defaultFunction, response, cookie)
             });
     };
 
+
+    if (cookie.indexOf(';') > -1) {
+        cookie = cookie.substr(0, cookie.indexOf(';'));
+    }
+
     if (server.UserSessions[cookie]) {
-        console.log(JSON.stringify(server.UserSessions));
+        console.dir(JSON.stringify(server.UserSessions));
         readEJSFile(uri, loginFunction, response, server.UserSessions[cookie]);
     } else {
         readEJSFile(uri, defaultFunction, response);
     }
 }
 
-function resolveUrl(url, request, userId, response, server) {
+function resolveUrl(url, request, userId, response, server, cookie) {
     return new Promise(function(resolve) {
-
-        var loginFunc = function(){};
-        var defaultFunc = function(){};
+        var loginFunc = respFuncs.nothingFunctionIn(request);
+        var defaultFunc = respFuncs.nothingFunctionOut(request);
         var preFunc = false;
         var errorUrl = "";
+        var doLoad = true;
+
         if (url[0] == '/') {
             url=url.substring(1);
         }
@@ -120,13 +126,9 @@ function resolveUrl(url, request, userId, response, server) {
 
         switch (url) {
             case "index":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 break;
 
             case "sign-up":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 break;
 
             case "challenges":
@@ -135,24 +137,16 @@ function resolveUrl(url, request, userId, response, server) {
                 break;
 
             case "snake":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 break;
 
             case "tetris":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 break;
 
             case "asteroids":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 break;
 
 
             case "login":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 url = "index";
                 break;
 
@@ -162,26 +156,18 @@ function resolveUrl(url, request, userId, response, server) {
                 break;
 
             case "new":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 url = "forum";
                 break;
 
             case "top":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 url = "forum";
                 break;
 
             case "hot":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 url = "forum";
                 break;
 
             case "general":
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 url = "forum";
                 break;
 
@@ -194,41 +180,61 @@ function resolveUrl(url, request, userId, response, server) {
             case "sign-up_submission":
                 preFunc = respFuncs.signUpPreFunc(request, server);
                 url = "index";
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 errorUrl = "sign-up";
                 break;
 
             case "sign-in_submission":
                 preFunc = respFuncs.signInPreFunc(request, server);
                 url = "index";
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 errorUrl = "index";
                 break;
 
             case "challenge_request":
-                loginFunc = respFuncs.challengeRequest(docker, rest, request, response);
-                defaultFunc = respFuncs.challengeRequest(docker, rest, request, response);
-                url="editor";
-                errorUrl = "challenges";
+                preFunc = respFuncs.challengeRequest(server, userId, rest, request, response);
+                doLoad = false;
                 break;
 
             case "image_submission":
                 preFunc = respFuncs.uploadUserImage(userId, request, server);
                 url = "index";
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 errorUrl = "index";
                 break;
 
+            case "forum_post":
+                loginFunc = respFuncs.postRequest(rest, server);
+                defaultFunc = respFuncs.postRequest(rest, server);
+                url = "forum_post";
+                break;
+
+            case "reply_submission":
+                preFunc = respFuncs.replySubmission(request, userId, server);
+                loginFunc = respFuncs.postRequest(rest, server);
+                defaultFunc = respFuncs.postRequest(rest, server);
+                url = "forum_post";
+                errorUrl = "forum_post";
+                break;
+
+            case "new_post":
+                break;
+
+            case "logout":
+                delete server.UserSessions[cookie];
+                url = "index";
+                break;
+
+            case "new_post_submission":
+                preFunc = respFuncs.newPostSubmission(request, userId, server);
+                url = "forum";
+                errorUrl = "forum";
+                loginFunc = server.forumHandler.getAllPosts();
+                defaultFunc = server.forumHandler.getAllPosts();
+                break;
+
             default:
-                loginFunc = respFuncs.nothingFunctionIn(request);
-                defaultFunc = respFuncs.nothingFunctionOut(request);
                 url = "index";
         }
 
-        resolve([url, loginFunc, defaultFunc, preFunc, errorUrl]);
+        resolve([url, loginFunc, defaultFunc, preFunc, errorUrl, doLoad]);
     });
 };
 
@@ -264,22 +270,35 @@ function handle(request, response) {
 
     cookies.getCookie(request).then(function(cookie) {
         var userId = 0;
+        if (cookie.indexOf(';') > -1) {
+            cookie = cookie.substr(0, cookie.indexOf(';'));
+        }
         if (server.UserSessions[cookie]) {
             userId = server.UserSessions[cookie].id;
         }
 
-        resolveUrl(url, request, userId, response, server).then(function(res) {
-            var [url, loginFunc, defaultFunc, preFunc, errorUrl] = res;
+        resolveUrl(url, request, userId, response, server, cookie).then(function(res) {
+            var [url, loginFunc, defaultFunc, preFunc, errorUrl, doLoad] = res;
 
             if (preFunc) {
                 preFunc.then(function(res) {
-                    loadEJS(request, url, loginFunc, defaultFunc, response, cookie);
+                    if (doLoad) {
+                        loadEJS(request, url, loginFunc, defaultFunc, response, cookie);
+                    } else {
+                        var type = types["json"]
+                        deliver(response, type, JSON.stringify(res));
+                    }
                     return;
 
                 }, function(err) {
                     console.log("error occured during pre func: " + err);
                     url = errorUrl;
-                    loadEJS(request, url, respFuncs.errorFunc(err), respFuncs.errorFunc(err), response, cookie);
+                    if (doLoad) {
+                        loadEJS(request, url, respFuncs.errorFunc(err), respFuncs.errorFunc(err), response, cookie);
+                    } else {
+                        var type = types["json"]
+                        deliver(response, type, JSON.stringify(err));
+                    }
                     return;
                 });
 
