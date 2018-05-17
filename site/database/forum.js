@@ -161,7 +161,7 @@ function ForumHandler(database) {
 
                     posts.forEach((post) => {
                         promises.push(getReplys(post.id));
-                        fullForums[post.id] = {post: post, replys: []};
+                        fullForums[post.id] = {post: post, user: {}, replys: []};
                     });
 
                     Promise.all(promises).then(function(replys) {
@@ -171,8 +171,29 @@ function ForumHandler(database) {
                             });
                         });
 
-                        resolve(fullForums);
-                        return;
+                        promises = [];
+
+                        Object.keys(fullForums).forEach((f) => {
+                            promises.push(db.rowsByField("users", "id", fullForums[f].post.user));
+                        });
+
+                        Promise.all(promises).then(function(users) {
+
+                            users.forEach(function(u) {
+                                Object.keys(fullForums).forEach((f) => {
+                                    if (fullForums[f].post.user == u[0].id) {
+                                        fullForums[f].user = u[0];
+                                    }
+                                });
+                            });
+
+                            resolve(fullForums);
+                            return;
+
+                        }, function(err) {
+                            reject(err);
+                            return;
+                        });
 
                     }, function(err) {
                         reject(err);
