@@ -204,15 +204,20 @@ function ForumHandler(database) {
 
                         Promise.all(promises).then(function(users) {
 
+                            var subjects = [];
+
                             users.forEach(function(u) {
                                 Object.keys(fullForums).forEach((f) => {
                                     if (fullForums[f].post.user == u[0].id) {
                                         fullForums[f].user = u[0];
                                     }
+                                    if (!subjects.includes(fullForums[f].post.subject)) {
+                                        subjects.push(fullForums[f].post.subject);
+                                    }
                                 });
                             });
 
-                            resolve(fullForums);
+                            resolve({fullForums, subjects});
                             return;
 
                         }, function(err) {

@@ -20,7 +20,9 @@
       <div id="select-container">
         <select>
           <option value="general" > General </option>
-          <option value="challenge1" > Challenge1 </option>
+<% data.subjects.forEach((s) => {  %>
+          <option value="<%= s%>" > <%= s %> </option>
+<% }) %>
         </select>
       </div>
     </li>
