@@ -42,9 +42,11 @@
                 document.getElementById("loader").style.visibility = "visible";
                 var user_script_container = ace.edit("editor");
                 httpPostAsync("/challenge_request/" + <%= data.id %>, user_script_container.getValue())
-                    .then(json_response => {
+                    .then(res => {
+                            var json = JSON.parse(res);
                             document.getElementById("loader").style.visibility = "hidden";
                             document.getElementById("submitButton").style.visibility = "visible";
+                            document.getElementById("resAns").textContent = "The answer is: "+json.ans;
                             })
             }
         </script>
@@ -52,7 +54,7 @@
             --Submit--
         </button>
         <div id="loader" class="loader"></div>
-        <div id="resAns"> The answer is: </div>
+        <div id="resAns"> </div>
     </div>
   </div>
 </div>

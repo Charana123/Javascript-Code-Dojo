@@ -115,6 +115,7 @@ function resolveUrl(url, request, userId, response, server) {
         var defaultFunc = respFuncs.nothingFunctionOut(request);
         var preFunc = false;
         var errorUrl = "";
+        var doLoad = true;
 
         if (url[0] == '/') {
             url=url.substring(1);
@@ -189,10 +190,8 @@ function resolveUrl(url, request, userId, response, server) {
                 break;
 
             case "challenge_request":
-                loginFunc = respFuncs.challengeRequest(docker, rest, request, response);
-                defaultFunc = respFuncs.challengeRequest(docker, rest, request, response);
-                url="editor";
-                errorUrl = "challenges";
+                preFunc = respFuncs.challengeRequest(docker, rest, request, response);
+                doLoad = false;
                 break;
 
             case "image_submission":
@@ -230,7 +229,7 @@ function resolveUrl(url, request, userId, response, server) {
                 url = "index";
         }
 
-        resolve([url, loginFunc, defaultFunc, preFunc, errorUrl]);
+        resolve([url, loginFunc, defaultFunc, preFunc, errorUrl, doLoad]);
     });
 };
 
@@ -274,17 +273,27 @@ function handle(request, response) {
         }
 
         resolveUrl(url, request, userId, response, server).then(function(res) {
-            var [url, loginFunc, defaultFunc, preFunc, errorUrl] = res;
+            var [url, loginFunc, defaultFunc, preFunc, errorUrl, doLoad] = res;
 
             if (preFunc) {
                 preFunc.then(function(res) {
-                    loadEJS(request, url, loginFunc, defaultFunc, response, cookie);
+                    if (doLoad) {
+                        loadEJS(request, url, loginFunc, defaultFunc, response, cookie);
+                    } else {
+                        var type = types["json"]
+                        deliver(response, type, JSON.stringify(res));
+                    }
                     return;
 
                 }, function(err) {
                     console.log("error occured during pre func: " + err);
                     url = errorUrl;
-                    loadEJS(request, url, respFuncs.errorFunc(err), respFuncs.errorFunc(err), response, cookie);
+                    if (doLoad) {
+                        loadEJS(request, url, respFuncs.errorFunc(err), respFuncs.errorFunc(err), response, cookie);
+                    } else {
+                        var type = types["json"]
+                        deliver(response, type, JSON.stringify(res));
+                    }
                     return;
                 });
 

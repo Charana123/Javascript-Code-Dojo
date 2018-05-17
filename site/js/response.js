@@ -2,6 +2,7 @@
 
 const CHALLENGES_NUM = 6;
 const files = require("./files.js")
+const fs = require("fs")
 const https = require("https");
 
 const secretKey = "6LcLE1kUAAAAAPoRl_vsA0abLIieJxQc1Rz-GkbQ"
@@ -122,7 +123,13 @@ var questionsAndUserProgress = function(userId, server) {
 
 var challengeRequest = function(docker, id, request, response) {
     return new Promise(function(resolve, reject) {
-        request.on("data", (data) => {
+        var data = "";
+        request.on('data', function (chunk) {
+            if(!(chunk == undefined)) data += chunk;
+        });
+
+        request.on('end', function () {
+
             data = data.toString("utf-8");
             files.writeFile("docker/task.js", data);
             docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/"+id).then(function(ans) {
@@ -133,8 +140,13 @@ var challengeRequest = function(docker, id, request, response) {
                     ans = "incorrect!";
                 }
 
-                resolve({"ans": ans});
-                return;
+                fs.readFile('docker/output', 'utf8', function (err, content) {
+                  if (err) {
+                      reject(err);
+                  }
+                    resolve({"ans": ans, output: content});
+                    resolve(data);
+                });
             }, function(err) {
 
                 reject(err);
@@ -159,7 +171,7 @@ var uploadUserImage = function(userId, request, server) {
 
         var data = "";
         request.on('data', function (chunk) {
-          if(!(chunk == undefined)) data += chunk;
+            if(!(chunk == undefined)) data += chunk;
         });
 
         request.on('end', function () {
