@@ -162,8 +162,15 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 break;
 
             case "forum":
-                loginFunc = server.forumHandler.getAllPosts();
-                defaultFunc = server.forumHandler.getAllPosts();
+                if (rest && !(rest == "all")) {
+                    loginFunc = server.forumHandler.getForumsBySubject(rest);
+                    defaultFunc = server.forumHandler.getForumsBySubject(rest);
+                } else {
+                    loginFunc = server.forumHandler.getAllPosts();
+                    defaultFunc = server.forumHandler.getAllPosts();
+                }
+                url = "forum";
+                errorUrl = "forum";
                 break;
 
             case "new":
@@ -254,7 +261,6 @@ function resolveUrl(url, request, userId, response, server, cookie) {
 function handle(request, response) {
 
     var url = decodeURIComponent(request.url.toString('utf-8'));
-    url = url.toLowerCase();
 
     if (url.endsWith("/") || url == "localhost:8080" || url == "127.0.0.1:8080") {
         url = "/index";

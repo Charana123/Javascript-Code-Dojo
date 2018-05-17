@@ -161,11 +161,40 @@ function ForumHandler(database) {
                     });
 
                     Promise.all(promises).then(function(replys) {
-                        replys[0].forEach((reply) => {
-                            fullForums[reply.id].replys.push(reply);
+                        replys.forEach((group) => {
+                            group.forEach((reply) => {
+                                fullForums[reply.id].replys.push(reply);
+                            });
                         });
-                        resolve(fullForums);
-                        return;
+
+                        promises = [];
+
+                        Object.keys(fullForums).forEach((f) => {
+                            promises.push(db.rowsByField("users", "id", fullForums[f].post.user));
+                        });
+
+                        Promise.all(promises).then(function(users) {
+
+                            var subjects = [];
+
+                            users.forEach(function(u) {
+                                Object.keys(fullForums).forEach((f) => {
+                                    if (fullForums[f].post.user == u[0].id) {
+                                        fullForums[f].user = u[0];
+                                    }
+                                    if (!subjects.includes(fullForums[f].post.subject)) {
+                                        subjects.push(fullForums[f].post.subject);
+                                    }
+                                });
+                            });
+
+                            resolve({fullForums, subjects});
+                            return;
+
+                        }, function(err) {
+                            reject(err);
+                            return;
+                        });
 
                     }, function(err) {
                         reject(err);
