@@ -52,13 +52,36 @@ function ForumHandler(database) {
             });
         };
 
+        var increaseViews = function(db, postId) {
+            return new Promise(function(resolve, reject) {
+                db.updateFieldByValue
+
+            });
+        };
+
+        var increaseViews = function(db, post) {
+            return new Promise(function(resolve, reject) {
+                db.updateFieldByValue("forum_post", "views", post.views+1, "id", post.id).then(function(res) {
+                    resolve(post);
+                }, function(err) {
+
+                });
+            });
+        };
+
         var getPost = function(db, postId) {
             return new Promise(function(resolve, reject) {
                 db.rowsByField("forum_post", "id", postId).then(function(posts) {
                     getReplys(posts[0].id).then(function(replys) {
                         posts[0].replys = replys.sort(sortReplsyByTime);
-                        resolve(posts[0]);
-                        return;
+                        increaseViews(db, posts[0]).then(function(post) {
+                            resolve(posts[0]);
+                            return;
+                        }, function(err) {
+                            reject(err)
+                            return;
+                        });
+
                     }, function(err) {
                         reject(err);
                         return;
