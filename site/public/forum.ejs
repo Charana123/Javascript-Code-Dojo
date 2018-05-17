@@ -18,12 +18,13 @@
   <ul>
     <li>
       <div id="select-container">
-        <select id="action" onchange="javascript:location.href = this.value;" >
-          <option value="/forum/all"> All </option>
+        <select id="selectSubject" onchange="javascript:location.href = this.value;" >
+          <option id="all" value="/forum/all"> All </option>
 <% data.subjects.forEach((s) => {  %>
-          <option value="/forum/<%= s %>"> <%= s %> </option>
+          <option id="<%= s %>" value="/forum/<%= s %>"> <%= s %> </option>
 <% }) %>
         </select>
+<script> document.getElementById("<%= data.current %>").selected = true; console.log("<%= data.current %>"); </script>
       </div>
 
     </li>

@@ -151,59 +151,24 @@ function ForumHandler(database) {
 
         var getForumsBySubject = function(db, subject) {
             return new Promise(function(resolve, reject) {
-                db.rowsByField("forum_post", "subject", subject).then(function(posts) {
-                    var promises = [];
-                    var fullForums = [];
-
-                    posts.forEach((post) => {
-                        promises.push(getReplys(post.id));
-                        fullForums[post.id] = {post: post, replys: []};
+                getAllPosts(db).then(function(posts) {
+                    Object.keys(posts.fullForums).forEach((f) => {
+                        if (!(posts.fullForums[f].post.subject == subject)) {
+                            delete posts.fullForums[f];
+                        }
                     });
 
-                    Promise.all(promises).then(function(replys) {
-                        replys.forEach((group) => {
-                            group.forEach((reply) => {
-                                fullForums[reply.id].replys.push(reply);
-                            });
-                        });
-
-                        promises = [];
-
-                        Object.keys(fullForums).forEach((f) => {
-                            promises.push(db.rowsByField("users", "id", fullForums[f].post.user));
-                        });
-
-                        Promise.all(promises).then(function(users) {
-
-                            var subjects = [];
-
-                            users.forEach(function(u) {
-                                Object.keys(fullForums).forEach((f) => {
-                                    if (fullForums[f].post.user == u[0].id) {
-                                        fullForums[f].user = u[0];
-                                    }
-                                    if (!subjects.includes(fullForums[f].post.subject)) {
-                                        subjects.push(fullForums[f].post.subject);
-                                    }
-                                });
-                            });
-
-                            resolve({fullForums, subjects});
-                            return;
-
-                        }, function(err) {
-                            reject(err);
-                            return;
-                        });
-
-                    }, function(err) {
-                        reject(err);
-                        return;
-                    });
+                    posts.current = subject;
+                    resolve(posts);
+                    return;
 
                 }, function(err) {
-                    reject("unable to get forum posts by subject: "+err);
+                    reject(err);
+                    return;
                 });
+
+            }, function(err) {
+                reject("unable to get forum posts by subject: "+err);
             });
         };
 
@@ -246,7 +211,7 @@ function ForumHandler(database) {
                                 });
                             });
 
-                            resolve({fullForums, subjects});
+                            resolve({fullForums, subjects, current: "all"});
                             return;
 
                         }, function(err) {
