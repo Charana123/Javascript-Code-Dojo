@@ -46,7 +46,8 @@
             output.renderer.setCursorStyle("none");
             output.session.setUseWrapMode(true);
             output.session.setWrapLimitRange(60, 80);
-            output.setReadOnly(true)
+            output.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+
 
             var submitCode = function(){
                 document.getElementById("submitButton").style.visibility = "hidden";
@@ -64,6 +65,7 @@
                             document.getElementById("submitButton").style.visibility = "visible";
                             document.getElementById("resAns").textContent = "The answer is: "+json.ans;
                             output_editor.setValue(json.output);
+                            output.selection.setRange({start: {row:0, column:0}, end: {row:0, column:0}});
                     })
             }
         </script>

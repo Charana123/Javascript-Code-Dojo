@@ -292,7 +292,7 @@ function handle(request, response) {
                         loadEJS(request, url, respFuncs.errorFunc(err), respFuncs.errorFunc(err), response, cookie);
                     } else {
                         var type = types["json"]
-                        deliver(response, type, JSON.stringify(res));
+                        deliver(response, type, JSON.stringify(err));
                     }
                     return;
                 });

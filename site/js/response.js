@@ -141,15 +141,16 @@ var challengeRequest = function(docker, id, request, response) {
                 }
 
                 fs.readFile('docker/output', 'utf8', function (err, content) {
-                  if (err) {
-                      reject(err);
-                  }
+                    if (err) {
+                        reject({"ans": false, output: "ERROR: "+err});
+                        return;
+                    }
                     resolve({"ans": ans, output: content});
-                    resolve(data);
+                    return;
                 });
             }, function(err) {
 
-                reject(err);
+                reject({"ans": false, output: "ERROR: "+err});
                 return;
             })
         });
