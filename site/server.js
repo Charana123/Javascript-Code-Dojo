@@ -109,7 +109,7 @@ function loadEJS(request, uri, loginFunction, defaultFunction, response, cookie)
     }
 }
 
-function resolveUrl(url, request, userId, response, server) {
+function resolveUrl(url, request, userId, response, server, cookie) {
     return new Promise(function(resolve) {
         var loginFunc = respFuncs.nothingFunctionIn(request);
         var defaultFunc = respFuncs.nothingFunctionOut(request);
@@ -217,6 +217,11 @@ function resolveUrl(url, request, userId, response, server) {
             case "new_post":
                 break;
 
+            case "logout":
+                delete server.UserSessions[cookie];
+                url = "index";
+                break;
+
             case "new_post_submission":
                 preFunc = respFuncs.newPostSubmission(request, userId, server);
                 url = "forum";
@@ -272,7 +277,7 @@ function handle(request, response) {
             userId = server.UserSessions[cookie].id;
         }
 
-        resolveUrl(url, request, userId, response, server).then(function(res) {
+        resolveUrl(url, request, userId, response, server, cookie).then(function(res) {
             var [url, loginFunc, defaultFunc, preFunc, errorUrl, doLoad] = res;
 
             if (preFunc) {
