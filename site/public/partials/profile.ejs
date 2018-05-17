@@ -5,7 +5,12 @@
 <div id="user-options-popup">
     <% include transparent-black-background %>
     <div id="user-options">
-        <input type='file' id="fileUpload">  Upload Profile Picture  </input>
-        <canvas id="canvas" width="512" height="512"></canvas>
+        <a id="login-button" href="#"> Login </a>
+        <a href="/sign-up"> Sign Up </a>
+
+        <a id="login-button">
+            <label for="fileUpload">Upload Profile Picture</label>
+            <input type='file' id="fileUpload" style="visibility:hidden">  </input>
+        </a>
     </div>
 </div>
