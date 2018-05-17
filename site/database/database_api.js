@@ -97,16 +97,9 @@ function insertChallengeStringZeros(userId) {
     return str;
 }
 
-function updateChallengeString(userId, statusArr) {
-    var str = update + "challenges SET ";
-    str += "challenge_complete_0 = " + statusArr[0];
-
-    for (var i = 1; i < CHALLENGES_NUM; i++) {
-        str += ", challenge_complete_" + i + " = " + statusArr[i];
-    }
-    str += "WHERE user = " + userId + ";";
-
-    return str;
+function updateChallengeStr(userId, index, status) {
+    return update + "challenges SET challenge_complete_"+index+" = "+status +
+        " WHERE user = " + userId + ";";
 }
 
 function updateFieldByValueStr(table, field, value, where, id) {
@@ -226,9 +219,9 @@ function newDatabase(dbName) {
             });
         };
 
-        var updateChallenge = function(db, userId, statusArr) {
+        var updateChallenge = function(db, userId, index, status) {
             return new Promise(function(resolve, reject) {
-                db.all(updateChallenge(userId, statusArr), [], (err, challenge) => {
+                db.all(updateChallengeStr(userId, index, status), [], (err, challenge) => {
                     if (err) {
                         reject("failed to update challenge record " + userId + ": " + err.message);
                         return;
@@ -430,8 +423,8 @@ function newDatabase(dbName) {
             newChallenge:function(userId) {
                 return newChallenge(db, userId);
             },
-            updateChallenge:function(userId, statusArr) {
-                return updateChallenge(db, userId, statusArr);
+            updateChallenge:function(userId, index, status) {
+                return updateChallenge(db, userId, index, status);
             },
             newForumPost:function(userId, title, body, subject) {
                 return newForumPost(db, userId, title, body, subject);

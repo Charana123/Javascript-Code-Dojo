@@ -121,7 +121,7 @@ var questionsAndUserProgress = function(userId, server) {
     });
 };
 
-var challengeRequest = function(docker, id, request, response) {
+var challengeRequest = function(server, userId, id, request, response) {
     return new Promise(function(resolve, reject) {
         var data = "";
         request.on('data', function (chunk) {
@@ -132,9 +132,10 @@ var challengeRequest = function(docker, id, request, response) {
 
             data = data.toString("utf-8");
             files.writeFile("docker/task.js", data);
-            docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/"+id).then(function(ans) {
+            server.docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/"+id).then(function(res) {
+                var ans = res;
                 console.log("server got: " + ans);
-                if (ans == true) {
+                if (ans) {
                     ans = "correct!";
                 } else {
                     ans = "incorrect!";
@@ -145,8 +146,19 @@ var challengeRequest = function(docker, id, request, response) {
                         reject({"ans": false, output: "ERROR: "+err});
                         return;
                     }
-                    resolve({"ans": ans, output: content});
-                    return;
+                    if(res && !(userId == 0)) {
+                        server.challengeHandler.updateChallenge(userId, id-1, 1).then(function(res) {
+                            resolve({"ans": ans, output: content});
+                            return;
+
+                        }, function(err) {
+                            reject({"ans": false, output: "ERROR: "+err});
+                            return;
+                        });
+                    } else {
+                        resolve({"ans": ans, output: content});
+                        return;
+                    }
                 });
             }, function(err) {
 

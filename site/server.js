@@ -18,8 +18,6 @@ const respFuncs = require("./js/response.js");
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
 
-var docker = require("./docker/check_answer.js").newDockerChecker();
-
 const dbName = "./secrets/db.sqlite3";
 var db = require("./database/database_api.js").newDatabase(dbName);
 
@@ -38,6 +36,8 @@ db.ensureTables().then((value) => {
                 server.challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
                 server.forumHandler = require("./database/forum.js").ForumHandler(db);
                 server.questionsHandler = require("./database/questions.js").QuestionsHandler(db);
+                server.docker = require("./docker/check_answer.js").newDockerChecker();
+
                 console.log("Database ensured");
                 var dir = './public/profile_pics';
 
@@ -190,7 +190,7 @@ function resolveUrl(url, request, userId, response, server) {
                 break;
 
             case "challenge_request":
-                preFunc = respFuncs.challengeRequest(docker, rest, request, response);
+                preFunc = respFuncs.challengeRequest(server, userId, rest, request, response);
                 doLoad = false;
                 break;
 

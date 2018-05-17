@@ -69,9 +69,9 @@ function ChallengesHandler(database) {
             });
         };
 
-        var updateChallenge = function(db, userID, statusArr) {
+        var updateChallenge = function(db, userID, index, status) {
             return new Promise(function(resolve, reject) {
-                db.updateChallenge(userID, statusArr).then(function(challenge) {
+                db.updateChallenge(userID, index, status).then(function(challenge) {
                     resolve(challenge);
                     return;
                 }, function(err) {
@@ -88,8 +88,8 @@ function ChallengesHandler(database) {
            newChallenge:function(userID) {
                return newChallenge(db, userID);
             },
-           updateChallenge:function(userID, statusArr) {
-               return newChallenge(db, userID, statusArr);
+           updateChallenge:function(userID, index, status) {
+               return updateChallenge(db, userID, index, status);
             },
         }
 
