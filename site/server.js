@@ -36,15 +36,22 @@ db.ensureTables().then((value) => {
                 server.challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
                 server.forumHandler = require("./database/forum.js").ForumHandler(db);
                 server.questionsHandler = require("./database/questions.js").QuestionsHandler(db);
-                server.docker = require("./docker/check_answer.js").newDockerChecker();
+                server.docker = require("./docker/docker.js").newDockerChecker();
 
                 console.log("Database ensured");
+                console.log("Building docker image");
+                server.docker.build("docker/.").then(function(res) {
+                    console.log("Docker image built successfully");
+                }, function(err) {
+                    console.log("Error building docker image: "+err);
+                    console.log(">> This will cause issues evalutating challenges <<");
+                });
+
                 var dir = './public/profile_pics';
 
                 if (!fs.existsSync(dir)){
                     fs.mkdirSync(dir);
                 }
-
 
             }).catch((err) => {
                 console.log("error: "+err);
