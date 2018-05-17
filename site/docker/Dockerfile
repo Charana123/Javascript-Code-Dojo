@@ -1,4 +1,4 @@
-FROM node
+FROM mhart/alpine-node:latest
 
 ADD task.js task.js
 

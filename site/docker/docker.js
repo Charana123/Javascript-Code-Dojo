@@ -18,12 +18,9 @@ function newDockerChecker() {
 
         var dockerBuild = function(path) {
             return new Promise(function(resolve, reject) {
-                console.log(dockerBuildCmd + path);
                 getAsync(dockerBuildCmd + path).then(data => {
-                    console.log(data);
                     resolve(data);
                 }).catch(err => {
-                    console.log(err);
                     reject(err);
                 });
             });
@@ -31,12 +28,9 @@ function newDockerChecker() {
 
         var dockerRun = function() {
             return new Promise(function(resolve, reject) {
-                console.log(dockerRunCmd);
                 getAsync(dockerRunCmd).then(data => {
-                    console.log(data);
                     resolve(data);
                 }).catch(err => {
-                    console.dir(err.message);
                     reject('failed to run code, is the code runnable?');
                 });
             });
@@ -44,12 +38,9 @@ function newDockerChecker() {
 
         var dockerCopy = function(path) {
             return new Promise(function(resolve, reject) {
-                console.log(dockerCpCmd + path);
                 getAsync(dockerCpCmd + path).then(data => {
-                    console.log(data);
                     resolve(data);
                 }).catch(err => {
-                    console.log(err);
                     reject(err)
                 });
             });
@@ -59,14 +50,11 @@ function newDockerChecker() {
             return new Promise(function(resolve, reject) {
                 getAsync('cmp --silent ' + file1 + ' ' + file2 + ' || echo "files are different"').then(data => {
                     if (data[0] != "") {
-                        console.log(data);
                         resolve(false);
                     } else {
-                        console.log(data);
                         resolve(true);
                     }
                 }).catch(err => {
-                    console.log(data);
                     resolve(err);
                 });
             });
@@ -91,17 +79,22 @@ function newDockerChecker() {
                         dockerRun().then(function(data) {
                             dockerCopy(outputFile).then(function(data) {
                                 compareFiles(answerFile, outputFile).then(function(data) {
+                                    console.log(data);
                                     resolve(data);
                                 }, function(err) {
+                                    console.log(err);
                                     reject(err);
                                 });
                             }, function(err) {
+                                console.log(err);
                                 reject(err);
                             });
                         }, function(err) {
+                            console.log(err);
                             reject(err);
                         });
                     }, function(err) {
+                        console.log(err);
                         reject(err);
                     });
                 });
