@@ -19,7 +19,7 @@ window.onload = function(){
             challenge_link.style.color = "black"
             //Append Arrow
             var right_arrow = document.createElement("img");
-            right_arrow.style= "float: left; width: 15px; height: 15px; margin-right: 30px"
+            right_arrow.style= "float: left; width: 15px; height: 15px; margin-right: 10px"
             right_arrow.className="current-link"
             right_arrow.src = "../img/right-arrow.svg"
             challenge_link.insertBefore(right_arrow, challenge_link.children[0])

@@ -1,8 +1,0 @@
-<link rel="stylesheet" href="/css/tree-view.css" />
-
-<div id="tree-view-heading"> Challenges </div>
-<ul id="tree-view-list">
-  <% data.forEach(function(question){ %>
-    <li id="<%= question.id %>" class="challenge-link"> <%= question.title %> </li>
-  <% }); %>
-</ul>

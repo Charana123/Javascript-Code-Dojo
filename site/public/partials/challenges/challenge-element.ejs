@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/css/challenge-element.css" />
+<link rel="stylesheet" href="/css/challenges/challenge-element.css" />
 
 <script type="text/javascript">
     var redirect_challenge = function(challenge_title){
@@ -33,11 +33,12 @@
             <% if(session_valid){ %>
             <% var complete = "Not yet!"; if (question.complete) complete = "Complete!" %>
             <div class="passed-percentage" > Passed: <%= complete %> </div>
-            <div class="try-again-button" onclick="redirect_challenge('<%=question.id%>')" >
-            Try Again
+            <div class="solve-button" onclick="redirect_challenge('<%=question.id%>')" >
+            Solve
             </div>
             <% } else { %>
-                <div class="sign-up-button" onclick="sign_up()" > Sign up to try! </div>
+                <div class="passed-percentage" >  </div>
+                <div class="sign-up-button" onclick="sign_up()" > Sign up! </div>
             <% } %>
         </div>
     </div>
