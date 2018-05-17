@@ -22,7 +22,23 @@
     opacity: 0.5;
 }
 
-#floating-footer {
+#index-slideshow {
+    width: 175px;
+    height: 40px;
+
+    bottom: calc(30px + 40px);
+    right: 0px;
+    position: absolute;
+
+}
+
+.index-slideshow-div {
+    font-size: 13px;
+    color: grey;
+    display: none;
+}
+
+#index-floating-footer {
     width: 120px;
     height: 40px;
 
@@ -31,12 +47,12 @@
     position: absolute;
 }
 
-#floating-footer img {
+#index-floating-footer img {
     height: 30px;
     width: 30px;
     margin-left: 5px;
 }
 
-#floating-footer img:hover {
+#index-floating-footer img:hover {
     opacity: 0.5;
 }
