@@ -19,7 +19,8 @@
     <li id="question-title"> <%= data.title %> </li>
     <li id="question-category"> <%= data.subject %> </li>
     <li id="question-views"> <%= data.time %> </li>
-    <li id="question-views"> user: <%= data.user %> </li>
+    <li id="question-views"> <%= data.body %> </li>
+    <li id="question-views"> [<%= data.userData.username %>] </li>
   </ul>
 </div>
 
@@ -30,9 +31,9 @@
     <div class="forum-container">
         <ul>
             <li id="question-title"> <%= reply.body %> </li>
-            <li id="question-category"> user: <%= reply.user %> </li>
             <li id="question-comments"> <%= reply.body %> </li>
             <li id="question-activity"> <%= reply.time %> </li>
+            <li id="question-category"> [<%= reply.userData.username %>]</li>
         </ul>
     </div>
   </div>
