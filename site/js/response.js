@@ -191,6 +191,9 @@ var uploadUserImage = function(userId, request, server) {
             server.userHandler.uploadImage(userId, data).then(function(res) {
                 var userCookie = request.headers["cookie"];
                 var user = server.UserSessions[userCookie];
+                if (res[0] == '/') {
+                    res = res.substring(1);
+                }
                 user.image = res;
                 resolve(user);
             }, function(err) {
