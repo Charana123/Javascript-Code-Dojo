@@ -48,6 +48,18 @@
     height: 30px;
 }
 
+#header-site-logo-li {
+    padding-right: 0px;
+    margin-left: 0px;
+}
+
+#header-site-logo {
+    padding-right: 0px;
+    margin-right: 0px;
+    width: 30px;
+    height: 30px;
+}
+
 #settings-image
 {
     border-radius: 50%;

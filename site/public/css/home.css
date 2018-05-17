@@ -33,6 +33,7 @@ a:link {
 /* ========= Content Wrappers ======================================================================== */
 #wrapper
 {
+    float: left;
     width: 100%;
     display: left;
     background: transparent 60% 0 repeat-y;
@@ -40,14 +41,14 @@ a:link {
 
 #content-wrapper
 {
+    float: left;
     width: 100%;
-    display: inline-block;
 }
 
 #content
 {
+    float: left;
     width: 100%;
-    display: inline-block;
 }
 
 /* ==== Sidebar ============================================================ */
