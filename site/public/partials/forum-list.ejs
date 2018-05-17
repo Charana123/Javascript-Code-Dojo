@@ -1,6 +1,7 @@
 <% Object.keys(data).forEach(function(k){ %>
 <% var post = data[k].post %>
 <% var replys = data[k].replys %>
+<% var user = data[k].user %>
   <div class="sidebar">
 
     <div class="forum-container">
@@ -12,7 +13,7 @@
                 <li id="question-comments"> <%= replys.length %> </li>
                 <li id="question-views"> <%= post.views %> </li>
                 <li id="question-activity"> <%= post.time %> </li>
-                <li id="question-activity"> [<%= post.user %>] </li>
+                <li id="question-activity"> [<%= user.username %>] </li>
             </ul>
         </a> </li>
     </div>
