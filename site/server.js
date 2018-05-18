@@ -44,7 +44,11 @@ db.ensureTables().then((value) => {
                     console.log("Docker image built successfully");
                 }, function(err) {
                     console.log("Error building docker image: "+err);
-                    console.log(">> This will cause issues evalutating challenges <<");
+                    console.log(">> This will cause issues evalutating challenges. <<");
+                    console.log(">> Challenges will be checked in LOCAL FILE       <<");
+                    console.log(">> userspace. This is insecure and is NOT         <<");
+                    console.log(">> recomended.                                    <<");
+                    server.docker = require("./docker/file.js").newFileChecker();
                 });
 
                 var dir = './public/profile_pics';
