@@ -130,6 +130,7 @@ function resolveUrl(url, request, userId, response, server, cookie) {
         var preFunc = false;
         var errorUrl = "";
         var doLoad = true;
+        var errLoad = true;
 
         if (url[0] == '/') {
             url=url.substring(1);
@@ -198,6 +199,7 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 preFunc = respFuncs.signUpPreFunc(request, server);
                 url = "index";
                 errorUrl = "sign-up";
+                errLoad = false;
                 break;
 
             case "sign-in_submission":
@@ -251,7 +253,7 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 url = "index";
         }
 
-        resolve([url, loginFunc, defaultFunc, preFunc, errorUrl, doLoad]);
+        resolve([url, loginFunc, defaultFunc, preFunc, errorUrl, doLoad, errLoad]);
     });
 };
 
@@ -294,7 +296,7 @@ function handle(request, response) {
         }
 
         resolveUrl(url, request, userId, response, server, cookie).then(function(res) {
-            var [url, loginFunc, defaultFunc, preFunc, errorUrl, doLoad] = res;
+            var [url, loginFunc, defaultFunc, preFunc, errorUrl, doLoad, errLoad] = res;
 
             if (preFunc) {
                 preFunc.then(function(res) {
@@ -309,7 +311,7 @@ function handle(request, response) {
                 }, function(err) {
                     console.log("error occured during pre func: " + err);
                     url = errorUrl;
-                    if (doLoad) {
+                    if (errLoad) {
                         loadEJS(request, url, respFuncs.errorFunc(err), respFuncs.errorFunc(err), response, cookie);
                     } else {
                         var type = types["json"]

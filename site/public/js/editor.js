@@ -83,5 +83,3 @@ function setCaretPosition(el, caretPos) {
         }
     }
 }
-
-
