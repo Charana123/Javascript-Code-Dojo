@@ -41,7 +41,8 @@ var signInPreFunc = function(request, server) {
                 resolve(user);
                 return;
 
-            }).catch((err) => {
+            }).catch((errMessage) => {
+                var err = {isErr: true, message: errMessage};
                 reject(err);
                 return;
 

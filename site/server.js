@@ -206,6 +206,7 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 preFunc = respFuncs.signInPreFunc(request, server);
                 url = "index";
                 errorUrl = "index";
+                errLoad = false;
                 break;
 
             case "challenge_request":
