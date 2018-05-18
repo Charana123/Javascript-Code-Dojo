@@ -1,25 +1,87 @@
-window.document.onload = function(){
-    var user_script_container = document.getElementById("user-script-container")
-    user_script_container.selectionIndex = 0
-    }
+var editor = ace.edit("editor");
+var output = ace.edit("output");
 
-    var submitCode = function(){
-    document.getElementById("submitButton").style.visibility = "hidden";
+editor.setTheme("ace/theme/gruvbox");
+editor.session.setMode("ace/mode/javascript");
+editor.renderer.setCursorStyle("smooth");
+editor.session.setUseWrapMode(true);
+editor.session.setWrapLimitRange(80, 80);
+
+output.setTheme("ace/theme/gruvbox");
+output.renderer.setCursorStyle("none");
+output.session.setUseWrapMode(true);
+output.session.setWrapLimitRange(60, 80);
+output.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+
+
+var back = function() {
+    window.location='/challenges';
+}
+
+var submitCode = function(challenge_id){
+    document.getElementById("submit-button").style.visibility = "hidden";
+    document.getElementById("submit-button").style.visibility = "hidden";
     document.getElementById("loader").style.visibility = "visible";
     var user_script_container = ace.edit("editor");
-    httpPostAsync("/challenge_request", user_script_container.getValue())
-        .then(json_response => {
-            console.log("response!" + json_response);
-            document.getElementById("loader").style.visibility = "hidden";
-            document.getElementById("submitButton").style.visibility = "visible";
-            document.getElementById("response").innerHTML = "This answer is: " + json_response;
-        })
-    }
+    httpPostAsync("/challenge_request/" + challenge_id, user_script_container.getValue())
+        .then(res => {
+                var json = JSON.parse(res);
+                if (json.output[json.output.length-1] == "\n") {
+                    json.output = json.output.substring(0, json.output.length - 1);
+                }
 
-    function onkd(e) {
-    var tab_keycode = 9
-    if (e.keyCode == tab_keycode){
-        e.preventDefault();
-        e.stopPropagation();
+                var output_editor = ace.edit("output");
+                document.getElementById("loader").style.visibility = "hidden";
+                document.getElementById("submit-button").style.visibility = "visible";
+                document.getElementById("answer-popup").style.display = "block";
+                document.getElementById("answer").textContent = json.ans;
+
+                output_editor.setValue(json.output);
+                output.selection.setRange({start: {row:0, column:0}, end: {row:0, column:0}});
+        })
+}
+
+function uploadCode(files){
+    var selectedFile = files[0];
+    var reader = new FileReader();
+    reader.onload = function(event){
+        var editor = ace.edit("editor");
+        editor.setValue(event.target.result);
+    }
+    reader.readAsText(selectedFile);
+}
+
+window.addEventListener("load", function(){
+
+    document.getElementById("cross-icon").addEventListener("click", function(event){
+        document.getElementById("answer-popup").style.display = "none";
+    });
+    document.getElementById("answer-popup").addEventListener("click", function(event){
+        if(event.target.id === "transparent-black-background"){
+            document.getElementById("answer-popup").style.display = "none";
+        }
+    });
+
+})
+
+function setCaretPosition(el, caretPos) {
+    if (el !== null) {
+        if (el.createTextRange) {
+            var range = el.createTextRange();
+            range.move('character', caretPos);
+            range.select();
+            return true;
+        }
+        else if (el.selectionStart) {
+            el.focus();
+            el.setSelectionRange(caretPos, caretPos);
+            return true;
+        }
+        else  {
+            el.focus();
+            return false;
+        }
     }
 }
+
+

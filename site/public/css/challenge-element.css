@@ -1,35 +1,26 @@
 .challenge-element {
     padding-top: 15px;
     padding-left: 25px;
-    margin-top: 10px;
 
-    /* Popout Affect */
-    border: 1px solid rgba(255, 255, 255, 1);
+    border-style: solid;
+    border-color: white;
+    border-width: 1px;
     border-radius: 10px;
-    box-shadow: 0px 0px 2px 1px rgba(255, 255, 255, 1); 
 
     width: 900px;
-    height: 100px;
-
-    background-color: #222222;
+    height:100px;
 }
 
 .challenge-heading {
     float:left;
     margin-left: 10px;
 
-    /* Linear gradient text color */
-    background: -webkit-linear-gradient(rgb(80, 195, 73), rgb(32, 100, 50));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-
     font-weight: bold;
     font-size: 18px;
 }
 
 #challenges-element-left-col {
-    margin-right: 40px;
-    width: 730px;
+    width: 770px;
 }
 
 #challenges-element-right-col {
@@ -38,7 +29,7 @@
 
 .passed-percentage {
     height: 20px;
-    font-size: 13px;
+    font-size: 17px;
 }
 
 .completed-image {
@@ -48,26 +39,28 @@
 }
 
 #challenge-description {
-    margin-top: 15px;
+    margin-top: 10px;
     font-size: 16px;
 }
 
-.sign-up-button, .solve-button {
+.solve-button, .try-again-button {
     /* button-div layout in parent div */
     float: right;
     margin-top: 15px;
-    width: 120px;
+    width: 100px;
     height: 40px;
 
     /* making the div look like a button lol */
-    border-radius: 2px;
+    border-radius: 10px;
 
     /* text attributes */
-    background: radial-gradient(closest-side, rgb(80, 195, 73), rgb(32, 100, 50));
+    background-color: lightskyblue;
     color: white;
+    font-weight: bold;
     font-size: 16px;
 
     /* center text */
     text-align: center;
     line-height: 40px;
 }
+
