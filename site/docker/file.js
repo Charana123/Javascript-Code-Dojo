@@ -1,37 +1,25 @@
 "use strict"
 
-var cmd = require("node-cmd");
-var Promise = require('bluebird');
+const cmd = require("node-cmd");
+const Promise = require('bluebird');
+const fs = require('fs');
 
 const getAsync = Promise.promisify(cmd.get, { multiArgs: true, context: cmd})
-
-const dockerBuildCmd = 'docker build -t mynode '
-const dockerRunCmd = 'docker run mynode'
-const dockerCpCmd = 'docker cp $(docker ps -l -q):/output '
+const runCmd = 'node docker/task.js > docker/output 2>&1'
 
 module.exports = {
-    newDockerChecker: newDockerChecker
+    newFileChecker: newFileChecker
 };
 
-function newDockerChecker() {
+function newFileChecker() {
     return (function() {
 
-        var dockerBuild = function(path) {
+        var run = function(path) {
             return new Promise(function(resolve, reject) {
-                getAsync(dockerBuildCmd + path).then(data => {
+                getAsync(runCmd).then(data => {
                     resolve(data);
                 }).catch(err => {
-                    reject(err);
-                });
-            });
-        };
-
-        var dockerRun = function(path) {
-            return new Promise(function(resolve, reject) {
-                getAsync(dockerRunCmd).then(data => {
-                    resolve(data);
-                }).catch(err => {
-                    dockerCopy(path).then(data => {
+                    read(path).then(data => {
                         resolve(data);
                     }).catch(err => {
                         reject(err);
@@ -40,12 +28,14 @@ function newDockerChecker() {
             });
         };
 
-        var dockerCopy = function(path) {
+        var read = function(path) {
             return new Promise(function(resolve, reject) {
-                getAsync(dockerCpCmd + path).then(data => {
-                    resolve(data);
-                }).catch(err => {
-                    reject(err)
+                fs.readFile(path, 'utf8', function (err, content) {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(content);
                 });
             });
         };
@@ -65,28 +55,21 @@ function newDockerChecker() {
         };
 
         return {
-            build:function(path) {
-                return dockerBuild(path);
-            },
             run:function(path) {
-                return dockerRun(path);
+                return run(path);
             },
-            cp:function() {
-                return dockerCopy(path);
+            read:function() {
+                return read(path);
             },
             cmpfiles:function(file1, file2) {
                 return compareFiles(file1, file2);
             },
             tryAnswer:function(dockerPath, userJsFile, outputFile, answerFile) {
                 return new Promise(function(resolve, reject) {
-                    dockerBuild(dockerPath).then(function(data) {
-                        dockerRun(outputFile).then(function(data) {
-                            dockerCopy(outputFile).then(function(data) {
-                                compareFiles(answerFile, outputFile).then(function(data) {
-                                    resolve(data);
-                                }, function(err) {
-                                    reject(err);
-                                });
+                    run(outputFile).then(function(data) {
+                        read(outputFile).then(function(data) {
+                            compareFiles(answerFile, outputFile).then(function(data) {
+                                resolve(data);
                             }, function(err) {
                                 reject(err);
                             });
@@ -98,8 +81,6 @@ function newDockerChecker() {
                     });
                 });
             }
-
         }
-
     }());
 }
