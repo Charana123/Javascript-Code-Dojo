@@ -32,7 +32,7 @@ margin-left: 20px;
 }
 
 #submit-button {
-    float: left;
+    float: right;
     width: 120px;
     height: 50px;
 
@@ -45,6 +45,14 @@ margin-left: 20px;
     background: radial-gradient(closest-side, rgb(80, 195, 73), rgb(32, 100, 50));
     color: white;
     font-size: 24px;
+}
+
+#loader {
+    float: right;
+}
+
+#upload-code {
+    float: left;
 }
 
 #editor-page-container {
@@ -60,7 +68,7 @@ margin-left: 20px;
     position: absolute;
     background-color: transparent;
 
-    /* display: none; */
+    display: none;
 }
 
 #answer-popup-container {
