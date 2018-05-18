@@ -238,7 +238,6 @@ function resolveUrl(url, request, userId, response, server, cookie) {
 
             case "new_post":
                 loginFunc = respFuncs.captcha(server, request);
-                defaultFunc = respFuncs.captcha(server, request);
                 break;
 
             case "logout":
@@ -250,6 +249,7 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 preFunc = respFuncs.newPostSubmission(request, userId, server);
                 url = "forum";
                 errorUrl = "forum";
+                errLoad = false;
                 loginFunc = server.forumHandler.getAllPosts();
                 defaultFunc = server.forumHandler.getAllPosts();
                 break;
