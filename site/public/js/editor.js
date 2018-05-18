@@ -33,7 +33,7 @@ var submitCode = function(challenge_id){
                 var output_editor = ace.edit("output");
                 document.getElementById("loader").style.visibility = "hidden";
                 document.getElementById("submit-button").style.visibility = "visible";
-                document.getElementById("answer").textContent = "The answer is: "+ json.ans;
+                document.getElementById("answer").textContent = json.ans;
                 output_editor.setValue(json.output);
                 output.selection.setRange({start: {row:0, column:0}, end: {row:0, column:0}});
         })

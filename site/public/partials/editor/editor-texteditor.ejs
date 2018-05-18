@@ -15,6 +15,16 @@
     <div id="submit-button" class="button-load" onclick="submitCode(<%= data.id %>)">
         Submit
     </div>
+    <div id="answer-popup">
+        <% include ../transparent-black-background %>
+        <div id="answer-popup-container">
+            <div> 
+                Your answer is ... 
+                <img id="cross-icon" src="/img/cross.svg"/>
+            </div>
+            <div id="answer"> Incorrect </div>
+        </div>
+    </div>
     
     <div id="loader" class="loader"></div>
     <div id="answer"> </div>
