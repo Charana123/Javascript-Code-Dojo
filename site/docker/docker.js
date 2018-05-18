@@ -26,12 +26,16 @@ function newDockerChecker() {
             });
         };
 
-        var dockerRun = function() {
+        var dockerRun = function(path) {
             return new Promise(function(resolve, reject) {
                 getAsync(dockerRunCmd).then(data => {
                     resolve(data);
                 }).catch(err => {
-                    reject('failed to run code, is the code runnable?');
+                    dockerCopy(path).then(data => {
+                        resolve(data);
+                    }).catch(err => {
+                        reject(err);
+                    });
                 });
             });
         };
@@ -64,8 +68,8 @@ function newDockerChecker() {
             build:function(path) {
                 return dockerBuild(path);
             },
-            run:function() {
-                return dockerRun();
+            run:function(path) {
+                return dockerRun(path);
             },
             cp:function() {
                 return dockerCopy(path);
@@ -76,25 +80,20 @@ function newDockerChecker() {
             tryAnswer:function(dockerPath, userJsFile, outputFile, answerFile) {
                 return new Promise(function(resolve, reject) {
                     dockerBuild(dockerPath).then(function(data) {
-                        dockerRun().then(function(data) {
+                        dockerRun(outputFile).then(function(data) {
                             dockerCopy(outputFile).then(function(data) {
                                 compareFiles(answerFile, outputFile).then(function(data) {
-                                    console.log(data);
                                     resolve(data);
                                 }, function(err) {
-                                    console.log(err);
                                     reject(err);
                                 });
                             }, function(err) {
-                                console.log(err);
                                 reject(err);
                             });
                         }, function(err) {
-                            console.log(err);
                             reject(err);
                         });
                     }, function(err) {
-                        console.log(err);
                         reject(err);
                     });
                 });
