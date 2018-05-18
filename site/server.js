@@ -43,11 +43,14 @@ db.ensureTables().then((value) => {
                 server.docker.build("docker/.").then(function(res) {
                     console.log("Docker image built successfully");
                 }, function(err) {
-                    console.log("Error building docker image: "+err);
-                    console.log(">> This will cause issues evalutating challenges. <<");
-                    console.log(">> Challenges will be checked in LOCAL FILE       <<");
-                    console.log(">> userspace. This is insecure and is NOT         <<");
-                    console.log(">> recomended.                                    <<");
+                    err = "Error building docker image: "+err
+                          + "\x1b[41m\x1b[36m\n>> --------------- Ian Please Read. --------------- <<"
+                          + "\n>> Docker will not be used to evalutate challenges. <<"
+                          + "\n>> Challenges will be checked in LOCAL FILE         <<"
+                          + "\n>> userspace. Node will not be isolated and is NOT  <<"
+                          + "\n>> recomended but we have included this option if   <<"
+                          + "\n>> you do not have docker installed.                <<\x1b[0m"
+                    console.error("\x1b[31m", err);
                     server.docker = require("./docker/file.js").newFileChecker();
                 });
 
