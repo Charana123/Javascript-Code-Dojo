@@ -1,5 +1,5 @@
 window.addEventListener("load", function(){
-    
+
     var editor = ace.edit("editor");
     var output = ace.edit("output");
 
@@ -48,8 +48,9 @@ var submitCode = function(challenge_id){
                 document.getElementById("answer-popup").style.display = "block";
                 document.getElementById("answer").textContent = json.ans;
 
+                var output = ace.edit("output");
                 output_editor.setValue(json.output);
-                output.selection.setRange({start: {row:0, column:0}, end: {row:0, column:0}});
+                output_editor.selection.setRange({start: {row:0, column:0}, end: {row:0, column:0}});
         })
 }
 
