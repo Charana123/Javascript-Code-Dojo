@@ -33,8 +33,17 @@ var submitCode = function(challenge_id){
                 var output_editor = ace.edit("output");
                 document.getElementById("loader").style.visibility = "hidden";
                 document.getElementById("submit-button").style.visibility = "visible";
+                document.getElementById("answer-popup").style.display = "block";
                 document.getElementById("answer").textContent = json.ans;
+                
                 output_editor.setValue(json.output);
                 output.selection.setRange({start: {row:0, column:0}, end: {row:0, column:0}});
         })
 }
+
+window.addEventListener("load", function(){
+    var cross_icon = document.getElementById("cross-icon");
+    cross_icon.addEventListener("click", function(){
+            document.getElementById("answer-popup").style.display = "none";
+    })
+})
