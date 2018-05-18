@@ -15,6 +15,7 @@ var files = require("./js/files.js")
 var cookies = require("./js/cookies.js").Cookies();
 const respFuncs = require("./js/response.js");
 
+
 var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
 
@@ -37,6 +38,7 @@ db.ensureTables().then((value) => {
                 server.forumHandler = require("./database/forum.js").ForumHandler(db);
                 server.questionsHandler = require("./database/questions.js").QuestionsHandler(db);
                 server.docker = require("./docker/docker.js").newDockerChecker();
+                server.offlineCaptcha = require('svg-captcha');
 
                 console.log("Database ensured");
                 console.log("Building docker image");
@@ -235,6 +237,8 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 break;
 
             case "new_post":
+                loginFunc = respFuncs.captcha(server, request);
+                defaultFunc = respFuncs.captcha(server, request);
                 break;
 
             case "logout":

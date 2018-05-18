@@ -22,6 +22,21 @@ var nothingFunctionIn = function(request) {
     });
 };
 
+var captcha = function(server, request) {
+    return new Promise(function(resolve, reject) {
+        var options = {
+            size: 8, // size of random string
+            ignoreChars: '0o1i', // filter out some characters like 0o1i
+            noise: 2, // number of noise lines
+            color: true, // characters will have distinct colors instead of grey, true if background option is set
+            background:'#cc9966', // background color of the svg image
+        };
+        var captcha = server.offlineCaptcha.create(options);
+        server.UserSessions[request.headers["cookie"]].captcha = captcha.text;
+        resolve(captcha.data);
+    });
+};
+
 var signInPreFunc = function(request, server) {
     return new Promise(function(resolve, reject) {
         request.on('data', chunk => {
@@ -256,4 +271,5 @@ module.exports = {
     postRequest: postRequest,
     replySubmission: replySubmission,
     newPostSubmission: newPostSubmission,
+    captcha: captcha,
 }
