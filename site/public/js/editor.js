@@ -35,15 +35,24 @@ var submitCode = function(challenge_id){
                 document.getElementById("submit-button").style.visibility = "visible";
                 document.getElementById("answer-popup").style.display = "block";
                 document.getElementById("answer").textContent = json.ans;
-                
+
                 output_editor.setValue(json.output);
                 output.selection.setRange({start: {row:0, column:0}, end: {row:0, column:0}});
         })
 }
 
 window.addEventListener("load", function(){
-    var cross_icon = document.getElementById("cross-icon");
-    cross_icon.addEventListener("click", function(){
-            document.getElementById("answer-popup").style.display = "none";
+
+    document.getElementById("cross-icon").addEventListener("click", function(){
+        document.getElementById("answer-popup").style.display = "none";
+    })
+    // var x = document.getElementById("transparent-black-background");
+    // x.onclick = function(){
+    //     console.log("fired");
+    //     document.getElementById("answer-popup").style.display = "none";
+    // };
+    var transparent_black_background = document.getElementById("transparent-black-background");
+    transparent_black_background.addEventListener("click", function(){
+        console.log("hello world");
     })
 })
