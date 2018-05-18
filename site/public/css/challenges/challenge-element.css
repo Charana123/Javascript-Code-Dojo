@@ -17,7 +17,11 @@
 .challenge-heading {
     float:left;
     margin-left: 10px;
-    color: rgb(80, 195, 73);
+
+    /* Linear gradient text color */
+    background: -webkit-linear-gradient(rgb(80, 195, 73), rgb(32, 100, 50));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 
     font-weight: bold;
     font-size: 18px;
@@ -67,24 +71,3 @@
     text-align: center;
     line-height: 40px;
 }
-
-/* .solve-button,  {
-    /* button-div layout in parent div */
-    float: right;
-    margin-top: 5px;
-    width: 100px;
-    height: 40px;
-
-    /* making the div look like a button lol */
-    border-radius: 10px;
-
-    /* text attributes */
-    background-color: lightskyblue;
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-
-    /* center text */
-    text-align: center;
-    line-height: 40px;
-} */
