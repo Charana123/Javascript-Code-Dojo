@@ -61,7 +61,7 @@
                             <span> I'm not a robot </span>
                             <img src="/img/recaptcha.png"/>
                         </div>
-                        <div id="captcha-popup" class="g-recaptcha popup-content" data-sitekey="6LcLE1kUAAAAAMh0NkiVqW8WRRjSN2tk-cOecqbb">
+                        <div id="captcha-popup" class="popup-content" >
                             Loading, please be patient...
                         </div>
                     </div>
@@ -72,3 +72,10 @@
     </div>
     </div>
 </div>
+<script>
+    function CaptchaCallback(){
+        grecaptcha.render('captcha-popup', {'sitekey' : '6LcLE1kUAAAAAMh0NkiVqW8WRRjSN2tk-cOecqbb'});
+    };
+</script>
+<script src="https://www.google.com/recaptcha/api.js?onload=CaptchaCallback&amp;render=explicit" async="defer">
+</script>

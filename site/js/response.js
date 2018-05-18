@@ -66,12 +66,12 @@ var signUpPreFunc = function(request, server) {
             username = username.split('=')[1];
             pass1 = pass1.split('=')[1];
             pass2 = pass2.split('=')[1];
-            //captcha = captcha.split('=')[1];
+            captcha = captcha.split('=')[1];
 
-            //https.get(captchaUrl+"?secret="+secretKey+"&response="+captcha, (res) => {
-            //    res.on('data', (d) => {
-            //        d = JSON.parse(d.toString());
-            //        if (d.success) {
+            https.get(captchaUrl+"?secret="+secretKey+"&response="+captcha, (res) => {
+                res.on('data', (d) => {
+                    d = JSON.parse(d.toString());
+                    if (d.success) {
                         server.userHandler.signUp(email, username, pass1, pass2).then(function(user) {
                             var userCookie = request.headers["cookie"];
                             if (userCookie.indexOf(';') > -1) {
@@ -83,21 +83,21 @@ var signUpPreFunc = function(request, server) {
                             return;
 
                         }).catch((err) => {
-                            err.isErr = true;
+                            err.iserr = true;
                             reject(err);
                             return;
 
                         });
-           //         } else  {
-           //             reject("invalid captcha response from client");
-           //             return;
-           //         }
-           //     });
+                    } else  {
+                        reject({message:"invalid captcha response from client", isErr:true});
+                        return;
+                    }
+                });
 
-           // }).on('error', (err) => {
-           //     reject(err);
-           //     return;
-           // });
+            }).on('error', (err) => {
+                reject(err);
+                return;
+            });
         });
     });
 };
