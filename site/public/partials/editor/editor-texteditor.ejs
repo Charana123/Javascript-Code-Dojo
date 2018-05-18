@@ -12,13 +12,12 @@
             </div>
     </div>
 
-    <div>
+    <div style="width: 1000px; height: 100px;">
+        <input id="upload-code" type="file" name="upload code" accept="text/javascript" onchange="uploadCode(this.files)" />
         <div id="submit-button" class="button-load" onclick="submitCode(<%= data.id %>)">
             Submit
         </div>
-        <input type="file" id="upload-code" name="upload_code" accept="text/javascript" onchange="uploadCode(this.files)">
-            Upload code as file
-        </input>
+        <div id="loader" class="loader"></div>
     </div>
     <div id="answer-popup">
         <% include ../transparent-black-background %>
@@ -30,7 +29,4 @@
             <div id="answer"> Incorrect </div>
         </div>
     </div>
-    
-    <div id="loader" class="loader"></div>
-    <div id="answer"> </div>
 </div>

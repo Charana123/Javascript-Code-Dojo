@@ -1,27 +1,39 @@
-var editor = ace.edit("editor");
-var output = ace.edit("output");
+window.addEventListener("load", function(){
+    
+    var editor = ace.edit("editor");
+    var output = ace.edit("output");
 
-editor.setTheme("ace/theme/gruvbox");
-editor.session.setMode("ace/mode/javascript");
-editor.renderer.setCursorStyle("smooth");
-editor.session.setUseWrapMode(true);
-editor.session.setWrapLimitRange(80, 80);
+    editor.setTheme("ace/theme/gruvbox");
+    editor.session.setMode("ace/mode/javascript");
+    editor.renderer.setCursorStyle("smooth");
+    editor.session.setUseWrapMode(true);
+    editor.session.setWrapLimitRange(80, 80);
 
-output.setTheme("ace/theme/gruvbox");
-output.renderer.setCursorStyle("none");
-output.session.setUseWrapMode(true);
-output.session.setWrapLimitRange(60, 80);
-output.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+    output.setTheme("ace/theme/gruvbox");
+    output.renderer.setCursorStyle("none");
+    output.session.setUseWrapMode(true);
+    output.session.setWrapLimitRange(60, 80);
+    output.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
 
+
+    document.getElementById("cross-icon").addEventListener("click", function(event){
+        document.getElementById("answer-popup").style.display = "none";
+    });
+    document.getElementById("answer-popup").addEventListener("click", function(event){
+        if(event.target.id === "transparent-black-background"){
+            document.getElementById("answer-popup").style.display = "none";
+        }
+    });
+
+})
 
 var back = function() {
     window.location='/challenges';
 }
 
 var submitCode = function(challenge_id){
-    document.getElementById("submit-button").style.visibility = "hidden";
-    document.getElementById("submit-button").style.visibility = "hidden";
-    document.getElementById("loader").style.visibility = "visible";
+    document.getElementById("loader").style.display = "block";
+    document.getElementById("submit-button").style.display = "none";
     var user_script_container = ace.edit("editor");
     httpPostAsync("/challenge_request/" + challenge_id, user_script_container.getValue())
         .then(res => {
@@ -31,8 +43,8 @@ var submitCode = function(challenge_id){
                 }
 
                 var output_editor = ace.edit("output");
-                document.getElementById("loader").style.visibility = "hidden";
-                document.getElementById("submit-button").style.visibility = "visible";
+                document.getElementById("loader").style.display = "none";
+                document.getElementById("submit-button").style.display = "block";
                 document.getElementById("answer-popup").style.display = "block";
                 document.getElementById("answer").textContent = json.ans;
 
@@ -50,19 +62,6 @@ function uploadCode(files){
     }
     reader.readAsText(selectedFile);
 }
-
-window.addEventListener("load", function(){
-
-    document.getElementById("cross-icon").addEventListener("click", function(event){
-        document.getElementById("answer-popup").style.display = "none";
-    });
-    document.getElementById("answer-popup").addEventListener("click", function(event){
-        if(event.target.id === "transparent-black-background"){
-            document.getElementById("answer-popup").style.display = "none";
-        }
-    });
-
-})
 
 function setCaretPosition(el, caretPos) {
     if (el !== null) {
