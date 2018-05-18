@@ -175,18 +175,14 @@ function resolveUrl(url, request, userId, response, server, cookie) {
 
             case "new":
                 url = "forum";
+                loginFunc = server.forumHandler.getAllPosts("time");
+                defaultFunc = server.forumHandler.getAllPosts("time");
                 break;
 
             case "top":
                 url = "forum";
-                break;
-
-            case "hot":
-                url = "forum";
-                break;
-
-            case "general":
-                url = "forum";
+                loginFunc = server.forumHandler.getAllPosts("views");
+                defaultFunc = server.forumHandler.getAllPosts("views");
                 break;
 
             case "editor":

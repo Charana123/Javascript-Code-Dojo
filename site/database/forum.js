@@ -43,9 +43,24 @@ function ForumHandler(database) {
             });
         };
 
-        var sortReplsyByTime = function(x, y) {
+        var sortByTimeOld = function(x, y) {
             return y.time - x.time;
         };
+
+        function sortObj(list, key) {
+            function compare(a, b) {
+                a = a[key];
+                b = b[key];
+                var type = (typeof(a) === 'string' ||
+                    typeof(b) === 'string') ? 'string' : 'number';
+                var result;
+                //if (type === 'string') result = a.localeCompare(b);
+                if (type === 'string') result = Date.parse(b) - Date.parse(a)
+                else result = b - a;
+                return result;
+            }
+            return list.sort(compare);
+        }
 
         var newPost = function(db, userId, title, body, subject) {
             return new Promise(function(resolve, reject) {
@@ -94,7 +109,7 @@ function ForumHandler(database) {
                     db.rowsByField("users", "id", posts[0].user).then(function(user) {
                         posts[0].userData = user[0];
                         getReplys(posts[0].id).then(function(replys) {
-                            posts[0].replys = replys.sort(sortReplsyByTime);
+                            posts[0].replys = replys.sort(sortByTimeOld);
                             increaseViews(db, posts[0]).then(function(post) {
                                 resolve(posts[0]);
                                 return;
@@ -131,7 +146,6 @@ function ForumHandler(database) {
 
                     Promise.all(promises).then(function(resp) {
                         var replys = resp[0];
-                        replys.sort
                         replys[0].forEach((reply) => {
                             fullForums[reply.id].replys.push(reply);
                         });
@@ -149,9 +163,9 @@ function ForumHandler(database) {
             });
         };
 
-        var getForumsBySubject = function(db, subject) {
+        var getForumsBySubject = function(db, subject, sort) {
             return new Promise(function(resolve, reject) {
-                getAllPosts(db).then(function(posts) {
+                getAllPosts(db, sort).then(function(posts) {
                     Object.keys(posts.fullForums).forEach((f) => {
                         if (!(posts.fullForums[f].post.subject == subject)) {
                             delete posts.fullForums[f];
@@ -172,16 +186,20 @@ function ForumHandler(database) {
             });
         };
 
-        var getAllPosts = function(db) {
+        var getAllPosts = function(db, sort) {
             return new Promise(function (resolve, reject) {
                 db.getAll("forum_post").then(function(posts) {
                     var promises = [];
-                    var fullForums = {};
+                    var fullForums = [];
 
-                    posts.forEach((post) => {
-                        promises.push(getReplys(post.id));
-                        fullForums[post.id] = {post: post, user: {}, replys: []};
-                    });
+                    if (sort) {
+                        posts = sortObj(posts, sort);
+                    }
+
+                    for (var i = 0; i < posts.length; i++) {
+                        promises.push(getReplys(posts[i].id));
+                        fullForums.push({post: posts[i], user: {}, replys: []});
+                    }
 
                     Promise.all(promises).then(function(replys) {
                         replys.forEach((group) => {
@@ -242,11 +260,11 @@ function ForumHandler(database) {
             getForumsByUser:function(userId){
                 return getForumsByUser(db, userId);
             },
-            getForumsBySubject:function(subject){
-                return getForumsBySubject(db, subject);
+            getForumsBySubject:function(subject, sort){
+                return getForumsBySubject(db, subject, sort);
             },
-            getAllPosts:function(){
-                return getAllPosts(db);
+            getAllPosts:function(sort){
+                return getAllPosts(db, sort);
             },
             getPost:function(postId){
                 return getPost(db, postId);
