@@ -1,0 +1,66 @@
+.challenge-element {
+    padding-top: 15px;
+    padding-left: 25px;
+
+    border-style: solid;
+    border-color: white;
+    border-width: 1px;
+    border-radius: 10px;
+
+    width: 900px;
+    height:100px;
+}
+
+.challenge-heading {
+    float:left;
+    margin-left: 10px;
+
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#challenges-element-left-col {
+    width: 770px;
+}
+
+#challenges-element-right-col {
+    width: 110px;
+}
+
+.passed-percentage {
+    height: 20px;
+    font-size: 17px;
+}
+
+.completed-image {
+    float:left;
+    height: 20px;
+    width: 20px;
+}
+
+#challenge-description {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.solve-button, .try-again-button {
+    /* button-div layout in parent div */
+    float: right;
+    margin-top: 15px;
+    width: 100px;
+    height: 40px;
+
+    /* making the div look like a button lol */
+    border-radius: 10px;
+
+    /* text attributes */
+    background-color: lightskyblue;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+
+    /* center text */
+    text-align: center;
+    line-height: 40px;
+}
+

@@ -12,8 +12,13 @@
             </div>
     </div>
 
-    <div id="submit-button" class="button-load" onclick="submitCode(<%= data.id %>)">
-        Submit
+    <div>
+        <div id="submit-button" class="button-load" onclick="submitCode(<%= data.id %>)">
+            Submit
+        </div>
+        <input type="file" id="upload-code" name="upload_code" accept="text/javascript" onchange="uploadCode(this.files)">
+            Upload code as file
+        </input>
     </div>
     <div id="answer-popup">
         <% include ../transparent-black-background %>

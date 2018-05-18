@@ -41,18 +41,47 @@ var submitCode = function(challenge_id){
         })
 }
 
+function uploadCode(files){
+    var selectedFile = files[0];
+    var reader = new FileReader();
+    reader.onload = function(event){
+        var editor = ace.edit("editor");
+        editor.setValue(event.target.result);
+    }
+    reader.readAsText(selectedFile);
+}
+
 window.addEventListener("load", function(){
 
-    document.getElementById("cross-icon").addEventListener("click", function(){
+    document.getElementById("cross-icon").addEventListener("click", function(event){
         document.getElementById("answer-popup").style.display = "none";
-    })
-    // var x = document.getElementById("transparent-black-background");
-    // x.onclick = function(){
-    //     console.log("fired");
-    //     document.getElementById("answer-popup").style.display = "none";
-    // };
-    var transparent_black_background = document.getElementById("transparent-black-background");
-    transparent_black_background.addEventListener("click", function(){
-        console.log("hello world");
-    })
+    });
+    document.getElementById("answer-popup").addEventListener("click", function(event){
+        if(event.target.id === "transparent-black-background"){
+            document.getElementById("answer-popup").style.display = "none";
+        }
+    });
+
 })
+
+function setCaretPosition(el, caretPos) {
+    if (el !== null) {
+        if (el.createTextRange) {
+            var range = el.createTextRange();
+            range.move('character', caretPos);
+            range.select();
+            return true;
+        }
+        else if (el.selectionStart) {
+            el.focus();
+            el.setSelectionRange(caretPos, caretPos);
+            return true;
+        }
+        else  {
+            el.focus();
+            return false;
+        }
+    }
+}
+
+

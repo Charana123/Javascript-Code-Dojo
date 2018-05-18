@@ -32,15 +32,16 @@ margin-left: 20px;
 }
 
 #submit-button {
+    float: left;
     width: 120px;
     height: 50px;
 
-    /* Vertically align content */
+    /* Vertically align text */
     line-height: 50px;
     vertical-align: middle;
     text-align: center;
 
-
+    /* Style text */
     background: radial-gradient(closest-side, rgb(80, 195, 73), rgb(32, 100, 50));
     color: white;
     font-size: 24px;
