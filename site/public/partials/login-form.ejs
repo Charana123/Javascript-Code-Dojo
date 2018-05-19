@@ -1,21 +1,22 @@
 <link rel="stylesheet" href="/css/login-form.css" />
-<script type="text/javascript" src="/js/login-form.js" async="async"> </script>
+<script type="text/javascript" src="/js/sign-in.js" async="async"> </script>
+<script type="text/javascript" src="/js/http_requests.js" async="async"> </script>
 
-<form id="login-form" method="post" action="/sign-in_submission">
+<div id="login-form">
     <div>
-        <div>
-            <img src="/img/username.svg"> </img>
-        </div>
-        <input type="text" placeholder="   username" name="uname"></input>
-    </div>
     <div>
-        <div>
-            <img src="/img/password.svg"> </img>
-        </div>
-        <input type="password" placeholder="   password" name="password"></input>
+        <img src="/img/username.svg"> </img>
     </div>
-    <span id="login-form-error"> </span>
+    <input type="text" id="unamelogin" placeholder="   username" name="unamelogin"></input>
+</div>
+<div>
     <div>
-        <button type="submit" value="Submit">Sign In</button>
+        <img src="/img/password.svg"> </img>
     </div>
-</form>
+    <input type="password" id="pass" placeholder="   password" name="password"></input>
+</div>
+<span id="login-form-error"> </span>
+<div>
+    <button type="submit" value="Submit" onclick="submitSignin()">Sign In</button>
+</div>
+</div>

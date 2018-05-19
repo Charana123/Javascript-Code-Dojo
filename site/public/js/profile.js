@@ -9,7 +9,9 @@ window.addEventListener("load", function(){
         var user_options_popup = document.getElementById("user-options-popup");
         user_options_popup.style.display = "none";
         var login_popup = document.getElementById("login-form-popup");
-        login_popup.style.display = "none";
+        if (login_popup) {
+            login_popup.style.display = "none";
+        }
     })
     var picture_button = document.getElementById("fileUpload");
     picture_button.onclick = function(){

@@ -22,6 +22,52 @@ var nothingFunctionIn = function(request) {
     });
 };
 
+var captcha = function(server, request) {
+    return new Promise(function(resolve, reject) {
+        var options = {
+            size: 8,
+            ignoreChars: '0o1i',
+            noise: 2,
+            color: true,
+            background:'#cc9966',
+        };
+        var captcha = server.offlineCaptcha.create(options);
+        console.dir(captcha);
+        server.UserSessions[request.headers["cookie"]].captcha = captcha.text;
+        resolve(captcha.data);
+        return;
+    });
+};
+
+var newPostSubmission = function(request, userId, server) {
+    return new Promise(function(resolve, reject) {
+        request.on('data', chunk => {
+            var [subject, title, body, captcha] = chunk.toString().split('&');
+            subject = subject.split('=')[1];
+            title = title.split('=')[1];
+            body = body.split('=')[1];
+            captcha = captcha.split('=')[1];
+
+            console.dir(captcha);
+            console.dir(server.UserSessions[request.headers["cookie"]].captcha);
+
+            if (captcha != server.UserSessions[request.headers["cookie"]].captcha) {
+                reject({isErr: true, message: "incorrect captcha"});
+                return;
+            }
+
+            server.forumHandler.newPost(userId, title, body, subject).then(function(res){
+                resolve(res);
+                return;
+            }, function(err) {
+                err = {isErr: true, message: err};
+                reject(err);
+                return;
+            });
+        });
+    });
+};
+
 var signInPreFunc = function(request, server) {
     return new Promise(function(resolve, reject) {
         request.on('data', chunk => {
@@ -41,7 +87,8 @@ var signInPreFunc = function(request, server) {
                 resolve(user);
                 return;
 
-            }).catch((err) => {
+            }).catch((errMessage) => {
+                var err = {isErr: true, message: errMessage};
                 reject(err);
                 return;
 
@@ -82,12 +129,13 @@ var signUpPreFunc = function(request, server) {
                             return;
 
                         }).catch((err) => {
-                            reject(err.message);
+                            err.iserr = true;
+                            reject(err);
                             return;
 
                         });
                     } else  {
-                        reject("invalid captcha response from client");
+                        reject({message:"invalid captcha response from client", isErr:true});
                         return;
                     }
                 });
@@ -221,26 +269,6 @@ var replySubmission = function(request, userId, server) {
     });
 };
 
-var newPostSubmission = function(request, userId, server) {
-    return new Promise(function(resolve, reject) {
-        request.on('data', data => {
-            data = data.toString("utf-8");
-            //"subject=This+is+a+subject&title=This+is+a+title&body=This+is+a+body"
-            var [subject, title, body] = data.toString().split('&');
-            // We need to format this reply with the special characters
-            subject = subject.split('=')[1].replace(/\+/g, " ");
-            title = title.split('=')[1].replace(/\+/g, " ");
-            body = body.split('=')[1].replace(/\+/g, " ");
-
-            server.forumHandler.newPost(userId, title, body, subject).then(function(res){
-                resolve(res);
-            }, function(err) {
-                reject(err);
-                return;
-            });
-        });
-    });
-};
 
 module.exports = {
     nothingFunctionOut: nothingFunctionOut,
@@ -254,4 +282,5 @@ module.exports = {
     postRequest: postRequest,
     replySubmission: replySubmission,
     newPostSubmission: newPostSubmission,
+    captcha: captcha,
 }
