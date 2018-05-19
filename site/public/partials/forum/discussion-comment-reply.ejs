@@ -12,6 +12,7 @@
             <% if (session_valid) { %>
                 <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= reply.id %>, 'forum_reply')"> </img>
                 <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= reply.id %>, 'forum_reply')"> </img>
+                <div class="add-reply-button" > reply </div> 
             <% } %>
         </footer>
 
@@ -31,6 +32,7 @@
                                 <% if (session_valid) { %>
                                 <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= child.id %>, 'forum_reply')"> </img>
                                 <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= child.id %>, 'forum_reply')"> </img>
+                                <div class="add-reply-button" > reply </div> 
                                 <% } %>
                             </footer>
                         </div>

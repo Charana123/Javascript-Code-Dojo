@@ -21,6 +21,7 @@
             <% if (session_valid) { %>
             <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= data.id %>, 'forum_post')"> </img>
             <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= data.id %>, 'forum_post')"> </img>
+            <div class="add-reply-button" > reply </div> 
             <% } %>
         </footer>
 

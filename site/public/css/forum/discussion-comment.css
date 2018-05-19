@@ -91,4 +91,9 @@
     height: 12px;
 }
 
+.add-reply-button {
+    display: inline;
+    margin-left: 5px;
+}
+
 
