@@ -315,7 +315,7 @@ var replySubmission = function(request, userId, server, cookie) {
     });
 };
 
-var changeVote = function(request, server, change) {
+var changeVote = function(request, server, userId, change) {
     return new Promise(function(resolve, reject) {
         request.on('data', data => {
             var [post, table] = data.toString().split('&');
@@ -323,7 +323,7 @@ var changeVote = function(request, server, change) {
             table = table.split('=')[1];
 
             if (change == "increase") {
-                server.forumHandler.increaseVote(post, table).then(function(res) {
+                server.forumHandler.increaseVote(post, table, userId).then(function(res) {
                     resolve(res);
                     return;
                 }, function(err) {
@@ -332,7 +332,7 @@ var changeVote = function(request, server, change) {
                 });
 
             } else {
-                server.forumHandler.decreaseVote(post, table).then(function(res) {
+                server.forumHandler.decreaseVote(post, table, userId).then(function(res) {
                     resolve(res);
                     return;
                 }, function(err) {

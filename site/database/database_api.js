@@ -239,7 +239,7 @@ function newDatabase(dbName) {
             });
         };
 
-        var upateVotePost = function(db, user, post, value) {
+        var updateVotePost = function(db, user, post, value) {
             return new Promise(function(resolve, reject) {
                 db.all(insertVotePost(user, post, value), [], (err, res) => {
                     if (err) {
@@ -253,7 +253,7 @@ function newDatabase(dbName) {
             });
         };
 
-        var upateVoteReply = function(db, user, reply, value) {
+        var updateVoteReply = function(db, user, reply, value) {
             return new Promise(function(resolve, reject) {
                 db.all(insertVoteReply(user, reply, value), [], (err, res) => {
                     if (err) {
@@ -497,7 +497,7 @@ function newDatabase(dbName) {
                 return updateVotePost(db, user, post, value);
             },
             updateVoteReply:function(user, reply, value){
-                return updateVotePost(db, user, reply, value);
+                return updateVoteReply(db, user, reply, value);
             },
         }
     }());

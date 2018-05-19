@@ -1,29 +1,23 @@
 "use strict"
 
-var port = 8080;
-var verbose = true;
+const https = require("https");
+const fs = require("fs")
+const files = require("./js/files.js")
+const cookies = require("./js/cookies.js").Cookies();
+const respFuncs = require("./js/response.js");
+const dbName = "./secrets/db.sqlite3";
+const db = require("./database/database_api.js").newDatabase(dbName);
 
-var https = require("https");
-var fs = require("fs")
-
-var options = {
+const port = 8080;
+const verbose = true;
+const OK = 200, NotFound = 404, BadType = 415, Error = 500;
+const options = {
     key: fs.readFileSync("./secrets/server.key"),
     cert: fs.readFileSync("./secrets/server.crt"),
 };
 
-var files = require("./js/files.js")
-var cookies = require("./js/cookies.js").Cookies();
-const respFuncs = require("./js/response.js");
-
-
-var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
-
-const dbName = "./secrets/db.sqlite3";
-var db = require("./database/database_api.js").newDatabase(dbName);
-
-var server = {};
-server.UserSessions = {};
+var server = {UserSessions: {}};
 
 function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
@@ -262,13 +256,13 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 break;
 
             case "decrease_vote":
-                preFunc  = respFuncs.changeVote(request, server, "decrease");
+                preFunc  = respFuncs.changeVote(request, server, userId, "decrease");
                 errLoad = false;
                 doLoad = false;
                 break;
 
             case "increase_vote":
-                preFunc = respFuncs.changeVote(request, server, "increase");
+                preFunc = respFuncs.changeVote(request, server, userId, "increase");
                 errLoad = false;
                 doLoad = false;
                 break;

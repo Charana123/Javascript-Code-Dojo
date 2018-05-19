@@ -138,7 +138,7 @@ function ForumHandler(database) {
             });
         };
 
-        var increaseViews = function(db, post) {
+        var increaseViews = function(db, post, userId) {
             return new Promise(function(resolve, reject) {
                 db.updateFieldByValue("forum_post", "views", post.views+1, "id", post.id).then(function(res) {
                     resolve(post);
@@ -148,26 +148,48 @@ function ForumHandler(database) {
             });
         };
 
-        var increaseVote = function(db, post, table) {
+        var increaseVote = function(db, post, table, userId) {
             return new Promise(function(resolve, reject) {
-                db.rowsByField(table, "id", post).then(function(posts) {
-                    db.updateFieldByValue(table, "votes", posts[0].votes+1, "id", post).then(function(res) {
-                        resolve(post);
-                    }, function(err) {
+                var promise;
+                if (table == "forum_post") {
+                    promise = db.updateVotePost(userId, post, 1);
+                } else {
+                    promise = db.updateVoteReply(userId, post, 1);
+                }
+
+                promise.then(function(res) {
+                    db.rowsByField(table, "id", post).then(function(posts) {
+                        db.updateFieldByValue(table, "votes", posts[0].votes+1, "id", post).then(function(res) {
+                            resolve(post);
+                        }, function(err) {
+                            reject(err);
+                        });
+
+                    }, function(err){
                         reject(err);
                     });
-
                 }, function(err){
                     reject(err);
                 });
             });
         };
 
-        var decreaseVote = function(db, post, table) {
+        var decreaseVote = function(db, post, table, userId) {
             return new Promise(function(resolve, reject) {
-                db.rowsByField(table, "id", post).then(function(posts) {
-                    db.updateFieldByValue(table, "votes", posts[0].votes-1, "id", post).then(function(res) {
-                        resolve(post);
+                var promise;
+                if (table == "forum_post") {
+                    promise = db.updateVotePost(userId, post, -1);
+                } else {
+                    promise = db.updateVoteReply(userId, post, -1);
+                }
+
+                promise.then(function(res) {
+                    db.rowsByField(table, "id", post).then(function(posts) {
+                        db.updateFieldByValue(table, "votes", posts[0].votes-1, "id", post).then(function(res) {
+                            resolve(post);
+                        }, function(err) {
+                            reject(err);
+                        });
                     }, function(err) {
                         reject(err);
                     });
@@ -353,15 +375,13 @@ function ForumHandler(database) {
             getPost:function(postId){
                 return getPost(db, postId);
             },
-            increaseVote:function(post, table) {
-                return increaseVote(db, post, table);
+            increaseVote:function(post, table, userId) {
+                return increaseVote(db, post, table, userId);
             },
-            decreaseVote:function(post, table) {
-                return decreaseVote(db, post, table);
+            decreaseVote:function(post, table, userId) {
+                return increaseVote(db, post, table, userId);
             },
         }
 
     }());
 }
-
-
