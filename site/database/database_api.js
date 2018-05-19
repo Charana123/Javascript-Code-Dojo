@@ -25,11 +25,11 @@ const ensureChallengeStr = "CREATE TABLE if not exists challenges " +
 
 const ensureForumPostStr = "CREATE TABLE if not exists forum_post " +
     "(id INTEGER PRIMARY KEY, user INTEGER, title TEXT, body TEXT, subject TEXT," +
-    "views INTEGER, time DATETIME)";
+    "views INTEGER, votes INTEGER, time DATETIME)";
 
 const ensureForumReplyStr = "CREATE TABLE if not exists forum_reply " +
     "(id INTEGER PRIMARY KEY, post INTEGER, parent INTEGER, user INTEGER, body TEXT," +
-    "time DATETIME, FOREIGN Key(post) REFERENCES forum_post(id))";
+    "votes INTEGER, time DATETIME, FOREIGN Key(post) REFERENCES forum_post(id))";
 
 const ensureQuestionStr = "CREATE TABLE if not exists questions " +
     "(id INTEGER PRIMARY KEY, title TEXT, question TEXT, answer_file TEXT, "+
@@ -107,23 +107,23 @@ function updateFieldByValueStr(table, field, value, where, id) {
 };
 
 function insertPostStr(userId, title, body, subject) {
-    return insertInto + "forum_post (user, title, body, subject, views, time) VALUES(" + userId +
-        ", '" + title + "', '" + body + "', '" + subject + "', 0, datetime('now','localtime'));";
+    return insertInto + "forum_post (user, title, body, subject, views, votes, time) VALUES(" + userId +
+        ", '" + title + "', '" + body + "', '" + subject + "', 0, 1, datetime('now','localtime'));";
 }
 
 function insertPostStrWithId(id, userId, title, body, subject, views) {
-    return insertInto + "forum_post (id, user, title, body, subject, views, time) VALUES(" + id +
-        ", " +  userId + ", '" + title + "', '" + body + "', '" + subject + "', " + views + ", datetime('now','localtime'));";
+    return insertInto + "forum_post (id, user, title, body, subject, views, votes, time) VALUES(" + id +
+        ", " +  userId + ", '" + title + "', '" + body + "', '" + subject + "', " + views + ", 1, datetime('now','localtime'));";
 }
 
 function insertReplyStr(postId, parent, userId, body, id) {
     if (id) {
-    return insertInto + "forum_reply (id, post, parent, user, body, time) VALUES(" +id + ", " + postId +
-        ", " + parent + ", " + userId + ", '" + body + "', datetime('now','localtime'));";
+    return insertInto + "forum_reply (id, post, parent, user, body, votes, time) VALUES(" +id + ", " + postId +
+        ", " + parent + ", " + userId + ", '" + body + "', 1, datetime('now','localtime'));";
 
     } else {
-    return insertInto + "forum_reply (post, parent, user, body, time) VALUES(" + postId +
-        ", " + parent + ", " + userId + ", '" + body + "', datetime('now','localtime'));";
+    return insertInto + "forum_reply (post, parent, user, body, votes, time) VALUES(" + postId +
+        ", " + parent + ", " + userId + ", '" + body + "', 1, datetime('now','localtime'));";
     };
 }
 

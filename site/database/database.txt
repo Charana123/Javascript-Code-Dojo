@@ -14,8 +14,8 @@ id INTEGER | title TEXT | question TEXT | answer_file TEXT | start_code TEXT
 
 forum_post
 -----------
-id INTEGER PRIMARY KEY | user INTEGER | title TEXT | body TEXT | subject | time DATETIME
+id INTEGER PRIMARY KEY | user INTEGER | title TEXT | body TEXT | subject | votes INTEGER | time DATETIME
 
 forum_reply
 -----------
-post (foreign key) INTEGER | id PRIMARY KEY INTEGER | parent INTEGER | user INTEGER | body TEXT | time DATETIME
+post (foreign key) INTEGER | id PRIMARY KEY INTEGER | parent INTEGER | user INTEGER | body TEXT | votes INTEGER | time DATETIME

@@ -16,7 +16,9 @@
       <div id="content-wrapper">
         <div id="content">
             <% include partials/forum/discussion-comment.ejs %>
+            <% if (session_valid) { %>
             <% include partials/forum/comment-box.ejs %>
+            <% } %>
         </div>
       </div>
     </div>
