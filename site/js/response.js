@@ -48,11 +48,29 @@ var newPostSubmission = function(request, userId, server) {
             body = body.split('=')[1];
             captcha = captcha.split('=')[1];
 
-            console.dir(captcha);
-            console.dir(server.UserSessions[request.headers["cookie"]].captcha);
+            var err = {isErr: false, message: ""};
+            if (subject == "") {
+                err.isErr = true;
+                err.message += "Subject is blank\n";
+            }
+
+            if (title == "") {
+                err.isErr = true;
+                err.message += "Title is blank\n";
+            }
+
+            if (body == "") {
+                err.isErr = true;
+                err.message += "Body is blank\n";
+            }
 
             if (captcha != server.UserSessions[request.headers["cookie"]].captcha) {
-                reject({isErr: true, message: "incorrect captcha"});
+                err.isErr = true;
+                err.message += "incorrect captcha\n";
+            }
+
+            if (err.isErr) {
+                reject(err)
                 return;
             }
 

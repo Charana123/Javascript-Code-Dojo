@@ -8,8 +8,10 @@ var submitPost = function() {
 
     httpPostAsync("/new_post_submission", sendData)
         .then(res => {
+
             if (res.indexOf("<") == -1) {
                 var json = JSON.parse(res);
+                    json.message = json.message.replace(/\n/g, '. ');
                 if (json.isErr) {
                     document.getElementById("captcha-error").textContent = "* " + json.message;
                 }
