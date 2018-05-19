@@ -240,6 +240,12 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 loginFunc = respFuncs.captcha(server, request);
                 break;
 
+            case "new_captcha":
+                preFunc = respFuncs.captcha(server, request);
+                errLoad = false;
+                doLoad = false;
+                break;
+
             case "logout":
                 delete server.UserSessions[cookie];
                 url = "index";

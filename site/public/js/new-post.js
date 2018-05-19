@@ -18,3 +18,14 @@ var submitPost = function() {
             }
         });
 }
+
+var newCaptcha = function() {
+    httpPostAsync("/new_captcha")
+        .then(res => {
+            res = "<div>"+res.toString("utf-8").replace(/\\/g, '')+"</div>";
+            var Obj = document.getElementsByTagName('svg')[0]; //any element to be fully replaced
+            parser = new DOMParser();
+            xmlDoc = parser.parseFromString(res, "image/svg+xml");
+            Obj.outerHTML = xmlDoc.childNodes[0].innerHTML;
+        });
+}
