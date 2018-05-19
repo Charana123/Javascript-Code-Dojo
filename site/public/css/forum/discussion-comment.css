@@ -37,47 +37,42 @@
 
 .discussion-comment-header {
     height: 30px;
-
 }
 
-.discussion-comment-user-name {
-    /* Align username text */
-    line-height: 30px;
-    vertical-align: middle;
-    text-align: left;
-
-    /* Text styling */
-    font-size: 15px;
-
-    float: left;
+.discussion-comment-header > * {
+    vertical-align: bottom;
+    margin: 0px;
 }
 
 .discussion-comment-header > img {
     height: 15px;
     width: 15px;
-    float: left;
-    margin-top: 8px;
-    margin-left: 10px;
+    display: inline-block;
+    
+    margin-top: 10px;
+    margin-left: 5px;
 }
 
-.comment-timestamp {
-    height: 30px;
-    font-size: 12px;
-
-    float: left;
+.discussion-comment-user-name, .comment-timestamp {
+    /* Align username text */
+    display: inline-block;
     margin-left: 5px;
 
-    line-height: 30px;
+    /* Text styling */
+    font-size: 12px;
+    text-decoration: underline;
+    text-align: left;
 }
 
 .discussion-comment {
     width: calc(430px - 10px);
 
     /* Layout Styling */
-    background-color: white;
+    /* background-color: white; */
+    color: white;
 
     /* Text Styling */
-    font-size: 12px;
+    font-size: 14px;
     padding: 5px;
 }
 
