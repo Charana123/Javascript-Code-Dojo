@@ -312,32 +312,6 @@ function ForumHandler(database) {
         };
 
 
-        var forumTestData = function(){
-            return new Promise(function(resolve, reject){
-                var reply1 = { 
-                    username: "Charana", 
-                    comment: "idk man...", 
-                    votes: 0, 
-                    timestamp: "3 months ago"
-                };
-                var reply2 = { 
-                    username: "Raj",
-                    comment: "why am i here ?", 
-                    votes: 3,
-                    timestamp: "5 seconds"
-                };
-                var replies = [ reply1, reply2 ];
-                var data = { 
-                    username: "Josh",
-                    comment: "why does ian have a PNG section?",
-                    votes: 1,
-                    replies : replies,
-                    timestamp: "5 months ago"
-                };
-                resolve(data);
-            });
-        };
-
         return {
             newPost:function(userId, title, body, subject){
                 return newPost(db, userId, title, body, subject);
@@ -357,7 +331,6 @@ function ForumHandler(database) {
             getPost:function(postId){
                 return getPost(db, postId);
             },
-            forumTestData: forumTestData(),
         }
 
     }());

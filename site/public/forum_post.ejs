@@ -8,68 +8,17 @@
   <meta name="description" content="A website to learn JavaScript!" />
   <link rel="stylesheet" type="text/css" media="screen" href="/css/home.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="/css/forum.css" />
-  <script type="text/javascript" src="/js/new-reply.js" defer="defer" async="async"> </script>
-  <script type="text/javascript" src="/js/http_requests.js" async="async"> </script>
 </head>
 
 <body>
-
-<% include partials/header %>
-
-<div class="topbar">
-  <ul>
-    <li id="question-title"> <%= data.title %> </li>
-    <li id="question-category"> <%= data.subject %> </li>
-    <li id="question-views"> <%= data.time %> </li>
-    <li id="question-views"> <%= data.body %> </li>
-    <li id="question-views"> [<%= data.userData.username %>] </li>
-    <li > <img  id="profile-image" src="/<%= data.userData.image %>"/> </li>
-  </ul>
-</div>
-
-<% Object.keys(data.replys).forEach(function(k){ %>
-<% var reply = data.replys[k] %>
-  <div class="sidebar">
-
-    <div class="forum-container">
-        <ul>
-            <li id="question-title"> <%= reply.body %> </li>
-            <li id="question-comments"> <%= reply.body %> </li>
-            <li id="question-activity"> <%= reply.time %> </li>
-            <li id="question-category"> [<%= reply.userData.username %>]</li>
-            <li > <img  id="profile-image" src="/<%= reply.userData.image %>"/> </li>
-        </ul>
-    </div>
-  </div>
-<% }) %>
-
-<% if (session_valid) { %>
-    <body>
-        <div id="wrapper">
-            <div id="content-wrapper">
-                <div id="content">
-
-            <form onsubmit="return false;">
-                <div class="column" id="field-column">
-                    <input id="reply" class="long-field" type="text" placeholder="Comment" name="reply"></input> <br/>
-                    <input id="captcha" class="long-field" type="text" placeholder="Captcha" name="captcha"></input> <br/>
-                    <input id="postId" name="postId" type="hidden" value="<%= data.id %>"> </input>
-
-
-
-                <div id="captcha-error"></div>
-                <div id="new-post-wrapper">
-                    <%- data.captcha %>
-                </div>
-                    <button onclick="newCaptcha()"> New Captcha </button>
-                    <button type="submit" value="submit" onclick="submitReply('<%= data.id %>')"> Reply </button>
-                </div>
-            </form>
-                </div>
-            </div>
+    <% include partials/header %>
+    <div id="wrapper">
+      <div id="content-wrapper">
+        <div id="content">
+            <% include partials/forum/discussion-comment.ejs %>
+            <% include partials/forum/comment-box.ejs %>
         </div>
-        </body>
-<% } %>
-
+      </div>
+    </div>
 </body>
 </html>

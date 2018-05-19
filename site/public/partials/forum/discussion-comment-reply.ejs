@@ -1,16 +1,33 @@
 <div class="reply-comment-container-wrapper">
-    <img class="discussion-icon discussion-comment-user-icon" src="/img/default-avatar.svg"> </img>
+    <img class="discussion-icon discussion-comment-user-icon" src="../<%= reply.userData.image %>"> </img>
     <div class="discussion-comment-container">
         <div class="discussion-comment-header">
-            <div class="discussion-comment-user-name"> <%= reply.username %> </div>
+            <div class="discussion-comment-user-name"> <%= reply.userData.username %> </div>
             <img src="/img/clock.svg"> </img>
-            <div class="comment-timestamp"> <%= reply.timestamp %> </div>
+            <div class="comment-timestamp"> <%= reply.time %> </div>
         </div>
-        <div class="discussion-comment"> <%= reply.comment %> </div>
-        <footer class="discussion-comment-footer"> 
+        <div class="discussion-comment"> <%= reply.body %> </div>
+        <footer class="discussion-comment-footer">
             <%= reply.votes %>
             <img id="up-arrow" src="/img/up-arrow.svg"> </img>
             <img id="down-arrow" src="/img/down-arrow.svg"> </img>
         </footer>
+
+        <div id="reply-comment-container" onclick="postReply()">
+              <% reply.children.forEach(function(child){ %>
+                    <img class="discussion-icon discussion-comment-user-icon" src="../<%= child.userData.image %>"> </img>
+                    <div class="discussion-comment-header">
+                        <div class="discussion-comment-user-name"> <%= child.userData.username %> </div>
+                        <img src="/img/clock.svg"> </img>
+                        <div class="comment-timestamp"> <%= child.time %> </div>
+                    </div>
+                    <div class="discussion-comment"> <%= child.body %> </div>
+                    <footer class="discussion-comment-footer">
+                        <%= child.votes %>
+                        <img id="up-arrow" src="/img/up-arrow.svg"> </img>
+                        <img id="down-arrow" src="/img/down-arrow.svg"> </img>
+                    </footer>
+              <% });  %>
+        </div>
     </div>
 </div>
