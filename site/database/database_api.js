@@ -137,12 +137,29 @@ function insertQuestionStr(id, title, question, answer_file, start_code) {
     return insertInto + "questions (id, title, question , answer_file, start_code) VALUES (" + id + ",'" + title + "', '" + question + "', '"  + answer_file + "', '" + start_code + "');";
 }
 
+
+function getVotePostRow(user, post) {
+    return selectAll + "voted_post WHERE user = " + user + " AND post = "+ post+";";
+}
+
+function getVoteReplyRow(user, reply) {
+    return selectAll + "voted_reply WHERE user = " + user + " AND reply = "+ reply+";";
+}
+
 function insertVotePost(user, post, value) {
-    return "REPLACE INTO voted_post (user, post, value) VALUES(" + user + ", " + post + ", " + value + ");";
+    return insertInto + "voted_post (user, post, value) VALUES(" + user + ", "+post+", "+value+");";
 }
 
 function insertVoteReply(user, reply, value) {
-    return "REPLACE INTO voted_reply (user, reply, value) VALUES(" + user + ", " + reply + ", " + value + ");";
+    return insertInto + "voted_reply (user, reply, value) VALUES(" + user + ", "+reply+", "+value+");";
+}
+
+function updateVotePost(user, post, value) {
+    return "UPDATE voted_post SET value = "+value+" WHERE user = "+user+" AND post = "+post+";";
+}
+
+function updateVoteReply(user, reply, value) {
+    return "UPDATE voted_reply SET value = "+value+" WHERE user = "+user+" AND reply = "+reply+";";
 }
 
 function getRowsByFieldString(table, field, value) {
@@ -241,27 +258,66 @@ function newDatabase(dbName) {
 
         var updateVotePost = function(db, user, post, value) {
             return new Promise(function(resolve, reject) {
-                db.all(insertVotePost(user, post, value), [], (err, res) => {
+                db.all(getVotePostRow(user, post), [], (err, res) => {
                     if (err) {
-                        reject(err)
+                        reject(err);
                         return;
                     }
 
-                    resolve(res);
-                    return;
+                    if (res.length == 0) {
+                        db.all(insertVotePost(user, post, value), [], (err, res) => {
+                            if (err) {
+                                reject(err)
+                                return;
+                            }
+
+                            resolve(res);
+                            return;
+                        });
+
+                    } else {
+                        db.all(updateVotePost(user, post, value), [], (err, res) => {
+                            if (err) {
+                                reject(err)
+                                return;
+                            }
+
+                            resolve(res);
+                            return;
+                        });
+                    }
                 });
             });
         };
 
         var updateVoteReply = function(db, user, reply, value) {
             return new Promise(function(resolve, reject) {
-                db.all(insertVoteReply(user, reply, value), [], (err, res) => {
+                db.all(getVoteReplyRow(user, reply), [], (err, res) => {
                     if (err) {
-                        reject(err)
+                        reject(err);
                         return;
                     }
-                    resolve(res);
-                    return;
+                    if (res.length == 0) {
+                        db.all(insertVoteReply(user, reply, value), [], (err, res) => {
+                            if (err) {
+                                reject(err)
+                                return;
+                            }
+
+                            resolve(res);
+                            return;
+                        });
+                    } else {
+                        db.all(updateVotePost(user, reply, value), [], (err, res) => {
+                            if (err) {
+                                reject(err)
+                                return;
+                            }
+
+                            resolve(res);
+                            return;
+                        });
+                    }
                 });
             });
         };
