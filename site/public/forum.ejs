@@ -11,43 +11,15 @@
 </head>
 
 <body>
-
-<% include partials/header %>
-
-<div class="sidebar navigation">
-  <ul>
-    <li>
-      <div id="select-container">
-        <select id="selectSubject" onchange="javascript:location.href = this.value;" >
-          <option id="all" value="/forum/all"> All </option>
-<% data.subjects.forEach((s) => {  %>
-          <option id="<%= s %>" value="/forum/<%= s %>"> <%= s %> </option>
-<% }) %>
-        </select>
-<script> document.getElementById("<%= data.current %>").selected = true; console.log("<%= data.current %>"); </script>
+    <% include partials/header %>
+    <div id="wrapper">
+      <div id="content-wrapper">
+        <div id="content">
+            <div style="width:100%; margin: 0px; margin-left: 10px; margin-top: 10px;">
+              <% include partials/forum/comment-box %>
+            </div>
+        </div>
       </div>
-
-    </li>
-    <li><a href="new">New</a></li>
-    <li><a href="top">Top</a></li>
-<% if (session_valid) { %>
-    <li><a href="new_post">[New Post]</a></li>
-<% } %>
-  </ul>
-</div>
-
-<div class="topbar">
-  <ul>
-    <li id="question-title"> Title </li>
-    <li id="question-category"> Category </li>
-    <li id="question-comments"> Comments </li>
-    <li id="question-views"> Views </li>
-    <li id="question-activity"> Date </li>
-    <li id="question-activity"> User </li>
-  </ul>
-</div>
-
-<% include partials/forum-list %>
-
+    </div>
 </body>
 </html>

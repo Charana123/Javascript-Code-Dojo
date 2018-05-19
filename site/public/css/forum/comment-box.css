@@ -1,0 +1,51 @@
+#comment-box-container {
+    width: 500px;
+    height: 300px;
+}
+
+
+
+#comment-box-container > img {
+    display: block;
+    width: 50px;
+    height: 30px;
+    
+    /* Remove default css */
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+
+    /* Horizontal alignment */
+    margin-left: 5px;
+}
+
+#comment-box-container > input {
+    display: block;
+    width: 80%;
+    height: calc(300px - 30px - 40px);
+
+    /* Remove default css */
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+
+    /* Horizontal alignment */
+    margin-left: 10%;
+
+    /* Styling */
+    /* background-color: white; */
+}
+
+#post-comment {
+    width: 20%;
+    height: 40px;
+
+    /* Horizontal alignment */
+    margin-left: 80%;
+
+    /* Styling */
+    background: radial-gradient(closest-side, rgb(80, 195, 73), rgb(32, 100, 50));
+}
+
+
+
