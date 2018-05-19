@@ -1,11 +1,9 @@
-#discussion-comment-container-wrapper {
+.discussion-comment-container-wrapper {
     margin-top: 10px;
 }
 
-#discussion-comment-user-icon {
+.discussion-icon {
     display: block;
-    width: 50px;
-    height: 30px;
     
     /* Remove default css */
     margin: 0px;
@@ -14,15 +12,30 @@
 
     /* Placement */
     float: left;
+}
+
+#discussion-comment-toggle {
+    width: 30px;
+    height: 30px;
+
+    margin-left: 5px;
+}   
+
+.discussion-comment-user-icon {
+    width: 30px;
+    height: 30px;
+
+    margin-right: 10px;
     margin-left: 5px;
 }
 
-#discussion-comment-container {
+
+.discussion-comment-container {
     /* Placement */
     float: left;
 }
 
-#discussion-comment-user-name {
+.discussion-comment-user-name {
     width: 100px;
     height: 30px;
 
@@ -35,7 +48,7 @@
     font-size: 15px;
 }
 
-#discussion-comment {
+.discussion-comment {
     width: calc(430px - 10px);
 
     /* Layout Styling */
@@ -46,7 +59,7 @@
     padding: 5px;
 }
 
-#discussion-comment-footer {
+.discussion-comment-footer {
     margin-top: 5px;
 }
 
