@@ -87,13 +87,14 @@ margin-left: 20px;
 #answer-popup-container div:first-child {
     width: calc(100% - 10px);
     height: 60px;
-    margin-left: 10px;
+    margin-right: 10px;
 
     color: white;
     font-size: 24px;
 
     line-height: 60px;
     vertical-align: middle;
+    text-align: right;
 }
 
 #answer-popup-container div:first-child > img {
