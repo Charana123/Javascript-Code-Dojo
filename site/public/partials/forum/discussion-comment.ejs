@@ -1,10 +1,16 @@
 <link rel="stylesheet" href="/css/forum/discussion-comment.css" />
+<script type="text/javascript" src="/js/forum/discussion-comment.js" async="async"> </script>
 
 <div id="discussion-comment-container-wrapper">
     <img id="discussion-comment-user-icon" src="/img/default-avatar.svg"> </img>
     <div id="discussion-comment-container">
-        <div id="discussion-comment-user-name"> Username </div>
-        <div id="discussion-comment"> Comment </div>
-        <footer id="discussion-comment-footer"> Hello </footer>
+        <div id="discussion-comment-user-name"> <%= data.username %> </div>
+        <div id="discussion-comment"> <%= data.comment %> </div>
+        <footer id="discussion-comment-footer"> Footer </footer>
+        <div id="reply-comment-container" onclick="postReply()">
+              <% data.replies.forEach(function(reply){ %>
+                <% include discussion-comment-reply.ejs %>
+              <% });  %>  
+        </div>
     </div>
 </div>
