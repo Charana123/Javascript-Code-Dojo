@@ -20,8 +20,8 @@
 
         <footer class="discussion-comment-footer">
             <%= data.votes %>
-            <img id="up-arrow" src="/img/up-arrow.svg"> </img>
-            <img id="down-arrow" src="/img/down-arrow.svg"> </img>
+            <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= data.id %>, 'forum_post')"> </img>
+            <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= data.id %>, 'forum_post')"> </img>
         </footer>
 
 

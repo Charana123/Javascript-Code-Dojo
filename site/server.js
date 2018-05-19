@@ -261,6 +261,18 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 defaultFunc = server.forumHandler.getAllPosts();
                 break;
 
+            case "decrease_vote":
+                preFunc  = respFuncs.changeVote(request, server, "decrease");
+                errLoad = false;
+                doLoad = false;
+                break;
+
+            case "increase_vote":
+                preFunc = respFuncs.changeVote(request, server, "increase");
+                errLoad = false;
+                doLoad = false;
+                break;
+
             default:
                 url = "index";
         }

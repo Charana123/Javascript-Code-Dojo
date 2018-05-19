@@ -138,19 +138,41 @@ function ForumHandler(database) {
             });
         };
 
-        var increaseViews = function(db, postId) {
-            return new Promise(function(resolve, reject) {
-                db.updateFieldByValue
-
-            });
-        };
-
         var increaseViews = function(db, post) {
             return new Promise(function(resolve, reject) {
                 db.updateFieldByValue("forum_post", "views", post.views+1, "id", post.id).then(function(res) {
                     resolve(post);
                 }, function(err) {
+                    reject(err);
+                });
+            });
+        };
 
+        var increaseVote = function(db, post, table) {
+            return new Promise(function(resolve, reject) {
+                db.rowsByField(table, "id", post).then(function(posts) {
+                    db.updateFieldByValue(table, "votes", posts[0].votes+1, "id", post).then(function(res) {
+                        resolve(post);
+                    }, function(err) {
+                        reject(err);
+                    });
+
+                }, function(err){
+                    reject(err);
+                });
+            });
+        };
+
+        var decreaseVote = function(db, post, table) {
+            return new Promise(function(resolve, reject) {
+                db.rowsByField(table, "id", post).then(function(posts) {
+                    db.updateFieldByValue(table, "votes", posts[0].votes-1, "id", post).then(function(res) {
+                        resolve(post);
+                    }, function(err) {
+                        reject(err);
+                    });
+                }, function(err) {
+                    reject(err);
                 });
             });
         };
@@ -330,6 +352,12 @@ function ForumHandler(database) {
             },
             getPost:function(postId){
                 return getPost(db, postId);
+            },
+            increaseVote:function(post, table) {
+                return increaseVote(db, post, table);
+            },
+            decreaseVote:function(post, table) {
+                return increaseVote(db, post, table);
             },
         }
 

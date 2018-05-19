@@ -17,3 +17,18 @@ function toggleReplies(){
         toggle_icon.src = "/img/plus.svg";
     }
 }
+
+function increaseVote(post, table) {
+    var sendData = "post="+post+"&table="+table;
+    httpPostAsync("/increase_vote", sendData).then(res => {
+            location.reload();
+        })
+
+}
+
+function decreaseVote(post, table) {
+    var sendData = "post="+post+"&table="+table;
+    httpPostAsync("/decrease_vote", sendData).then(res => {
+            location.reload();
+        })
+}
