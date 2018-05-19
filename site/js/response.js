@@ -238,9 +238,9 @@ var challengeRequest = function(server, userId, id, request, response) {
     });
 };
 
-var postRequest = function(postId, server, cookie) {
+var postRequest = function(postId, server, cookie, userId) {
     return new Promise(function(resolve, reject) {
-        server.forumHandler.getPost(postId).then(function(post) {
+        server.forumHandler.getPost(postId, userId).then(function(post) {
             captcha(server, cookie).then(function(res) {
                 post.captcha = res;
                 resolve(post);

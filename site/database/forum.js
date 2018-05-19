@@ -264,9 +264,9 @@ function ForumHandler(database) {
             });
         };
 
-        var getForumsBySubject = function(db, subject, sort) {
+        var getForumsBySubject = function(db, subject, sort, userId) {
             return new Promise(function(resolve, reject) {
-                getAllPosts(db, sort).then(function(posts) {
+                getAllPosts(db, sort, userId).then(function(posts) {
                     Object.keys(posts.fullForums).forEach((f) => {
                         if (!(posts.fullForums[f].post.subject == subject)) {
                             delete posts.fullForums[f];
@@ -287,7 +287,7 @@ function ForumHandler(database) {
             });
         };
 
-        var getAllPosts = function(db, sort) {
+        var getAllPosts = function(db, sort, userId) {
             return new Promise(function (resolve, reject) {
                 db.getAll("forum_post").then(function(posts) {
                     var promises = [];
@@ -366,13 +366,13 @@ function ForumHandler(database) {
             getForumsByUser:function(userId){
                 return getForumsByUser(db, userId);
             },
-            getForumsBySubject:function(subject, sort){
-                return getForumsBySubject(db, subject, sort);
+            getForumsBySubject:function(subject, sort, userId){
+                return getForumsBySubject(db, subject, sort, userId);
             },
-            getAllPosts:function(sort){
-                return getAllPosts(db, sort);
+            getAllPosts:function(sort, userId){
+                return getAllPosts(db, sort, userId);
             },
-            getPost:function(postId){
+            getPost:function(postId, userId){
                 return getPost(db, postId);
             },
             increaseVote:function(post, table, userId) {

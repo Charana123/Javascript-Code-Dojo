@@ -163,11 +163,11 @@ function resolveUrl(url, request, userId, response, server, cookie) {
 
             case "forum":
                 if (rest && !(rest == "all")) {
-                    loginFunc = server.forumHandler.getForumsBySubject(rest);
-                    defaultFunc = server.forumHandler.getForumsBySubject(rest);
+                    loginFunc = server.forumHandler.getForumsBySubject(rest, userId);
+                    defaultFunc = server.forumHandler.getForumsBySubject(rest, userId);
                 } else {
-                    loginFunc = server.forumHandler.getAllPosts();
-                    defaultFunc = server.forumHandler.getAllPosts();
+                    loginFunc = server.forumHandler.getAllPosts(userId);
+                    defaultFunc = server.forumHandler.getAllPosts(userId);
                 }
                 url = "forum";
                 errorUrl = "forum";
@@ -175,14 +175,14 @@ function resolveUrl(url, request, userId, response, server, cookie) {
 
             case "new":
                 url = "forum";
-                loginFunc = server.forumHandler.getAllPosts("time");
-                defaultFunc = server.forumHandler.getAllPosts("time");
+                loginFunc = server.forumHandler.getAllPosts("time", userId);
+                defaultFunc = server.forumHandler.getAllPosts("time", userId);
                 break;
 
             case "top":
                 url = "forum";
-                loginFunc = server.forumHandler.getAllPosts("views");
-                defaultFunc = server.forumHandler.getAllPosts("views");
+                loginFunc = server.forumHandler.getAllPosts("views", userId);
+                defaultFunc = server.forumHandler.getAllPosts("views", userId);
                 break;
 
             case "editor":
@@ -218,14 +218,14 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 break;
 
             case "forum_post":
-                loginFunc = respFuncs.postRequest(rest, server, cookie);
-                defaultFunc = respFuncs.postRequest(rest, server, cookie);
+                loginFunc = respFuncs.postRequest(rest, server, cookie, userId);
+                defaultFunc = respFuncs.postRequest(rest, server, cookie, userId);
                 url = "forum_post";
                 break;
 
             case "reply_submission":
                 preFunc = respFuncs.replySubmission(request, userId, server, cookie);
-                loginFunc = respFuncs.postRequest(rest, server, cookie);
+                loginFunc = respFuncs.postRequest(rest, server, cookie, userId);
                 url = "forum_post";
                 errorUrl = "forum_post";
                 errLoad = false;
@@ -251,8 +251,8 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 url = "forum";
                 errorUrl = "forum";
                 errLoad = false;
-                loginFunc = server.forumHandler.getAllPosts();
-                defaultFunc = server.forumHandler.getAllPosts();
+                loginFunc = server.forumHandler.getAllPosts(userId);
+                defaultFunc = server.forumHandler.getAllPosts(userId);
                 break;
 
             case "decrease_vote":
