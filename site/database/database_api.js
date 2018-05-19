@@ -116,9 +116,15 @@ function insertPostStrWithId(id, userId, title, body, subject, views) {
         ", " +  userId + ", '" + title + "', '" + body + "', '" + subject + "', " + views + ", datetime('now','localtime'));";
 }
 
-function insertReplyStr(postId, parent, userId, body) {
+function insertReplyStr(postId, parent, userId, body, id) {
+    if (id) {
+    return insertInto + "forum_reply (id, post, parent, user, body, time) VALUES(" +id + ", " + postId +
+        ", " + parent + ", " + userId + ", '" + body + "', datetime('now','localtime'));";
+
+    } else {
     return insertInto + "forum_reply (post, parent, user, body, time) VALUES(" + postId +
         ", " + parent + ", " + userId + ", '" + body + "', datetime('now','localtime'));";
+    };
 }
 
 function insertQuestionStr(id, title, question, answer_file, start_code) {
@@ -270,9 +276,9 @@ function newDatabase(dbName) {
             });
         };
 
-        var newForumReply = function(db, postId, parent, userId, body) {
+        var newForumReply = function(db, postId, parent, userId, body, id) {
             return new Promise(function(resolve, reject) {
-                db.all(insertReplyStr(postId, parent, userId, body), [], (err, post) => {
+                db.all(insertReplyStr(postId, parent, userId, body, id), [], (err, post) => {
                     if (err) {
                         reject("failed to create forum reply record " + userId + ": " + err);
                         return;
@@ -369,7 +375,7 @@ function newDatabase(dbName) {
                         var rs = [];
 
                         replyJSON.forEach((r) => {
-                            rs.push(newForumReply(db, r.post, r.parent, r.user, r.body));
+                            rs.push(newForumReply(db, r.post, r.parent, r.user, r.body, r.id));
                         });
 
                         userJSON.forEach((u) => {

@@ -63,15 +63,15 @@ db.ensureTables().then((value) => {
                 }
 
             }).catch((err) => {
-                console.log("error: "+err);
+                console.dir("error: "+err);
             });
 
         }).catch((err) => {
-            console.log("error: "+ err);
+            console.dir("error: "+ err);
         });
     });
 }).catch((err) => {
-    console.log("error: "+ err);
+    console.dir("error: "+ err);
 });
 
 start();

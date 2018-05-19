@@ -14,7 +14,7 @@ function ForumHandler(database) {
 
         function getReplys(postId) {
             return new Promise(function (resolve, reject) {
-                db.rowsByField("forum_reply", "id", postId).then(function(replys) {
+                db.rowsByField("forum_reply", "post", postId).then(function(replys) {
                     var promises = [];
 
                     replys.forEach((r) => {
@@ -25,12 +25,53 @@ function ForumHandler(database) {
                         users.forEach(function(u) {
                             replys.forEach((r, i) => {
                                 if (r.user == u[0].id) {
-                                    replys[i].userData = u[0];
+                                    replys[i].userData = {
+                                        id: u[0].id,
+                                        username: u[0].username,
+                                        image: u[0].image
+                                    };
                                 }
                             });
                         });
 
-                        resolve(replys);
+                        var ret = [];
+
+                        var count = replys.length;
+                        var stop = 5;
+
+                        replys.forEach((r) => {
+                            if (r.parent == 0) {
+                                r.children = [];
+                                ret.push(r);
+                                count--;
+                            }
+                        });
+
+                        for (; count > 0; ) {
+                            for (let r of replys) {
+                                if (r.parent != 0) {
+
+                                    for (const [index, el] of ret.entries()) {
+                                        if (el.id == r.parent && !ret[index].children[r.id]) {
+                                            ret[index].children.push(r);
+                                            count--;
+                                        }
+
+                                        for (const [indexR, elR] of ret[index].children.entries()) {
+                                            if (elR.id == r.parent && !ret[index].children[r.id]) {
+                                                ret[index].children.push(r);
+                                                count--;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            stop--;
+                            if (stop == 0) break;
+                        }
+
+                        resolve(ret);
                         return;
                     }, function(err) {
                         reject(err);
@@ -118,7 +159,12 @@ function ForumHandler(database) {
             return new Promise(function(resolve, reject) {
                 db.rowsByField("forum_post", "id", postId).then(function(posts) {
                     db.rowsByField("users", "id", posts[0].user).then(function(user) {
-                        posts[0].userData = user[0];
+                        posts[0].userData = {
+                            id: user[0].id,
+                            username: user[0].username,
+                            image: user[0].image
+                        };
+
                         getReplys(posts[0].id).then(function(replys) {
                             posts[0].replys = sortObjBack(replys, "time");
                             increaseViews(db, posts[0]).then(function(post) {
@@ -158,7 +204,7 @@ function ForumHandler(database) {
                     Promise.all(promises).then(function(resp) {
                         var replys = resp[0];
                         replys[0].forEach((reply) => {
-                            fullForums[reply.id].replys.push(reply);
+                            fullForums[reply.post].replys.push(reply);
                         });
                         resolve(fullForums);
                         return;
@@ -215,7 +261,7 @@ function ForumHandler(database) {
                     Promise.all(promises).then(function(replys) {
                         replys.forEach((group) => {
                             group.forEach((reply) => {
-                                fullForums[reply.id].replys.push(reply);
+                                fullForums[reply.post].replys.push(reply);
                             });
                         });
 
@@ -232,7 +278,11 @@ function ForumHandler(database) {
                             users.forEach(function(u) {
                                 Object.keys(fullForums).forEach((f) => {
                                     if (fullForums[f].post.user == u[0].id) {
-                                        fullForums[f].user = u[0];
+                                        fullForums[f].user = {
+                                            id: u[0].id,
+                                            username: u[0].username,
+                                            image: u[0].image
+                                        };
                                     }
                                     if (!subjects.includes(fullForums[f].post.subject)) {
                                         subjects.push(fullForums[f].post.subject);
