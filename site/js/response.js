@@ -315,6 +315,34 @@ var replySubmission = function(request, userId, server, cookie) {
     });
 };
 
+var changeVote = function(request, server, change) {
+    return new Promise(function(resolve, reject) {
+        request.on('data', data => {
+            var [post, table] = data.toString().split('&');
+            post = post.split('=')[1];
+            table = table.split('=')[1];
+
+            if (change == "increase") {
+                server.forumHandler.increaseVote(post, table).then(function(res) {
+                    resolve(res);
+                    return;
+                }, function(err) {
+                    reject(err);
+                    return;
+                });
+
+            } else {
+                server.forumHandler.decreaseVote(post, table).then(function(res) {
+                    resolve(res);
+                    return;
+                }, function(err) {
+                    reject(err);
+                    return;
+                });
+            }
+        });
+    });
+};
 
 module.exports = {
     nothingFunctionOut: nothingFunctionOut,
@@ -329,4 +357,5 @@ module.exports = {
     replySubmission: replySubmission,
     newPostSubmission: newPostSubmission,
     captcha: captcha,
+    changeVote: changeVote,
 }

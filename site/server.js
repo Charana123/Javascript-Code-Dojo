@@ -63,15 +63,15 @@ db.ensureTables().then((value) => {
                 }
 
             }).catch((err) => {
-                console.log("error: "+err);
+                console.dir("error: "+err);
             });
 
         }).catch((err) => {
-            console.log("error: "+ err);
+            console.dir("error: "+ err);
         });
     });
 }).catch((err) => {
-    console.log("error: "+ err);
+    console.dir("error: "+ err);
 });
 
 start();
@@ -167,21 +167,16 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 url = "index";
                 break;
 
-            // case "forum":
-            //     if (rest && !(rest == "all")) {
-            //         loginFunc = server.forumHandler.getForumsBySubject(rest);
-            //         defaultFunc = server.forumHandler.getForumsBySubject(rest);
-            //     } else {
-            //         loginFunc = server.forumHandler.getAllPosts();
-            //         defaultFunc = server.forumHandler.getAllPosts();
-            //     }
-            //     url = "forum";
-            //     errorUrl = "forum";
-            //     break;
-
             case "forum":
-                loginFunc = server.forumHandler.forumTestData;
-                defaultFunc = server.forumHandler.forumTestData;
+                if (rest && !(rest == "all")) {
+                    loginFunc = server.forumHandler.getForumsBySubject(rest);
+                    defaultFunc = server.forumHandler.getForumsBySubject(rest);
+                } else {
+                    loginFunc = server.forumHandler.getAllPosts();
+                    defaultFunc = server.forumHandler.getAllPosts();
+                }
+                url = "forum";
+                errorUrl = "forum";
                 break;
 
             case "new":
@@ -264,6 +259,18 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 errLoad = false;
                 loginFunc = server.forumHandler.getAllPosts();
                 defaultFunc = server.forumHandler.getAllPosts();
+                break;
+
+            case "decrease_vote":
+                preFunc  = respFuncs.changeVote(request, server, "decrease");
+                errLoad = false;
+                doLoad = false;
+                break;
+
+            case "increase_vote":
+                preFunc = respFuncs.changeVote(request, server, "increase");
+                errLoad = false;
+                doLoad = false;
                 break;
 
             default:
