@@ -20,6 +20,7 @@
 
                     <div id="new-post-form-wrapper">
 
+                            <form onsubmit="return false;">
                             <div id="new-post-form-heading"> New Post! </div>
                             <div class="column" id="label-column" >
                                 <div> Subject </div>
@@ -32,10 +33,15 @@
                                 <input id="body" class="long-field" type="text" placeholder="Body" name="body"></input> <br/>
                                 <input id="captcha" class="long-field" type="text" placeholder="Captcha" name="captcha"></input> <br/>
 
-                                <%- data %>
-                                <button type="submit" value="submit" onclick="submitPost()"> Post </button>
+
                                 <div id="captcha-error"></div>
+                                <div id="new-post-wrapper">
+                                    <%- data %>
+                                </div>
+                                    <button onclick="newCaptcha()"> New Captcha </button>
+                                    <button type="submit" value="submit" onclick="submitPost()"> Post </button>
                             </div>
+                            </form>
                     </div>
                 </div>
             </div>

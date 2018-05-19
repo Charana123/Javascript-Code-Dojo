@@ -22,19 +22,22 @@ var nothingFunctionIn = function(request) {
     });
 };
 
-var captcha = function(server, request) {
+var captcha = function(server, cookie) {
     return new Promise(function(resolve, reject) {
-        var options = {
-            size: 8,
-            ignoreChars: '0o1i',
-            noise: 2,
-            color: true,
-            background:'#cc9966',
-        };
-        var captcha = server.offlineCaptcha.create(options);
-        console.dir(captcha);
-        server.UserSessions[request.headers["cookie"]].captcha = captcha.text;
-        resolve(captcha.data);
+        if (server.UserSessions[cookie]) {
+            var options = {
+                size: 8,
+                ignoreChars: '0o1i',
+                noise: 2,
+                color: true,
+                background:'#cc9966',
+            };
+            var captcha = server.offlineCaptcha.create(options);
+            server.UserSessions[cookie].captcha = captcha.text;
+            resolve(captcha.data);
+        } else {
+            resolve();
+        }
         return;
     });
 };
@@ -48,11 +51,29 @@ var newPostSubmission = function(request, userId, server) {
             body = body.split('=')[1];
             captcha = captcha.split('=')[1];
 
-            console.dir(captcha);
-            console.dir(server.UserSessions[request.headers["cookie"]].captcha);
+            var err = {isErr: false, message: ""};
+            if (subject == "") {
+                err.isErr = true;
+                err.message += "Subject is blank\n";
+            }
 
-            if (captcha != server.UserSessions[request.headers["cookie"]].captcha) {
-                reject({isErr: true, message: "incorrect captcha"});
+            if (title == "") {
+                err.isErr = true;
+                err.message += "Title is blank\n";
+            }
+
+            if (body == "") {
+                err.isErr = true;
+                err.message += "Body is blank\n";
+            }
+
+            if (captcha != server.UserSessions[cookie].captcha) {
+                err.isErr = true;
+                err.message += "incorrect captcha\n";
+            }
+
+            if (err.isErr) {
+                reject(err);
                 return;
             }
 
@@ -217,12 +238,20 @@ var challengeRequest = function(server, userId, id, request, response) {
     });
 };
 
-var postRequest = function(postId, server) {
+var postRequest = function(postId, server, cookie) {
     return new Promise(function(resolve, reject) {
         server.forumHandler.getPost(postId).then(function(post) {
-            resolve(post);
+            captcha(server, cookie).then(function(res) {
+                post.captcha = res;
+                resolve(post);
+                return;
+            }, function(err) {
+                reject(err);
+                return;
+            });
         }, function(err) {
             reject(err);
+            return;
         });
     });
 };
@@ -251,14 +280,31 @@ var uploadUserImage = function(userId, request, server) {
     });
 };
 
-var replySubmission = function(request, userId, server) {
+var replySubmission = function(request, userId, server, cookie) {
     return new Promise(function(resolve, reject) {
         request.on('data', data => {
             data = data.toString("utf-8");
-            var [reply, postId] = data.toString().split('&');
+            var [reply, postId, captcha] = data.toString().split('&');
             // We need to format this reply with the special characters
             reply = reply.split('=')[1];
             postId = postId.split('=')[1];
+            captcha = captcha.split('=')[1];
+
+            var err = {isErr: false, message: ""};
+            if (reply == "") {
+                err.isErr = true;
+                err.message += "Reply is blank\n";
+            }
+
+            if (captcha != server.UserSessions[cookie].captcha) {
+                err.isErr = true;
+                err.message += "Incorrect captcha\n";
+            }
+
+            if (err.isErr) {
+                reject(err);
+                return;
+            }
 
             server.forumHandler.newReply(postId, userId, reply).then(function(res) {
                 resolve(res);

@@ -194,6 +194,21 @@ span:first-child {
     background-color: grey;
 }
 
+#button{
+    width: 100px;
+    height: 40px;
+    font-size: 15px;
+    color: white;
+
+    /* Remove default styling */
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+
+    border-radius: 2px;
+    background-color: grey;
+}
+
 /*========= Form fields ============================== */
 .short-field {
     width: 170px;

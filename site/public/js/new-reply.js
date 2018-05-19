@@ -1,12 +1,11 @@
-var submitPost = function() {
-    var subject = document.getElementById("subject").value;
-    var title = document.getElementById("title").value;
-    var body = document.getElementById("body").value;
+var submitReply = function(id) {
+    var reply = document.getElementById("reply").value;
+    var postId = document.getElementById("postId").value;
     var captcha = document.getElementById("captcha").value;
 
-    var sendData = "subject="+subject+"&title="+title+"&body="+body+"&captcha="+captcha;
+    var sendData = "reply="+reply+"&postId="+postId+"&captcha="+captcha;
 
-    httpPostAsync("/new_post_submission", sendData)
+    httpPostAsync("/reply_submission/"+id, sendData)
         .then(res => {
 
             if (res.indexOf("<") == -1) {
@@ -16,7 +15,7 @@ var submitPost = function() {
                     document.getElementById("captcha-error").textContent = "* " + json.message;
                 }
             } else {
-                window.location.href = 'forum';
+                location.reload();
             }
         });
 }

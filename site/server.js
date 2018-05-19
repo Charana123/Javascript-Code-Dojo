@@ -209,6 +209,7 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 url = "index";
                 errorUrl = "index";
                 errLoad = false;
+                doLoad = true;
                 break;
 
             case "challenge_request":
@@ -223,21 +224,27 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 break;
 
             case "forum_post":
-                loginFunc = respFuncs.postRequest(rest, server);
-                defaultFunc = respFuncs.postRequest(rest, server);
+                loginFunc = respFuncs.postRequest(rest, server, cookie);
+                defaultFunc = respFuncs.postRequest(rest, server, cookie);
                 url = "forum_post";
                 break;
 
             case "reply_submission":
-                preFunc = respFuncs.replySubmission(request, userId, server);
-                loginFunc = respFuncs.postRequest(rest, server);
-                defaultFunc = respFuncs.postRequest(rest, server);
+                preFunc = respFuncs.replySubmission(request, userId, server, cookie);
+                loginFunc = respFuncs.postRequest(rest, server, cookie);
                 url = "forum_post";
                 errorUrl = "forum_post";
+                errLoad = false;
                 break;
 
             case "new_post":
-                loginFunc = respFuncs.captcha(server, request);
+                loginFunc = respFuncs.captcha(server, cookie);
+                break;
+
+            case "new_captcha":
+                preFunc = respFuncs.captcha(server, cookie);
+                errLoad = false;
+                doLoad = false;
                 break;
 
             case "logout":
