@@ -28,8 +28,8 @@ const ensureForumPostStr = "CREATE TABLE if not exists forum_post " +
     "views INTEGER, time DATETIME)";
 
 const ensureForumReplyStr = "CREATE TABLE if not exists forum_reply " +
-    "(id INTEGER, user INTEGER, body TEXT," +
-    "time DATETIME, FOREIGN Key(id) REFERENCES forum_post(id))";
+    "(id INTEGER PRIMARY KEY, post INTEGER, parent INTEGER, user INTEGER, body TEXT," +
+    "time DATETIME, FOREIGN Key(post) REFERENCES forum_post(id))";
 
 const ensureQuestionStr = "CREATE TABLE if not exists questions " +
     "(id INTEGER PRIMARY KEY, title TEXT, question TEXT, answer_file TEXT, "+
@@ -116,9 +116,9 @@ function insertPostStrWithId(id, userId, title, body, subject, views) {
         ", " +  userId + ", '" + title + "', '" + body + "', '" + subject + "', " + views + ", datetime('now','localtime'));";
 }
 
-function insertReplyStr(postId, userId, body) {
-    return insertInto + "forum_reply (id, user, body, time) VALUES(' " + postId +
-        "', '" + userId + "', '" + body + "', datetime('now','localtime'));";
+function insertReplyStr(postId, parent, userId, body) {
+    return insertInto + "forum_reply (post, parent, user, body, time) VALUES(" + postId +
+        ", " + parent + ", " + userId + ", '" + body + "', datetime('now','localtime'));";
 }
 
 function insertQuestionStr(id, title, question, answer_file, start_code) {
@@ -270,9 +270,9 @@ function newDatabase(dbName) {
             });
         };
 
-        var newForumReply = function(db, postId, userId, body) {
+        var newForumReply = function(db, postId, parent, userId, body) {
             return new Promise(function(resolve, reject) {
-                db.all(insertReplyStr(postId, userId, body), [], (err, post) => {
+                db.all(insertReplyStr(postId, parent, userId, body), [], (err, post) => {
                     if (err) {
                         reject("failed to create forum reply record " + userId + ": " + err);
                         return;
@@ -369,7 +369,7 @@ function newDatabase(dbName) {
                         var rs = [];
 
                         replyJSON.forEach((r) => {
-                            rs.push(newForumReply(db, r.id, r.user, r.body));
+                            rs.push(newForumReply(db, r.post, r.parent, r.user, r.body));
                         });
 
                         userJSON.forEach((u) => {
@@ -429,8 +429,8 @@ function newDatabase(dbName) {
             newForumPost:function(userId, title, body, subject) {
                 return newForumPost(db, userId, title, body, subject);
             },
-            newForumReply:function(postId, userId, body) {
-                return newForumReply(db, postId, userId, body);
+            newForumReply:function(postId, parent, userId, body) {
+                return newForumReply(db, postId, parent, userId, body);
             },
             newQuestion:function(id, title, question, answer_file, start_code) {
                 return newQuestion(db, id, title, question, answer_file, start_code);

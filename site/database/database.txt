@@ -18,4 +18,4 @@ id INTEGER PRIMARY KEY | user INTEGER | title TEXT | body TEXT | subject | time 
 
 forum_reply
 -----------
-id (foreign key) INTEGER | user INTEGER | body TEXT | time DATETIME
+post (foreign key) INTEGER | id PRIMARY KEY INTEGER | parent INTEGER | user INTEGER | body TEXT | time DATETIME
