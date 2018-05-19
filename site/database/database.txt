@@ -19,3 +19,11 @@ id INTEGER PRIMARY KEY | user INTEGER | title TEXT | body TEXT | subject | votes
 forum_reply
 -----------
 post (foreign key) INTEGER | id PRIMARY KEY INTEGER | parent INTEGER | user INTEGER | body TEXT | votes INTEGER | time DATETIME
+
+voted_post
+-----------
+user (foreign key) INTEGER | post (foreign key) INTEGER | value INTEGER
+
+voted_reply
+-----------
+user (foreign key) INTEGER | reply (foreign key) INTEGER | value INTEGER
