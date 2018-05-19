@@ -167,16 +167,21 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 url = "index";
                 break;
 
+            // case "forum":
+            //     if (rest && !(rest == "all")) {
+            //         loginFunc = server.forumHandler.getForumsBySubject(rest);
+            //         defaultFunc = server.forumHandler.getForumsBySubject(rest);
+            //     } else {
+            //         loginFunc = server.forumHandler.getAllPosts();
+            //         defaultFunc = server.forumHandler.getAllPosts();
+            //     }
+            //     url = "forum";
+            //     errorUrl = "forum";
+            //     break;
+
             case "forum":
-                if (rest && !(rest == "all")) {
-                    loginFunc = server.forumHandler.getForumsBySubject(rest);
-                    defaultFunc = server.forumHandler.getForumsBySubject(rest);
-                } else {
-                    loginFunc = server.forumHandler.getAllPosts();
-                    defaultFunc = server.forumHandler.getAllPosts();
-                }
-                url = "forum";
-                errorUrl = "forum";
+                loginFunc = server.forumHandler.forumTestData;
+                defaultFunc = server.forumHandler.forumTestData;
                 break;
 
             case "new":

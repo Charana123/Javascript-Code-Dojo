@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="/css/forum/discussion-comment.css" />
+<script type="text/javascript" src="/js/forum/discussion-comment.js" async="async"> </script>
+
+<div class="discussion-comment-container-wrapper">
+    <img id="discussion-comment-toggle" class="discussion-icon" src="/img/minus.svg" onclick="toggleReplies()"> </img>
+    <img class="discussion-icon discussion-comment-user-icon" src="/img/default-avatar.svg"> </img>
+    <div class="discussion-comment-container">
+        <div class="discussion-comment-header">
+            <div class="discussion-comment-user-name"> <%= data.username %> </div>
+            <img src="/img/clock.svg"> </img>
+            <div class="comment-timestamp"> <%= data.timestamp %> </div>
+        </div>
+        <div class="discussion-comment"> <%= data.comment %> </div>
+        <footer class="discussion-comment-footer"> 
+            <%= data.votes %>
+            <img id="up-arrow" src="/img/up-arrow.svg"> </img>
+            <img id="down-arrow" src="/img/down-arrow.svg"> </img>
+        </footer>
+        <div id="reply-comment-container" onclick="postReply()">
+              <% data.replies.forEach(function(reply){ %>
+                <% include discussion-comment-reply.ejs %>
+              <% });  %>  
+        </div>
+    </div>
+</div>
