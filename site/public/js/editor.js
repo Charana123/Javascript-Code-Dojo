@@ -46,7 +46,11 @@ var submitCode = function(challenge_id){
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("submit-button").style.display = "block";
                 document.getElementById("answer-popup").style.display = "block";
-                document.getElementById("answer").textContent = json.ans;
+                console.log("answer = " + json.ans);
+                if(json.ans === "correct!") document.getElementById("answer-popup-container").style.background = "url('/img/success-graphic.png')";
+                else document.getElementById("answer-popup-container").style.background = "url('/img/wrong-graphic.png')";
+                document.getElementById("answer-popup-container").style.backgroundSize = "100% 100%";
+                // document.getElementById("answer").textContent = json.ans;
 
                 var output = ace.edit("output");
                 output_editor.setValue(json.output);
