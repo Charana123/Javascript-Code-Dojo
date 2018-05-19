@@ -43,10 +43,6 @@ function ForumHandler(database) {
             });
         };
 
-        var sortByTimeOld = function(x, y) {
-            return y.time - x.time;
-        };
-
         function sortObj(list, key) {
             function compare(a, b) {
                 a = a[key];
@@ -57,6 +53,21 @@ function ForumHandler(database) {
                 //if (type === 'string') result = a.localeCompare(b);
                 if (type === 'string') result = Date.parse(b) - Date.parse(a)
                 else result = b - a;
+                return result;
+            }
+            return list.sort(compare);
+        }
+
+        function sortObjBack(list, key) {
+            function compare(a, b) {
+                a = a[key];
+                b = b[key];
+                var type = (typeof(a) === 'string' ||
+                    typeof(b) === 'string') ? 'string' : 'number';
+                var result;
+                //if (type === 'string') result = a.localeCompare(b);
+                if (type === 'string') result = Date.parse(a) - Date.parse(b)
+                else result = a - b;
                 return result;
             }
             return list.sort(compare);
@@ -109,7 +120,7 @@ function ForumHandler(database) {
                     db.rowsByField("users", "id", posts[0].user).then(function(user) {
                         posts[0].userData = user[0];
                         getReplys(posts[0].id).then(function(replys) {
-                            posts[0].replys = replys.sort(sortByTimeOld);
+                            posts[0].replys = sortObjBack(replys, "time");
                             increaseViews(db, posts[0]).then(function(post) {
                                 resolve(posts[0]);
                                 return;
