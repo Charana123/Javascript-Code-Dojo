@@ -1,0 +1,54 @@
+#discussion-comment-container-wrapper {
+    width: 500px;
+}
+
+#discussion-comment-user-icon {
+    display: block;
+    width: 50px;
+    height: 30px;
+    
+    /* Remove default css */
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+
+    /* Placement */
+    float: left;
+    margin-left: 5px;
+}
+
+#discussion-comment-container {
+    /* Placement */
+    float: left;
+}
+
+#discussion-comment-user-name {
+    width: 100px;
+    height: 30px;
+
+    /* Align username text */
+    line-height: 30px;
+    vertical-align: middle;
+    text-align: left;
+
+    /* Text styling */
+    font-size: 15px;
+}
+
+#discussion-comment {
+    width: calc(430px - 10px);
+
+    /* Layout Styling */
+    background-color: white;
+
+    /* Text Styling */
+    font-size: 12px;
+    padding: 5px;
+}
+
+#discussion-comment-footer {
+    margin-top: 5px;
+}
+
+
+
