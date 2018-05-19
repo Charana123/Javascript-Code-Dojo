@@ -39,7 +39,7 @@ files.readEJSFile = function(uri, getDataFunction, response, user){
                     image: user.image
                 };
             } else {
-                clientData.session_valid = false;
+            clientData.session_valid = false;
                 clientData.user = {};
             }
 

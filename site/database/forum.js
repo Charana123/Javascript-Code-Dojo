@@ -357,7 +357,7 @@ function ForumHandler(database) {
                 return increaseVote(db, post, table);
             },
             decreaseVote:function(post, table) {
-                return increaseVote(db, post, table);
+                return decreaseVote(db, post, table);
             },
         }
 
