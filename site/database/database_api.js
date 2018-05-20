@@ -290,6 +290,30 @@ function newDatabase(dbName) {
             });
         };
 
+        var getVotePost = function(db, user, post) {
+            return new Promise(function(resolve, reject) {
+                db.all(getVotePostRow(user, post), [], (err, res) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(res);
+                });
+            });
+        };
+
+        var getVoteReply = function(db, user, reply) {
+            return new Promise(function(resolve, reject) {
+                db.all(getVoteReplyRow(user, reply), [], (err, res) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(res);
+                });
+            });
+        };
+
         var updateVoteReply = function(db, user, reply, value) {
             return new Promise(function(resolve, reject) {
                 db.all(getVoteReplyRow(user, reply), [], (err, res) => {
@@ -554,6 +578,12 @@ function newDatabase(dbName) {
             },
             updateVoteReply:function(user, reply, value){
                 return updateVoteReply(db, user, reply, value);
+            },
+            getVotePost:function(user, post) {
+                return getVotePost(db, user, post);
+            },
+            getVoteReply:function(user, reply) {
+                return getVoteReply(db, user, reply);
             },
         }
     }());

@@ -12,7 +12,7 @@ function ForumHandler(database) {
         var db = database;
         var challengeHandler = challengeAPI.ChallengesHandler(db);
 
-        function getReplys(postId) {
+        function getReplys(postId, userId) {
             return new Promise(function (resolve, reject) {
                 db.rowsByField("forum_reply", "post", postId).then(function(replys) {
                     var promises = [];
@@ -21,7 +21,7 @@ function ForumHandler(database) {
                         promises.push(db.rowsByField("users", "id", r.user));
                     });
 
-                    Promise.all(promises).then(function(users) {
+                    var sortReplys = function(replys, users) {
                         users.forEach(function(u) {
                             replys.forEach((r, i) => {
                                 if (r.user == u[0].id) {
@@ -71,8 +71,42 @@ function ForumHandler(database) {
                             if (stop == 0) break;
                         }
 
-                        resolve(ret);
-                        return;
+                        return ret;
+                    };
+
+                    Promise.all(promises).then(function(users) {
+                        var ret;
+
+                        if (userId) {
+                            promises = [];
+                            replys.forEach((r) => {
+                                promises.push(db.getVoteReply(userId, r.id));
+                            });
+
+                            Promise.all(promises).then(function(voted) {
+                                replys.forEach((r) => {
+                                    r.voted = 0;
+                                    for (let v of voted) {
+                                        if (v[0] && r.id == v[0].reply) {
+                                            r.voted = v[0].value;
+                                            break;
+                                        }
+                                    };
+                                });
+
+                                ret = sortReplys(replys, users);
+                                resolve(ret);
+                                return;
+                            }, function(err) {
+                                reject(err);
+                                return;
+                            });
+
+                        } else {
+                            ret = sortReplys(replys, users);
+                            resolve(ret);
+                            return;
+                        }
                     }, function(err) {
                         reject(err);
                         return;
@@ -199,7 +233,7 @@ function ForumHandler(database) {
             });
         };
 
-        var getPost = function(db, postId) {
+        var getPost = function(db, postId, userId) {
             return new Promise(function(resolve, reject) {
                 db.rowsByField("forum_post", "id", postId).then(function(posts) {
                     db.rowsByField("users", "id", posts[0].user).then(function(user) {
@@ -209,7 +243,7 @@ function ForumHandler(database) {
                             image: user[0].image
                         };
 
-                        getReplys(posts[0].id).then(function(replys) {
+                        getReplys(posts[0].id, userId).then(function(replys) {
                             posts[0].replys = sortObjBack(replys, "time");
                             increaseViews(db, posts[0]).then(function(post) {
                                 resolve(posts[0]);
@@ -241,7 +275,7 @@ function ForumHandler(database) {
                     var fullForums = {};
 
                     posts.forEach((post) => {
-                        promises.push(getReplys(post.id));
+                        promises.push(getReplys(post.id, userId));
                         fullForums[post.id] = {post: post, replys: []};
                     });
 
@@ -298,7 +332,7 @@ function ForumHandler(database) {
                     }
 
                     for (var i = 0; i < posts.length; i++) {
-                        promises.push(getReplys(posts[i].id));
+                        promises.push(getReplys(posts[i].id, userId));
                         fullForums.push({post: posts[i], user: {}, replys: []});
                     }
 
@@ -373,7 +407,7 @@ function ForumHandler(database) {
                 return getAllPosts(db, sort, userId);
             },
             getPost:function(postId, userId){
-                return getPost(db, postId);
+                return getPost(db, postId, userId);
             },
             increaseVote:function(post, table, userId) {
                 return increaseVote(db, post, table, userId);
