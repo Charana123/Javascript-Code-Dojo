@@ -2,9 +2,9 @@
 
 <div id="reply-box-container">
     <div id="postId" name="postId" type="hidden" value="<%= data.id %>"> </div>
-    <textarea id="reply"></textarea>
-    <input style="margin-left:0px;" id="captcha" class="long-field" type="text" placeholder="Captcha" name="captcha"></input> <br/>
-    <div id="captcha-error"></div>
+    <textarea id="<%= reply.id %>reply"></textarea>
+    <input style="margin-left:0px;" id="<%= reply.id %>captcha" class="long-field" type="text" placeholder="Captcha" name="captcha"></input> <br/>
+    <div style="left-margin:300px;" id="<%= reply.id %>captcha-error"></div>
         <%- data.captcha %>
     <div style="height:40px;" id="cancel-reply" onclick="newCaptcha()"> New Captcha </div>
     <div id="post-reply" onclick="submitReply('<%= data.id %>', <%= reply.id %>)"> reply </div>
@@ -12,5 +12,3 @@
         cancel
     </div>
 </div>
-
-

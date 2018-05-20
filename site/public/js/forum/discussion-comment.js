@@ -1,18 +1,18 @@
 var submitReply = function(id, parent) {
-    var reply = document.getElementById("reply").value;
-    var captcha = document.getElementById("captcha").value;
+    var reply = document.getElementById(parent+"reply").value;
+    var captcha = document.getElementById(parent+"captcha").value;
 
     var sendData = "reply="+reply+"&postId="+id+"&captcha="+captcha+"&parent="+parent;
 
     httpPostAsync("/reply_submission/"+id, sendData)
         .then(res => {
-            console.dir(res);
 
+            console.dir(res);
             if (res.indexOf("<") == -1) {
                 var json = JSON.parse(res);
                     json.message = json.message.replace(/\n/g, '. ');
                 if (json.isErr) {
-                    document.getElementById("captcha-error").textContent = "* " + json.message;
+                    document.getElementById(parent+"captcha-error").textContent = "* " + json.message;
                 }
             } else {
                 location.reload();
@@ -24,12 +24,35 @@ var newCaptcha = function() {
     httpPostAsync("/new_captcha")
         .then(res => {
             res = "<div>"+res.toString().replace(/\\/g, '')+"</div>";
-            var Obj = document.getElementsByTagName('svg')[0];
+            var Obj = document.getElementsByTagName('svg');
             parser = new DOMParser();
             xmlDoc = parser.parseFromString(res, "image/svg+xml");
             var str = xmlDoc.childNodes[0].innerHTML;
             str = str.substring(1, str.length-1);
-            Obj.outerHTML = str;
+            for (let o of Obj) {
+                o.outerHTML = str;
+            }
+        });
+}
+
+var submitReplyComment = function(id, parent) {
+    var reply = document.getElementById("comment-reply").value;
+    var captcha = document.getElementById("comment-captcha").value;
+
+    var sendData = "reply="+reply+"&postId="+id+"&captcha="+captcha+"&parent="+parent;
+
+    httpPostAsync("/reply_submission/"+id, sendData)
+        .then(res => {
+
+            if (res.indexOf("<") == -1) {
+                var json = JSON.parse(res);
+                    json.message = json.message.replace(/\n/g, '. ');
+                if (json.isErr) {
+                    document.getElementById("comment-captcha-error").textContent = "* " + json.message;
+                }
+            } else {
+                location.reload();
+            }
         });
 }
 
