@@ -38,10 +38,10 @@ scene.add( lights[ 2 ] );
 
 
 var materials = [
-	new THREE.MeshLambertMaterial( { color: 0xEB5D68 } ), // red
-	new THREE.MeshLambertMaterial( { color: 0xF3B236 } ), // Yellow
-	new THREE.MeshLambertMaterial( { color: 0x268D75 } ), // Green
-	new THREE.MeshLambertMaterial( { color: 0x156790 } ), // blue
+    new THREE.MeshLambertMaterial( { color: 0xEB5D68 } ), // red
+    new THREE.MeshLambertMaterial( { color: 0xF3B236 } ), // Yellow
+    new THREE.MeshLambertMaterial( { color: 0x268D75 } ), // Green
+    new THREE.MeshLambertMaterial( { color: 0x156790 } ), // blue
 ];
 
 // Pivots
@@ -55,14 +55,14 @@ rings[2] = new THREE.Mesh( new THREE.CylinderGeometry( 120, 120, 10, 42, 1, 1 ),
 rings[3] = new THREE.Mesh( new THREE.CylinderGeometry( 208, 208, 10, 42, 1, 1 ), materials[3] );
 
 for (var i = 0; i < rings.length; i++) {
-	
-	pivots[i] = new THREE.Object3D();
-	pivots[i].position = scene.position;
-	
-	rings[i].material.side = THREE.DoubleSide;
-	rings[i].rotation.x = 90 * Math.PI / 180;
-	
-	pivots[i].add( rings[i] );
+
+    pivots[i] = new THREE.Object3D();
+    pivots[i].position = scene.position;
+
+    rings[i].material.side = THREE.DoubleSide;
+    rings[i].rotation.x = 90 * Math.PI / 180;
+
+    pivots[i].add( rings[i] );
 }
 
 
@@ -74,49 +74,49 @@ var pivot = new THREE.Object3D();
 pivot.position = scene.position;
 
 for ( var i = 0; i <= rings.length; i++ ) {
-	
-	(function(){
-		for ( var j = 0; j <= 100*(i+1); j++ ) { 
-			circs[j] = new THREE.Mesh( geometry, materials[i] );
 
-			if (i !== rings.length) {
-				var thisRad = rings[i].geometry.parameters.radiusTop;
-			} else {
-				var thisRad = rings[i-1].geometry.parameters.radiusTop;
-			}
-			
-			var prevRad = (i == 0) ? 0 : rings[i-1].geometry.parameters.radiusTop;
+    (function(){
+        for ( var j = 0; j <= 100*(i+1); j++ ) { 
+            circs[j] = new THREE.Mesh( geometry, materials[i] );
 
-			var pos_x = getRandom(-thisRad, thisRad);
-			var pos_y = getRandom(-thisRad, thisRad);
+            if (i !== rings.length) {
+                var thisRad = rings[i].geometry.parameters.radiusTop;
+            } else {
+                var thisRad = rings[i-1].geometry.parameters.radiusTop;
+            }
 
-			if (i !== 0) {
+            var prevRad = (i == 0) ? 0 : rings[i-1].geometry.parameters.radiusTop;
 
-				while (Math.pow(pos_x, 2) + Math.pow(pos_y, 2) < Math.pow(prevRad, 2)) {
-					pos_x = getRandom(-thisRad, thisRad);
-					pos_y = getRandom(-thisRad, thisRad);
-				}
-			}
+            var pos_x = getRandom(-thisRad, thisRad);
+            var pos_y = getRandom(-thisRad, thisRad);
 
-			circs[j].position.x = pos_x;
-			circs[j].position.y = pos_y;
+            if (i !== 0) {
 
-			circs[j].position.z = getRandom(-prevRad, thisRad);
+                while (Math.pow(pos_x, 2) + Math.pow(pos_y, 2) < Math.pow(prevRad, 2)) {
+                    pos_x = getRandom(-thisRad, thisRad);
+                    pos_y = getRandom(-thisRad, thisRad);
+                }
+            }
 
-			circs[j].rotation.x = ( Math.random() - 0.5 ) * 1000;
-			circs[j].rotation.y = ( Math.random() - 0.5 ) * 1000;
-			
-			circs[j].lookAt(camera.position);
+            circs[j].position.x = pos_x;
+            circs[j].position.y = pos_y;
 
-			if (i !== rings.length) {
-				pivots[i].add( circs[j] );
-			}
-		}
+            circs[j].position.z = getRandom(-prevRad, thisRad);
 
-		if (i !== rings.length) {
-			scene.add(pivots[i]);
-		}
-	})();
+            circs[j].rotation.x = ( Math.random() - 0.5 ) * 1000;
+            circs[j].rotation.y = ( Math.random() - 0.5 ) * 1000;
+
+            circs[j].lookAt(camera.position);
+
+            if (i !== rings.length) {
+                pivots[i].add( circs[j] );
+            }
+        }
+
+        if (i !== rings.length) {
+            scene.add(pivots[i]);
+        }
+    })();
 
 }
 
@@ -125,53 +125,53 @@ for ( var i = 0; i <= rings.length; i++ ) {
 
 var inc = 0.005;
 function render() {
-	
-	camera.position.x += (mouseX - camera.position.x) * 0.05;
-	camera.position.y += (-mouseY - camera.position.y) * 0.05;
-	camera.lookAt(rings[0].position);
-	
-	for (var i = 0; i < pivots.length; i++) {
-		
-		if (i % 2 == 0) {
-			rings[i].rotation.z += inc;
-			rings[i].rotation.x += inc;
-		} else {
-			pivots[i].rotation.x += inc;
-			rings[i].rotation.x += inc;
-		}
-		
-		pivots[i].rotation.z += inc;
-		pivots[i].rotation.x += inc;
-		
-		camera.lookAt(rings[0].position);
-		
-	}
-	
-	
-	for (var j = 0; j < circs.length; j++) {
-		
-		circs[j].lookAt(camera.position);
-		
-	}
-	
-	requestAnimationFrame( render );
-	renderer.render( scene, camera );
+
+    camera.position.x += (mouseX - camera.position.x) * 0.05;
+    camera.position.y += (-mouseY - camera.position.y) * 0.05;
+    camera.lookAt(rings[0].position);
+
+    for (var i = 0; i < pivots.length; i++) {
+
+        if (i % 2 == 0) {
+            rings[i].rotation.z += inc;
+            rings[i].rotation.x += inc;
+        } else {
+            pivots[i].rotation.x += inc;
+            rings[i].rotation.x += inc;
+        }
+
+        pivots[i].rotation.z += inc;
+        pivots[i].rotation.x += inc;
+
+        camera.lookAt(rings[0].position);
+
+    }
+
+
+    for (var j = 0; j < circs.length; j++) {
+
+        circs[j].lookAt(camera.position);
+
+    }
+
+    requestAnimationFrame( render );
+    renderer.render( scene, camera );
 }
 render();
 
 
 function onWindowResize() {
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
 
-	renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setSize( window.innerWidth, window.innerHeight );
 }
 window.addEventListener( 'resize', onWindowResize, false );
 
 
 function onDocumentMouseMove( event ) {
-	mouseX = event.clientX - window.innerWidth / 2;
-	mouseY = event.clientY - window.innerHeight / 2;
+    mouseX = event.clientX - window.innerWidth / 2;
+    mouseY = event.clientY - window.innerHeight / 2;
 }
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
@@ -195,7 +195,7 @@ loader.load( 'js/font/Roboto_Regular.json', function ( font ) {
         bevelSize: 1,
         bevelEnabled: true
 
-     });
+    });
 
     var textMat = new THREE.MeshLambertMaterial({color: 0xFF55aa});
 
@@ -207,4 +207,3 @@ loader.load( 'js/font/Roboto_Regular.json', function ( font ) {
     scene.add(textMesh);
 
 } );
-
