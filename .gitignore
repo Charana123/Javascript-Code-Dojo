@@ -4,5 +4,9 @@ site/node_modules
 site/docker/node_modules
 site/docker/nohup.out
 site/docker/output
+report-prelim*
+!report-prelim.tex
+!report-prelim.pdf
+site.zip
 node_modules
 site/secrets/db.sqlite3
