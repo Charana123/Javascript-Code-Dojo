@@ -12,7 +12,7 @@ var submitSignin = function() {
                     document.getElementById("login-form-error").textContent = "* " + json.message;
                 }
             } else {
-                window.location.href = 'index';
+                location.reload();
             }
         });
 }

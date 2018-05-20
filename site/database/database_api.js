@@ -16,24 +16,30 @@ const CHALLENGES_NUM = 6;
 
 const ensureUserStr = "CREATE TABLE if not exists users " +
     "(id INTEGER PRIMARY KEY, email TEXT, username TEXT," +
-    "password TEXT, salt TEXT, image TEXT)";
+    "password TEXT, salt TEXT, image TEXT);";
 
 const ensureChallengeStr = "CREATE TABLE if not exists challenges " +
     "(user INTEGER" +
     challengesFieldString(CHALLENGES_NUM) +
-    ", FOREIGN KEY(user) REFERENCES users(id))";
+    ", FOREIGN KEY(user) REFERENCES users(id));";
 
 const ensureForumPostStr = "CREATE TABLE if not exists forum_post " +
     "(id INTEGER PRIMARY KEY, user INTEGER, title TEXT, body TEXT, subject TEXT," +
-    "views INTEGER, votes INTEGER, time DATETIME)";
+    "views INTEGER, votes INTEGER, time DATETIME);";
 
 const ensureForumReplyStr = "CREATE TABLE if not exists forum_reply " +
     "(id INTEGER PRIMARY KEY, post INTEGER, parent INTEGER, user INTEGER, body TEXT," +
-    "votes INTEGER, time DATETIME, FOREIGN Key(post) REFERENCES forum_post(id))";
+    "votes INTEGER, time DATETIME, FOREIGN KEY(post) REFERENCES forum_post(id));";
 
 const ensureQuestionStr = "CREATE TABLE if not exists questions " +
     "(id INTEGER PRIMARY KEY, title TEXT, question TEXT, answer_file TEXT, "+
     "start_code TEXT);";
+
+const ensureVotedPost = "CREATE TABLE if not exists voted_post " +
+    "(user INTEGER, post INTEGER, value INTEGER, FOREIGN KEY(user) REFERENCES users(id))";
+
+const ensureVotedReply = "CREATE TABLE if not exists voted_reply " +
+    "(user INTEGER, reply INTEGER, value INTEGER, FOREIGN KEY(user) REFERENCES users(id))";
 
 module.exports = {
     newDatabase: newDatabase
@@ -118,17 +124,42 @@ function insertPostStrWithId(id, userId, title, body, subject, views) {
 
 function insertReplyStr(postId, parent, userId, body, id) {
     if (id) {
-    return insertInto + "forum_reply (id, post, parent, user, body, votes, time) VALUES(" +id + ", " + postId +
-        ", " + parent + ", " + userId + ", '" + body + "', 1, datetime('now','localtime'));";
+        return insertInto + "forum_reply (id, post, parent, user, body, votes, time) VALUES(" +id + ", " + postId +
+            ", " + parent + ", " + userId + ", '" + body + "', 1, datetime('now','localtime'));";
 
     } else {
-    return insertInto + "forum_reply (post, parent, user, body, votes, time) VALUES(" + postId +
-        ", " + parent + ", " + userId + ", '" + body + "', 1, datetime('now','localtime'));";
+        return insertInto + "forum_reply (post, parent, user, body, votes, time) VALUES(" + postId +
+            ", " + parent + ", " + userId + ", '" + body + "', 1, datetime('now','localtime'));";
     };
 }
 
 function insertQuestionStr(id, title, question, answer_file, start_code) {
     return insertInto + "questions (id, title, question , answer_file, start_code) VALUES (" + id + ",'" + title + "', '" + question + "', '"  + answer_file + "', '" + start_code + "');";
+}
+
+
+function getVotePostRow(user, post) {
+    return selectAll + "voted_post WHERE user = " + user + " AND post = "+ post+";";
+}
+
+function getVoteReplyRow(user, reply) {
+    return selectAll + "voted_reply WHERE user = " + user + " AND reply = "+ reply+";";
+}
+
+function insertVotePost(user, post, value) {
+    return insertInto + "voted_post (user, post, value) VALUES(" + user + ", "+post+", "+value+");";
+}
+
+function insertVoteReply(user, reply, value) {
+    return insertInto + "voted_reply (user, reply, value) VALUES(" + user + ", "+reply+", "+value+");";
+}
+
+function updateVotePostStr(user, post, value) {
+    return "UPDATE voted_post SET value = "+value+" WHERE user = "+user+" AND post = "+post+";";
+}
+
+function updateVoteReplyStr(user, reply, value) {
+    return "UPDATE voted_reply SET value = "+value+" WHERE user = "+user+" AND reply = "+reply+";";
 }
 
 function getRowsByFieldString(table, field, value) {
@@ -225,6 +256,96 @@ function newDatabase(dbName) {
             });
         };
 
+        var updateVotePost = function(db, user, post, value) {
+            return new Promise(function(resolve, reject) {
+                db.all(getVotePostRow(user, post), [], (err, res) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+
+                    if (res.length == 0) {
+                        db.all(insertVotePost(user, post, value), [], (err, res) => {
+                            if (err) {
+                                reject(err)
+                                return;
+                            }
+
+                            resolve(res);
+                            return;
+                        });
+
+                    } else {
+                        db.all(updateVotePostStr(user, post, res[0].value+value), [], (err, res) => {
+                            if (err) {
+                                reject(err)
+                                return;
+                            }
+
+                            resolve(res);
+                            return;
+                        });
+                    }
+                });
+            });
+        };
+
+        var getVotePost = function(db, user, post) {
+            return new Promise(function(resolve, reject) {
+                db.all(getVotePostRow(user, post), [], (err, res) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(res);
+                });
+            });
+        };
+
+        var getVoteReply = function(db, user, reply) {
+            return new Promise(function(resolve, reject) {
+                db.all(getVoteReplyRow(user, reply), [], (err, res) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(res);
+                });
+            });
+        };
+
+        var updateVoteReply = function(db, user, reply, value) {
+            return new Promise(function(resolve, reject) {
+                db.all(getVoteReplyRow(user, reply), [], (err, res) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    if (res.length == 0) {
+                        db.all(insertVoteReply(user, reply, value), [], (err, res) => {
+                            if (err) {
+                                reject(err)
+                                return;
+                            }
+
+                            resolve(res);
+                            return;
+                        });
+                    } else {
+                        db.all(updateVoteReplyStr(user, reply, res[0].value+value), [], (err, res) => {
+                            if (err) {
+                                reject(err)
+                                return;
+                            }
+
+                            resolve(res);
+                            return;
+                        });
+                    }
+                });
+            });
+        };
+
         var updateChallenge = function(db, userId, index, status) {
             return new Promise(function(resolve, reject) {
                 db.all(updateChallengeStr(userId, index, status), [], (err, challenge) => {
@@ -314,6 +435,8 @@ function newDatabase(dbName) {
                     ensureForumPostStr,
                     ensureForumReplyStr,
                     ensureQuestionStr,
+                    ensureVotedPost,
+                    ensureVotedReply,
                 ]
 
                 tables.forEach((table) => {
@@ -449,6 +572,18 @@ function newDatabase(dbName) {
             },
             dummyForum:function() {
                 return dummyForum(db);
+            },
+            updateVotePost:function(user, post, value){
+                return updateVotePost(db, user, post, value);
+            },
+            updateVoteReply:function(user, reply, value){
+                return updateVoteReply(db, user, reply, value);
+            },
+            getVotePost:function(user, post) {
+                return getVotePost(db, user, post);
+            },
+            getVoteReply:function(user, reply) {
+                return getVoteReply(db, user, reply);
             },
         }
     }());

@@ -1,29 +1,23 @@
 "use strict"
 
-var port = 8080;
-var verbose = true;
+const https = require("https");
+const fs = require("fs")
+const files = require("./js/files.js")
+const cookies = require("./js/cookies.js").Cookies();
+const respFuncs = require("./js/response.js");
+const dbName = "./secrets/db.sqlite3";
+const db = require("./database/database_api.js").newDatabase(dbName);
 
-var https = require("https");
-var fs = require("fs")
-
-var options = {
+const port = 8080;
+const verbose = true;
+const OK = 200, NotFound = 404, BadType = 415, Error = 500;
+const options = {
     key: fs.readFileSync("./secrets/server.key"),
     cert: fs.readFileSync("./secrets/server.crt"),
 };
 
-var files = require("./js/files.js")
-var cookies = require("./js/cookies.js").Cookies();
-const respFuncs = require("./js/response.js");
-
-
-var OK = 200, NotFound = 404, BadType = 415, Error = 500;
 var types, banned;
-
-const dbName = "./secrets/db.sqlite3";
-var db = require("./database/database_api.js").newDatabase(dbName);
-
-var server = {};
-server.UserSessions = {};
+var server = {UserSessions: {}};
 
 function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
@@ -117,11 +111,14 @@ function loadEJS(request, uri, loginFunction, defaultFunction, response, cookie)
         cookie = cookie.substr(0, cookie.indexOf(';'));
     }
 
+
     if (server.UserSessions[cookie]) {
         console.dir(JSON.stringify(server.UserSessions));
         readEJSFile(uri, loginFunction, response, server.UserSessions[cookie]);
+        return;
     } else {
         readEJSFile(uri, defaultFunction, response);
+        return;
     }
 }
 
@@ -169,11 +166,17 @@ function resolveUrl(url, request, userId, response, server, cookie) {
 
             case "forum":
                 if (rest && !(rest == "all")) {
-                    loginFunc = server.forumHandler.getForumsBySubject(rest);
-                    defaultFunc = server.forumHandler.getForumsBySubject(rest);
+                    if (server.UserSessions[cookie]) {
+                        loginFunc = server.forumHandler.getForumsBySubject(rest, userId);
+                    } else {
+                        defaultFunc = server.forumHandler.getForumsBySubject(rest, null);
+                    }
                 } else {
-                    loginFunc = server.forumHandler.getAllPosts();
-                    defaultFunc = server.forumHandler.getAllPosts();
+                    if (server.UserSessions[cookie]) {
+                        loginFunc = server.forumHandler.getAllPosts(null, userId);
+                    } else {
+                        defaultFunc = server.forumHandler.getAllPosts(null, null);
+                    }
                 }
                 url = "forum";
                 errorUrl = "forum";
@@ -181,14 +184,14 @@ function resolveUrl(url, request, userId, response, server, cookie) {
 
             case "new":
                 url = "forum";
-                loginFunc = server.forumHandler.getAllPosts("time");
-                defaultFunc = server.forumHandler.getAllPosts("time");
+                loginFunc = server.forumHandler.getAllPosts("time", userId);
+                defaultFunc = server.forumHandler.getAllPosts("time", null);
                 break;
 
             case "top":
                 url = "forum";
-                loginFunc = server.forumHandler.getAllPosts("views");
-                defaultFunc = server.forumHandler.getAllPosts("views");
+                loginFunc = server.forumHandler.getAllPosts("views", userId);
+                defaultFunc = server.forumHandler.getAllPosts("views", null);
                 break;
 
             case "editor":
@@ -224,14 +227,14 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 break;
 
             case "forum_post":
-                loginFunc = respFuncs.postRequest(rest, server, cookie);
+                loginFunc = respFuncs.postRequest(rest, server, cookie, userId);
                 defaultFunc = respFuncs.postRequest(rest, server, cookie);
                 url = "forum_post";
                 break;
 
             case "reply_submission":
                 preFunc = respFuncs.replySubmission(request, userId, server, cookie);
-                loginFunc = respFuncs.postRequest(rest, server, cookie);
+                loginFunc = respFuncs.postRequest(rest, server, cookie, userId);
                 url = "forum_post";
                 errorUrl = "forum_post";
                 errLoad = false;
@@ -257,18 +260,18 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 url = "forum";
                 errorUrl = "forum";
                 errLoad = false;
-                loginFunc = server.forumHandler.getAllPosts();
-                defaultFunc = server.forumHandler.getAllPosts();
+                loginFunc = server.forumHandler.getAllPosts(null, userId);
+                defaultFunc = server.forumHandler.getAllPosts(null, null);
                 break;
 
             case "decrease_vote":
-                preFunc  = respFuncs.changeVote(request, server, "decrease");
+                preFunc  = respFuncs.changeVote(request, server, userId, "decrease");
                 errLoad = false;
                 doLoad = false;
                 break;
 
             case "increase_vote":
-                preFunc = respFuncs.changeVote(request, server, "increase");
+                preFunc = respFuncs.changeVote(request, server, userId, "increase");
                 errLoad = false;
                 doLoad = false;
                 break;

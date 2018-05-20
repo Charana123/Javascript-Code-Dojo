@@ -19,8 +19,12 @@
         <footer class="discussion-comment-footer">
             <%= data.votes %>
             <% if (session_valid) { %>
+                <% if (data.voted <= 0) { %>
             <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= data.id %>, 'forum_post')"> </img>
+                <% } %>
+                <% if (data.voted >= 0) { %>
             <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= data.id %>, 'forum_post')"> </img>
+                <% } %>
             <% } %>
         </footer>
 

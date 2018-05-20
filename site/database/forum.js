@@ -12,7 +12,7 @@ function ForumHandler(database) {
         var db = database;
         var challengeHandler = challengeAPI.ChallengesHandler(db);
 
-        function getReplys(postId) {
+        function getReplys(postId, userId) {
             return new Promise(function (resolve, reject) {
                 db.rowsByField("forum_reply", "post", postId).then(function(replys) {
                     var promises = [];
@@ -21,7 +21,7 @@ function ForumHandler(database) {
                         promises.push(db.rowsByField("users", "id", r.user));
                     });
 
-                    Promise.all(promises).then(function(users) {
+                    var sortReplys = function(replys, users) {
                         users.forEach(function(u) {
                             replys.forEach((r, i) => {
                                 if (r.user == u[0].id) {
@@ -71,8 +71,42 @@ function ForumHandler(database) {
                             if (stop == 0) break;
                         }
 
-                        resolve(ret);
-                        return;
+                        return ret;
+                    };
+
+                    Promise.all(promises).then(function(users) {
+                        var ret;
+
+                        if (userId) {
+                            promises = [];
+                            replys.forEach((r) => {
+                                promises.push(db.getVoteReply(userId, r.id));
+                            });
+
+                            Promise.all(promises).then(function(voted) {
+                                replys.forEach((r) => {
+                                    r.voted = 0;
+                                    for (let v of voted) {
+                                        if (v[0] && r.id == v[0].reply) {
+                                            r.voted = v[0].value;
+                                            break;
+                                        }
+                                    };
+                                });
+
+                                ret = sortReplys(replys, users);
+                                resolve(ret);
+                                return;
+                            }, function(err) {
+                                reject(err);
+                                return;
+                            });
+
+                        } else {
+                            ret = sortReplys(replys, users);
+                            resolve(ret);
+                            return;
+                        }
                     }, function(err) {
                         reject(err);
                         return;
@@ -138,7 +172,7 @@ function ForumHandler(database) {
             });
         };
 
-        var increaseViews = function(db, post) {
+        var increaseViews = function(db, post, userId) {
             return new Promise(function(resolve, reject) {
                 db.updateFieldByValue("forum_post", "views", post.views+1, "id", post.id).then(function(res) {
                     resolve(post);
@@ -148,26 +182,48 @@ function ForumHandler(database) {
             });
         };
 
-        var increaseVote = function(db, post, table) {
+        var increaseVote = function(db, post, table, userId) {
             return new Promise(function(resolve, reject) {
-                db.rowsByField(table, "id", post).then(function(posts) {
-                    db.updateFieldByValue(table, "votes", posts[0].votes+1, "id", post).then(function(res) {
-                        resolve(post);
-                    }, function(err) {
+                var promise;
+                if (table == "forum_post") {
+                    promise = db.updateVotePost(userId, post, 1);
+                } else {
+                    promise = db.updateVoteReply(userId, post, 1);
+                }
+
+                promise.then(function(res) {
+                    db.rowsByField(table, "id", post).then(function(posts) {
+                        db.updateFieldByValue(table, "votes", posts[0].votes+1, "id", post).then(function(res) {
+                            resolve(post);
+                        }, function(err) {
+                            reject(err);
+                        });
+
+                    }, function(err){
                         reject(err);
                     });
-
                 }, function(err){
                     reject(err);
                 });
             });
         };
 
-        var decreaseVote = function(db, post, table) {
+        var decreaseVote = function(db, post, table, userId) {
             return new Promise(function(resolve, reject) {
-                db.rowsByField(table, "id", post).then(function(posts) {
-                    db.updateFieldByValue(table, "votes", posts[0].votes-1, "id", post).then(function(res) {
-                        resolve(post);
+                var promise;
+                if (table == "forum_post") {
+                    promise = db.updateVotePost(userId, post, -1);
+                } else {
+                    promise = db.updateVoteReply(userId, post, -1);
+                }
+
+                promise.then(function(res) {
+                    db.rowsByField(table, "id", post).then(function(posts) {
+                        db.updateFieldByValue(table, "votes", posts[0].votes-1, "id", post).then(function(res) {
+                            resolve(post);
+                        }, function(err) {
+                            reject(err);
+                        });
                     }, function(err) {
                         reject(err);
                     });
@@ -177,26 +233,52 @@ function ForumHandler(database) {
             });
         };
 
-        var getPost = function(db, postId) {
+        var getPost = function(db, postId, userId) {
             return new Promise(function(resolve, reject) {
                 db.rowsByField("forum_post", "id", postId).then(function(posts) {
                     db.rowsByField("users", "id", posts[0].user).then(function(user) {
-                        posts[0].userData = {
-                            id: user[0].id,
-                            username: user[0].username,
-                            image: user[0].image
+
+                        var getVoted = function(posts, userId) {
+                            return new Promise(function(resolve, reject) {
+                                if (userId) {
+                                    db.getVotePost(userId, posts[0].id).then(function(voted) {
+                                        if (voted.length == 0) {
+                                            posts[0].voted = 0;
+                                        } else {
+                                            posts[0].voted = voted[0].value
+                                        }
+                                        resolve(posts);
+                                        return;
+                                    });
+                                } else {
+                                    resolve(posts);
+                                    return;
+                                }
+                            });
                         };
 
-                        getReplys(posts[0].id).then(function(replys) {
-                            posts[0].replys = sortObjBack(replys, "time");
-                            increaseViews(db, posts[0]).then(function(post) {
-                                resolve(posts[0]);
-                                return;
+                        getVoted(posts, userId).then(function(posts) {
+
+                            posts[0].userData = {
+                                id: user[0].id,
+                                username: user[0].username,
+                                image: user[0].image
+                            };
+
+                            getReplys(posts[0].id, userId).then(function(replys) {
+                                posts[0].replys = sortObjBack(replys, "time");
+                                increaseViews(db, posts[0]).then(function(post) {
+                                    resolve(posts[0]);
+                                    return;
+                                }, function(err) {
+                                    reject(err)
+                                    return;
+                                });
+
                             }, function(err) {
-                                reject(err)
+                                reject(err);
                                 return;
                             });
-
                         }, function(err) {
                             reject(err);
                             return;
@@ -219,7 +301,7 @@ function ForumHandler(database) {
                     var fullForums = {};
 
                     posts.forEach((post) => {
-                        promises.push(getReplys(post.id));
+                        promises.push(getReplys(post.id, userId));
                         fullForums[post.id] = {post: post, replys: []};
                     });
 
@@ -242,9 +324,9 @@ function ForumHandler(database) {
             });
         };
 
-        var getForumsBySubject = function(db, subject, sort) {
+        var getForumsBySubject = function(db, subject, sort, userId) {
             return new Promise(function(resolve, reject) {
-                getAllPosts(db, sort).then(function(posts) {
+                getAllPosts(db, sort, userId).then(function(posts) {
                     Object.keys(posts.fullForums).forEach((f) => {
                         if (!(posts.fullForums[f].post.subject == subject)) {
                             delete posts.fullForums[f];
@@ -265,7 +347,7 @@ function ForumHandler(database) {
             });
         };
 
-        var getAllPosts = function(db, sort) {
+        var getAllPosts = function(db, sort, userId) {
             return new Promise(function (resolve, reject) {
                 db.getAll("forum_post").then(function(posts) {
                     var promises = [];
@@ -275,49 +357,93 @@ function ForumHandler(database) {
                         posts = sortObj(posts, sort);
                     }
 
-                    for (var i = 0; i < posts.length; i++) {
-                        promises.push(getReplys(posts[i].id));
-                        fullForums.push({post: posts[i], user: {}, replys: []});
-                    }
+                    var getVotedOnPosts = function(posts, userId) {
+                        return new Promise(function(resolve, reject) {
+                            if (userId) {
+                                var promises = [];
+                                posts.forEach((p) => {
+                                    promises.push(db.getVotePost(userId, p.id));
+                                });
 
-                    Promise.all(promises).then(function(replys) {
-                        replys.forEach((group) => {
-                            group.forEach((reply) => {
-                                fullForums[reply.post].replys.push(reply);
-                            });
-                        });
+                                Promise.all(promises).then(function(voted) {
 
-                        promises = [];
-
-                        Object.keys(fullForums).forEach((f) => {
-                            promises.push(db.rowsByField("users", "id", fullForums[f].post.user));
-                        });
-
-                        Promise.all(promises).then(function(users) {
-
-                            var subjects = [];
-
-                            users.forEach(function(u) {
-                                Object.keys(fullForums).forEach((f) => {
-                                    if (fullForums[f].post.user == u[0].id) {
-                                        fullForums[f].user = {
-                                            id: u[0].id,
-                                            username: u[0].username,
-                                            image: u[0].image
+                                    posts.forEach((p) => {
+                                        p.voted = 0;
+                                        for (let v of voted) {
+                                            if (v[0] && p.id == v[0].post) {
+                                                p.voted = v[0].value;
+                                                break;
+                                            }
                                         };
-                                    }
-                                    if (!subjects.includes(fullForums[f].post.subject)) {
-                                        subjects.push(fullForums[f].post.subject);
-                                    }
+                                    });
+
+                                    resolve(posts);
+                                    return;
+
+
+                                }, function(err) {
+                                    reject(err);
+                                    return;
+                                });
+
+                            } else {
+                                resolve(posts);
+                                return;
+                            }
+                        });
+                    };
+
+                    getVotedOnPosts(posts, userId).then(function(posts) {
+
+                        for (var i = 0; i < posts.length; i++) {
+                            promises.push(getReplys(posts[i].id, userId));
+                            fullForums.push({post: posts[i], user: {}, replys: []});
+                        }
+
+                        Promise.all(promises).then(function(replys) {
+                            replys.forEach((group) => {
+                                group.forEach((reply) => {
+                                    fullForums[reply.post].replys.push(reply);
                                 });
                             });
 
-                            resolve({fullForums, subjects, current: "all"});
-                            return;
+                            promises = [];
+
+                            Object.keys(fullForums).forEach((f) => {
+                                promises.push(db.rowsByField("users", "id", fullForums[f].post.user));
+                            });
+
+                            Promise.all(promises).then(function(users) {
+
+                                var subjects = [];
+
+                                users.forEach(function(u) {
+                                    Object.keys(fullForums).forEach((f) => {
+                                        if (fullForums[f].post.user == u[0].id) {
+                                            fullForums[f].user = {
+                                                id: u[0].id,
+                                                username: u[0].username,
+                                                image: u[0].image
+                                            };
+                                        }
+                                        if (!subjects.includes(fullForums[f].post.subject)) {
+                                            subjects.push(fullForums[f].post.subject);
+                                        }
+                                    });
+                                });
+
+                                resolve({fullForums, subjects, current: "all"});
+                                return;
+
+                            }, function(err) {
+                                reject(err);
+                                return;
+                            });
 
                         }, function(err) {
                             reject(err);
                             return;
+
                         });
 
                     }, function(err) {
@@ -344,24 +470,22 @@ function ForumHandler(database) {
             getForumsByUser:function(userId){
                 return getForumsByUser(db, userId);
             },
-            getForumsBySubject:function(subject, sort){
-                return getForumsBySubject(db, subject, sort);
+            getForumsBySubject:function(subject, sort, userId){
+                return getForumsBySubject(db, subject, sort, userId);
             },
-            getAllPosts:function(sort){
-                return getAllPosts(db, sort);
+            getAllPosts:function(sort, userId){
+                return getAllPosts(db, sort, userId);
             },
-            getPost:function(postId){
-                return getPost(db, postId);
+            getPost:function(postId, userId){
+                return getPost(db, postId, userId);
             },
-            increaseVote:function(post, table) {
-                return increaseVote(db, post, table);
+            increaseVote:function(post, table, userId) {
+                return increaseVote(db, post, table, userId);
             },
-            decreaseVote:function(post, table) {
-                return decreaseVote(db, post, table);
+            decreaseVote:function(post, table, userId) {
+                return decreaseVote(db, post, table, userId);
             },
         }
 
     }());
 }
-
-
