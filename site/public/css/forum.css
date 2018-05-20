@@ -10,7 +10,12 @@
 .topbar {
     width: 100%;
     color: black;
-    background-color: rgba(128, 128, 128, 0.8);
+    /* background-color: rgba(128, 128, 128, 0.8); */
+
+    /* background-color: rgba(255, 255, 255, 0.1); */
+    background: linear-gradient(to left, rgb(80, 195, 73), rgb(32, 100, 50));
+
+    margin-bottom: 10px;
 }
 
 .topbar ul {
@@ -27,10 +32,16 @@
     padding: 5px 20px 5px 10px;
 }
 
+.forum-container {
+    background: radial-gradient(ellipse, rgb(80, 195, 73), rgb(32, 100, 50));;
+}
+
 .forum-container > a > ul > li {
     display: inline-block;
     width: 150px;
     padding: 5px 20px 5px 10px;
+
+    vertical-align: middle;
 }
 
 .forum-container > a {
@@ -40,8 +51,63 @@
 }
 
 .forum-container > a > ul {
-    color: black;
+    /* Remove default CSS */
+    list-style-type: none;
     margin: 0px;
     padding: 0px;
     border: 0px;
+
+    color: black;
+}
+
+#forum-navigation {
+    background: linear-gradient(to left, rgb(80, 195, 73), rgb(32, 100, 50));
+}
+
+#forum-navigation a {
+    color: black;
+}
+
+
+/* ==== SELECT ==================================================== */
+#select-container {
+    /* Offset in sidebar */
+    margin: 4px;
+
+    /* Float to top left */
+    float: left;
+    /* background: radial-gradient(closest-side, rgb(80, 195, 73), rgb(32, 100, 50)); */
+    background: rgba(0, 0, 0, 0.3);
+
+    width: 120px;
+}
+
+
+#select-container > select {
+    /* Remove select border */
+    border: none;
+    outline: 0px;
+
+    /* Remove default CSS */
+    -webkit-appearance: none;
+    padding: 3px 20px;
+
+    /* Make underling div element color noticable */
+    background: transparent;
+
+    font-size: 15px;
+}
+
+#select-container > select > option {
+    /* Remove select border */
+    border: none;
+    outline: 0px;
+
+    /* Remove default CSS */
+    -webkit-appearance: none;
+
+    /* Make underling div element color noticable */
+    background: transparent;
+
+    font-size: 15px;
 }

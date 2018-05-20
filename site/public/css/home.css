@@ -73,48 +73,7 @@ a:link {
     padding: 5px 20px 5px 10px;
 }
 
-/* ==== SELECT ==================================================== */
-
-#select-container {
-    /* Offset in sidebar */
-    margin: 4px;
-
-    /* Float to top left */
-    float: left;
-    background: lightblue;
-
-    width: 120px;
-}
-
-
-#select-container > select {
-    /* Remove select border */
-    border: none;
-    outline: 0px;
-
-    /* Remove default CSS */
-    -webkit-appearance: none;
-    padding: 3px 20px;
-
-    /* Make underling div element color noticable */
-    background: transparent;
-
-    font-size: 15px;
-}
-
-#select-container > select > option {
-    /* Remove select border */
-    border: none;
-    outline: 0px;
-
-    /* Remove default CSS */
-    -webkit-appearance: none;
-
-    /* Make underling div element color noticable */
-    background: transparent;
-
-    font-size: 15px;
-}
+/* === OTHERS =========== */
 
 button {
     color: #BBBBBB;
