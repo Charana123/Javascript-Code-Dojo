@@ -81,6 +81,7 @@
     /* Dropdown functionality */
     display: none; /* Hides the dropdown content */
     position: absolute; /* Overlays content (similar to z-index: 1) */
+    z-index: 1;
     left: 0px;
     top: 34px;
 
