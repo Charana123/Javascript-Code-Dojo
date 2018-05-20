@@ -9,11 +9,11 @@
   <ul>
     <li id="header-site-logo-li"> <img id="header-site-logo" src="/img/emerald.svg"/> </li>
     <li> <a id="header-logo" href="/index"> Scripter </a> </li>
-    <li> <a href="/index">Home</a></li>
-    <li> <a href="/challenges">Challenges</a></li>
-    <li> <a href="/forum">Forum</a></li>
+    <li class="hoverable"> <a href="/index">Home</a></li>
+    <li class="hoverable"> <a href="/challenges">Challenges</a></li>
+    <li class="hoverable"> <a href="/forum">Forum</a></li>
 
-    <li class="dropdown">
+    <li class="dropdown hoverable">
       <a href="#" > Games </a>
       <div class="dropdown-content">
         <a href="/snake">
@@ -40,7 +40,6 @@
         <% } else { %>
             <li style="float: right"> <img  id="profile-image" src="/img/default-avatar.svg" /> </li>
         <% } %>
-        <li style="float: right"  > <img id="settings-image" src="/img/settings-cog.svg" /> </li>
     <% } %>
   </ul>
 
