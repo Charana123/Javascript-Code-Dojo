@@ -1,9 +1,17 @@
 <link rel="stylesheet" href="/css/forum/comment-box.css" />
 
 <div id="comment-box-container">
-    <img src="/img/default-avatar.svg"> </img>
-    <textarea > </textarea>
-    <div id="post-comment" name="Post Comment"> Post Comment </div>
+    <img id="profile-image" class="discussion-icon discussion-comment-user-icon" src="/<%= user.image %>"> </img>
+
+    <div id="captcha-error"></div>
+        <textarea id="reply" > </textarea>
+    <div style="width:600px;">
+    <div style="margin-left:60px;margin-right:30px" id="new-post-wrapper">
+        <%- data.captcha %>
+        <div style="width:100px;" id="post-comment" name="Post Comment"> Post Comment </div>
+        <div style="width:100px;" id="post-comment" onclick="newCaptcha()"> New Captcha </div>
+    </div>
+    </div>
 </div>
 
 
