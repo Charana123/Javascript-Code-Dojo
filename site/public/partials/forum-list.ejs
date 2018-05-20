@@ -3,20 +3,18 @@
 <% var replys = data.fullForums[k].replys %>
 <% var user = data.fullForums[k].user %>
   <div class="sidebar">
-
     <div class="forum-container">
-        <li> <a  href="/forum_post/<%= post.id %>">
+        <a  href="/forum_post/<%= post.id %>">
             <ul>
-                <li id="question-title"> <%= post.title %>
-                </li>
-                <li id="question-category"> <%= post.subject %> </li>
-                <li id="question-comments"> <%= replys.length %> </li>
-                <li id="question-views"> <%= post.views %> </li>
-                <li id="question-views"> <%= post.votes %> </li>
-                <li id="question-activity"> <%= post.time %> </li>
-                <li id="question-activity"> <img  id="profile-image" src="/<%= user.image %>"/> [<%= user.username %>] </li>
+                <li> <img  id="profile-image" src="/<%= user.image %>"/> [<%= user.username %>] </li>
+                <li> <%= post.title %> </li>
+                <li> <%= post.subject %> </li>
+                <li> <%= replys.length %> </li>
+                <li> <%= post.views %> </li>
+                <li> <%= post.votes %> </li>
+                <li> <%= post.time %> </li>
             </ul>
-        </a> </li>
+        </a>
     </div>
   </div>
 <% }) %>
