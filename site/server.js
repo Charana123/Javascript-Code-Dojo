@@ -258,7 +258,7 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 break;
 
             case "new_post_submission":
-                preFunc = respFuncs.newPostSubmission(request, userId, server);
+                preFunc = respFuncs.newPostSubmission(request, userId, server, cookie);
                 url = "forum";
                 errorUrl = "forum";
                 errLoad = false;

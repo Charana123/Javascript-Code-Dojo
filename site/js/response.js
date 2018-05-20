@@ -54,7 +54,7 @@ var captcha = function(server, cookie) {
     });
 };
 
-var newPostSubmission = function(request, userId, server) {
+var newPostSubmission = function(request, userId, server, cookie) {
     return new Promise(function(resolve, reject) {
         request.on('data', chunk => {
             var [subject, title, body, captcha] = chunk.toString().split('&');
