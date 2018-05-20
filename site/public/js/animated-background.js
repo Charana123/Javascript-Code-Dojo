@@ -37,7 +37,6 @@ scene.add( lights[ 1 ] );
 scene.add( lights[ 2 ] );
 
 
-
 var materials = [
 	new THREE.MeshLambertMaterial( { color: 0xEB5D68 } ), // red
 	new THREE.MeshLambertMaterial( { color: 0xF3B236 } ), // Yellow
@@ -180,4 +179,32 @@ document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 function getRandom(min,max) {
     return Math.floor(Math.random()*(max-min+1)+min);
 }
+
+var loader = new THREE.FontLoader();
+loader.load( 'js/font/Roboto_Regular.json', function ( font ) {
+
+    var textGeo = new THREE.TextGeometry("One stop shop to learning Javascript!", {
+
+        font: font,
+
+        size: 20,
+        height: 17,
+        curveSegments: 10,
+
+        bevelThickness: 5,
+        bevelSize: 1,
+        bevelEnabled: true
+
+     });
+
+    var textMat = new THREE.MeshLambertMaterial({color: 0xFF55aa});
+
+    var textMesh = new THREE.Mesh(textGeo, textMat);
+    textMesh.position.x = -200;
+    textMesh.position.y = 100;
+    textMesh.position.z = -300;
+
+    scene.add(textMesh);
+
+} );
 
