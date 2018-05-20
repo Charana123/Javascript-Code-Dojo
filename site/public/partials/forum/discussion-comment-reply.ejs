@@ -12,11 +12,14 @@
             <% if (session_valid) { %>
                 <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= reply.id %>, 'forum_reply')"> </img>
                 <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= reply.id %>, 'forum_reply')"> </img>
-                <div class="add-reply-button" > reply </div> 
+                <div class="add-reply-button" replyBoxID="reply-box-<%= reply.id %>" onclick="showReplyBox(event, this)"> reply </div> 
             <% } %>
         </footer>
+        <div id="reply-box-<%= reply.id %>" class="reply-box-container-wrapper">
+            <% include reply-box.ejs %>
+        </div>
 
-        <div onclick="postReply()">
+        <div>
               <% reply.children.forEach(function(child){ %>
                     <div class="reply-comment-container-wrapper">
                         <img class="discussion-icon discussion-comment-user-icon" src="../<%= child.userData.image %>"> </img>
@@ -32,9 +35,12 @@
                                 <% if (session_valid) { %>
                                 <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= child.id %>, 'forum_reply')"> </img>
                                 <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= child.id %>, 'forum_reply')"> </img>
-                                <div class="add-reply-button" > reply </div> 
+                                <div class="add-reply-button" replyBoxID="reply-box-<%= child.id %>" onclick="showReplyBox(event, this)"> reply </div> 
                                 <% } %>
                             </footer>
+                            <div id="reply-box-<%= child.id %>" class="reply-box-container-wrapper">
+                                <% include reply-box.ejs %>
+                            </div>
                         </div>
                     </div>
               <% });  %>

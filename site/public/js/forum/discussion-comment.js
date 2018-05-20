@@ -32,3 +32,18 @@ function decreaseVote(post, table) {
             location.reload();
         })
 }
+
+function showReplyBox(event, replyButton){
+    var reply_box_id = replyButton.getAttribute("replyBoxID");
+    var reply_box = document.getElementById(reply_box_id);
+    reply_box.style.display = "block";
+}
+
+function hideReplyBox(event, replyButton){
+    console.log("hiding...");
+    var reply_box_id = replyButton.getAttribute("replyBoxID");
+    console.log(reply_box_id);
+    var reply_box = document.getElementById(reply_box_id);
+    console.log(reply_box);
+    reply_box.style.display = "none";
+}

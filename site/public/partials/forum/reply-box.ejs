@@ -1,0 +1,18 @@
+<link rel="stylesheet" href="/css/forum/reply-box.css" />
+
+<div id="reply-box-container">
+    <textarea > </textarea>
+    <div id="post-reply"> reply </div>
+    <div id="cancel-reply" onclick="hideReplyBox(event, this)"
+    <% var child = child || undefined;
+        if(child != undefined) { %>
+            replyBoxID= "reply-box-<%= child.id %>"
+        <% } %> 
+        <% if(child == undefined) { %>
+            replyBoxID= "reply-box-<%= reply.id %>"
+        <% } %>>
+        cancel
+    </div>
+</div>
+
+
