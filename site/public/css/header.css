@@ -69,7 +69,7 @@
 
 /*==== DropDown =========================================================================== */
 .dropdown {
-    position: absolute;
+    position: relative;
 }
 
 /* Display dropdown content on hover */
