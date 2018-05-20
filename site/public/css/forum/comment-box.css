@@ -1,9 +1,10 @@
 #comment-box-container {
     width: 500px;
     height: 300px;
+
+    margin-top: 100px;
+    /* margin-left: 20px; */
 }
-
-
 
 #comment-box-container > img {
     display: block;
@@ -63,9 +64,7 @@
     color: white;
     line-height: 40px;
     vertical-align: middle;
-    text-align: center;
-
-    
+    text-align: center; 
 }
 
 

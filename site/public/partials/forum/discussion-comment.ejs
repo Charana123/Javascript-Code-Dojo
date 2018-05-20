@@ -2,21 +2,19 @@
 <script type="text/javascript" src="/js/forum/discussion-comment.js" async="async"> </script>
 
 <div class="discussion-comment-container-wrapper">
-    <img id="discussion-comment-toggle" class="discussion-icon" src="/img/minus.svg" onclick="toggleReplies()"> </img>
+    <img id="discussion-comment-toggle" class="discussion-icon" src="/img/minus.svg" replyContainerID="reply-container-<%= data.id %>" onclick="toggleReplies(event, this)"> </img>
     <img class="discussion-icon discussion-comment-user-icon" src="../<%= data.userData.image %>"> </img>
     <div class="discussion-comment-container">
 
         <div class="discussion-comment-header">
-
-        <div class="discussion-comment-user-name"> <%= data.userData.username %> </div>
-        <img src="/img/clock.svg"> </img>
-        <div class="comment-timestamp"> <%= data.time %> </div>
-        <div class="comment-timestamp"> <%= data.subject %> </div>
-        <div class="comment-timestamp"> <%= data.title %> </div>
+            <div class="discussion-comment-user-name"> <%= data.userData.username %> </div>
+            <img src="/img/clock.svg"> </img>
+            <div class="comment-timestamp"> <%= data.time %> </div>
+            <div class="comment-timestamp"> <%= data.subject %> </div>
+            <div class="comment-timestamp"> <%= data.title %> </div>
         </div>
 
-
-        <div class="discussion-comment"> <%= data.body %> </div>
+        <div class="discussion-comment">  <%= data.body %> </div>
 
         <footer class="discussion-comment-footer">
             <%= data.votes %>
@@ -26,11 +24,10 @@
             <% } %>
         </footer>
 
-
-        <div id="reply-comment-container" onclick="postReply()">
-              <% data.replys.forEach(function(reply){ %>
-                <% include discussion-comment-reply.ejs %>
-              <% });  %>
+        <div id="reply-container-<%= data.id %>">
+            <% data.replys.forEach(function(reply){ %>
+            <% include discussion-comment-reply.ejs %>
+            <% });  %>
         </div>
 
     </div>
