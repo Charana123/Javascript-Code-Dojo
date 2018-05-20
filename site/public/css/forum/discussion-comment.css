@@ -1,5 +1,6 @@
 .discussion-comment-container-wrapper, .reply-comment-container-wrapper {
-    /* margin-top: 10px; */
+    margin-top: 10px;
+    overflow: auto;
 }
 
 .discussion-icon {
@@ -12,8 +13,6 @@
 
     /* Placement */
     float: left;
-
-    margin-top: 10px;
 }
 
 #discussion-comment-toggle {
@@ -35,8 +34,6 @@
 .discussion-comment-container {
     /* Placement */
     float: left;
-
-    margin-top: 10px;
 }
 
 .discussion-comment-header {
