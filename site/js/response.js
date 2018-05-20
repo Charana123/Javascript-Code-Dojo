@@ -148,7 +148,7 @@ var signUpPreFunc = function(request, server, cookie) {
             captcha = captcha.split('=')[1];
 
             if (captcha != server.UserSessions[cookie].captcha) {
-                reject({isErr: true, message:"Incorrect captcha\n"});
+                reject({isErr: true, message:"Incorrect captcha.\n"});
                 return;
             }
 
