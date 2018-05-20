@@ -48,36 +48,18 @@
                     <input class="long-field" type="text" id="email" placeholder="   Enter Email" name="email"></input> <br/>
                     <input class="long-field" type="password" id="pass1" placeholder="   Enter Password" name="psw1"></input> <br/>
                     <input class="long-field" type="password" id="pass2" placeholder="   Reenter Password" name="psw2"></input> <br/>
+                    <input class="long-field" type="text" id="captcha" placeholder="Captcha" name="captcha"></input> <br/>
 
                     <div id="signup-error"></div>
-                    <script>
-                        function toggleShow() {
-                            var popup = document.getElementById("captcha-popup");
-                            popup.classList.toggle("show");
-                        }
-                    </script>
-                    <div class="popup">
-                        <div id="re-captcha-tickbox">
-                            <input type="checkbox" onclick="toggleShow()" />
-                            <span> I'm not a robot </span>
-                            <img src="/img/recaptcha.png"/>
-                        </div>
-                        <div id="captcha-popup" class="popup-content" >
-                            Loading, please be patient...
-                        </div>
+                    <div>
+                    <%- data %>
                     </div>
 
                     <button type="submit" value="submit" onclick="submitSignup()"> Sign Up </button>
+                    <button onclick="newCaptcha()"> New Captcha </button>
                 </div>
         </form>
         </div>
     </div>
     </div>
 </div>
-<script>
-    function CaptchaCallback(){
-        grecaptcha.render('captcha-popup', {'sitekey' : '6LcLE1kUAAAAAMh0NkiVqW8WRRjSN2tk-cOecqbb'});
-    };
-</script>
-<script src="https://www.google.com/recaptcha/api.js?onload=CaptchaCallback&amp;render=explicit" async="defer">
-</script>

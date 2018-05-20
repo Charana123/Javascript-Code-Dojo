@@ -1,8 +1,4 @@
 function postReply(){
-    console.log("posting reply...");
-    //var reply_comment_container = document.getElementById("reply-comment-container");
-    //make an AJAX request for a 
-    // reply_comment_container.innerHTML = 
 }
 
 function toggleReplies(event, toggle_icon){
@@ -40,7 +36,6 @@ function showReplyBox(event, replyButton){
 }
 
 function hideReplyBox(event, replyButton){
-    console.log("hiding...");
     var reply_box_id = replyButton.getAttribute("replyBoxID");
     console.log(reply_box_id);
     var reply_box = document.getElementById(reply_box_id);
