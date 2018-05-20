@@ -154,11 +154,11 @@ function insertVoteReply(user, reply, value) {
     return insertInto + "voted_reply (user, reply, value) VALUES(" + user + ", "+reply+", "+value+");";
 }
 
-function updateVotePost(user, post, value) {
+function updateVotePostStr(user, post, value) {
     return "UPDATE voted_post SET value = "+value+" WHERE user = "+user+" AND post = "+post+";";
 }
 
-function updateVoteReply(user, reply, value) {
+function updateVoteReplyStr(user, reply, value) {
     return "UPDATE voted_reply SET value = "+value+" WHERE user = "+user+" AND reply = "+reply+";";
 }
 
@@ -276,7 +276,7 @@ function newDatabase(dbName) {
                         });
 
                     } else {
-                        db.all(updateVotePost(user, post, value), [], (err, res) => {
+                        db.all(updateVotePostStr(user, post, res[0].value+value), [], (err, res) => {
                             if (err) {
                                 reject(err)
                                 return;
@@ -332,7 +332,7 @@ function newDatabase(dbName) {
                             return;
                         });
                     } else {
-                        db.all(updateVotePost(user, reply, value), [], (err, res) => {
+                        db.all(updateVoteReplyStr(user, reply, res[0].value+value), [], (err, res) => {
                             if (err) {
                                 reject(err)
                                 return;

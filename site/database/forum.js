@@ -483,7 +483,7 @@ function ForumHandler(database) {
                 return increaseVote(db, post, table, userId);
             },
             decreaseVote:function(post, table, userId) {
-                return increaseVote(db, post, table, userId);
+                return decreaseVote(db, post, table, userId);
             },
         }
 
