@@ -111,11 +111,14 @@ function loadEJS(request, uri, loginFunction, defaultFunction, response, cookie)
         cookie = cookie.substr(0, cookie.indexOf(';'));
     }
 
+
     if (server.UserSessions[cookie]) {
         console.dir(JSON.stringify(server.UserSessions));
         readEJSFile(uri, loginFunction, response, server.UserSessions[cookie]);
+        return;
     } else {
         readEJSFile(uri, defaultFunction, response);
+        return;
     }
 }
 
@@ -163,11 +166,17 @@ function resolveUrl(url, request, userId, response, server, cookie) {
 
             case "forum":
                 if (rest && !(rest == "all")) {
-                    loginFunc = server.forumHandler.getForumsBySubject(rest, userId);
-                    defaultFunc = server.forumHandler.getForumsBySubject(rest);
+                    if (server.UserSessions[cookie]) {
+                        loginFunc = server.forumHandler.getForumsBySubject(rest, userId);
+                    } else {
+                        defaultFunc = server.forumHandler.getForumsBySubject(rest, null);
+                    }
                 } else {
-                    loginFunc = server.forumHandler.getAllPosts(userId);
-                    defaultFunc = server.forumHandler.getAllPosts();
+                    if (server.UserSessions[cookie]) {
+                        loginFunc = server.forumHandler.getAllPosts(null, userId);
+                    } else {
+                        defaultFunc = server.forumHandler.getAllPosts(null, null);
+                    }
                 }
                 url = "forum";
                 errorUrl = "forum";
@@ -176,13 +185,13 @@ function resolveUrl(url, request, userId, response, server, cookie) {
             case "new":
                 url = "forum";
                 loginFunc = server.forumHandler.getAllPosts("time", userId);
-                defaultFunc = server.forumHandler.getAllPosts("time");
+                defaultFunc = server.forumHandler.getAllPosts("time", null);
                 break;
 
             case "top":
                 url = "forum";
                 loginFunc = server.forumHandler.getAllPosts("views", userId);
-                defaultFunc = server.forumHandler.getAllPosts("views");
+                defaultFunc = server.forumHandler.getAllPosts("views", null);
                 break;
 
             case "editor":
@@ -251,8 +260,8 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 url = "forum";
                 errorUrl = "forum";
                 errLoad = false;
-                loginFunc = server.forumHandler.getAllPosts(userId);
-                defaultFunc = server.forumHandler.getAllPosts();
+                loginFunc = server.forumHandler.getAllPosts(null, userId);
+                defaultFunc = server.forumHandler.getAllPosts(null, null);
                 break;
 
             case "decrease_vote":

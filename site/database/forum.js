@@ -331,49 +331,93 @@ function ForumHandler(database) {
                         posts = sortObj(posts, sort);
                     }
 
-                    for (var i = 0; i < posts.length; i++) {
-                        promises.push(getReplys(posts[i].id, userId));
-                        fullForums.push({post: posts[i], user: {}, replys: []});
-                    }
+                    var getVotedOnPosts = function(posts, userId) {
+                        return new Promise(function(resolve, reject) {
+                            if (userId) {
+                                var promises = [];
+                                posts.forEach((p) => {
+                                    promises.push(db.getVotePost(userId, p.id));
+                                });
 
-                    Promise.all(promises).then(function(replys) {
-                        replys.forEach((group) => {
-                            group.forEach((reply) => {
-                                fullForums[reply.post].replys.push(reply);
-                            });
-                        });
+                                Promise.all(promises).then(function(voted) {
 
-                        promises = [];
-
-                        Object.keys(fullForums).forEach((f) => {
-                            promises.push(db.rowsByField("users", "id", fullForums[f].post.user));
-                        });
-
-                        Promise.all(promises).then(function(users) {
-
-                            var subjects = [];
-
-                            users.forEach(function(u) {
-                                Object.keys(fullForums).forEach((f) => {
-                                    if (fullForums[f].post.user == u[0].id) {
-                                        fullForums[f].user = {
-                                            id: u[0].id,
-                                            username: u[0].username,
-                                            image: u[0].image
+                                    posts.forEach((p) => {
+                                        p.voted = 0;
+                                        for (let v of voted) {
+                                            if (v[0] && p.id == v[0].post) {
+                                                p.voted = v[0].value;
+                                                break;
+                                            }
                                         };
-                                    }
-                                    if (!subjects.includes(fullForums[f].post.subject)) {
-                                        subjects.push(fullForums[f].post.subject);
-                                    }
+                                    });
+
+                                    resolve(posts);
+                                    return;
+
+
+                                }, function(err) {
+                                    reject(err);
+                                    return;
+                                });
+
+                            } else {
+                                resolve(posts);
+                                return;
+                            }
+                        });
+                    };
+
+                    getVotedOnPosts(posts, userId).then(function(posts) {
+
+                        for (var i = 0; i < posts.length; i++) {
+                            promises.push(getReplys(posts[i].id, userId));
+                            fullForums.push({post: posts[i], user: {}, replys: []});
+                        }
+
+                        Promise.all(promises).then(function(replys) {
+                            replys.forEach((group) => {
+                                group.forEach((reply) => {
+                                    fullForums[reply.post].replys.push(reply);
                                 });
                             });
 
-                            resolve({fullForums, subjects, current: "all"});
-                            return;
+                            promises = [];
+
+                            Object.keys(fullForums).forEach((f) => {
+                                promises.push(db.rowsByField("users", "id", fullForums[f].post.user));
+                            });
+
+                            Promise.all(promises).then(function(users) {
+
+                                var subjects = [];
+
+                                users.forEach(function(u) {
+                                    Object.keys(fullForums).forEach((f) => {
+                                        if (fullForums[f].post.user == u[0].id) {
+                                            fullForums[f].user = {
+                                                id: u[0].id,
+                                                username: u[0].username,
+                                                image: u[0].image
+                                            };
+                                        }
+                                        if (!subjects.includes(fullForums[f].post.subject)) {
+                                            subjects.push(fullForums[f].post.subject);
+                                        }
+                                    });
+                                });
+
+                                resolve({fullForums, subjects, current: "all"});
+                                return;
+
+                            }, function(err) {
+                                reject(err);
+                                return;
+                            });
 
                         }, function(err) {
                             reject(err);
                             return;
+
                         });
 
                     }, function(err) {
