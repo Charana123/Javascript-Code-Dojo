@@ -7,15 +7,12 @@
         <meta name="copyright" content="Copyright Goes Here" />
         <meta name="description" content="A website to learn JavaScript!" />
         <link rel="stylesheet" type="text/css" media="screen" href="/css/home.css" />
-        <link rel="stylesheet" type="text/css" media="screen" href="/css/asteroids.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/css/games.css" />
         <script type='text/javascript' src='games/asteroids.js' async="async"></script>
     </head>
     <body onload="startGame()">
         <% include partials/header %>
-        <div id="game-rules-div" class="column">
-            Content
-        </div>
-        <div id="game-stage-div" class="column">
+        <div id="game-stage-div">
             <canvas id="game-canvas"></canvas>
         </div>
     </body>
