@@ -237,22 +237,48 @@ function ForumHandler(database) {
             return new Promise(function(resolve, reject) {
                 db.rowsByField("forum_post", "id", postId).then(function(posts) {
                     db.rowsByField("users", "id", posts[0].user).then(function(user) {
-                        posts[0].userData = {
-                            id: user[0].id,
-                            username: user[0].username,
-                            image: user[0].image
+
+                        var getVoted = function(posts, userId) {
+                            return new Promise(function(resolve, reject) {
+                                if (userId) {
+                                    db.getVotePost(userId, posts[0].id).then(function(voted) {
+                                        if (voted.length == 0) {
+                                            posts[0].voted = 0;
+                                        } else {
+                                            posts[0].voted = voted[0].value
+                                        }
+                                        resolve(posts);
+                                        return;
+                                    });
+                                } else {
+                                    resolve(posts);
+                                    return;
+                                }
+                            });
                         };
 
-                        getReplys(posts[0].id, userId).then(function(replys) {
-                            posts[0].replys = sortObjBack(replys, "time");
-                            increaseViews(db, posts[0]).then(function(post) {
-                                resolve(posts[0]);
-                                return;
+                        getVoted(posts, userId).then(function(posts) {
+
+                            posts[0].userData = {
+                                id: user[0].id,
+                                username: user[0].username,
+                                image: user[0].image
+                            };
+
+                            getReplys(posts[0].id, userId).then(function(replys) {
+                                posts[0].replys = sortObjBack(replys, "time");
+                                increaseViews(db, posts[0]).then(function(post) {
+                                    resolve(posts[0]);
+                                    return;
+                                }, function(err) {
+                                    reject(err)
+                                    return;
+                                });
+
                             }, function(err) {
-                                reject(err)
+                                reject(err);
                                 return;
                             });
-
                         }, function(err) {
                             reject(err);
                             return;
