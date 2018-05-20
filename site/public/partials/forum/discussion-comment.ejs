@@ -2,8 +2,12 @@
 <script type="text/javascript" src="/js/forum/discussion-comment.js" async="async"> </script>
 
 <div class="discussion-comment-container-wrapper">
-    <img id="discussion-comment-toggle" class="discussion-icon" src="/img/minus.svg" replyContainerID="reply-container-<%= data.id %>" onclick="toggleReplies(event, this)"> </img>
-    <img class="discussion-icon discussion-comment-user-icon" src="../<%= data.userData.image %>"> </img>
+    <% if(data.userData.image) { %>
+        <img class="discussion-icon discussion-comment-user-icon" src="../<%= data.userData.image %>"> </img>
+    <% } else { %>
+        <img class="discussion-icon discussion-comment-user-icon" src="/img/default-avatar.svg"> </img>
+
+    <% } %>
     <div class="discussion-comment-container">
 
         <div class="discussion-comment-header">

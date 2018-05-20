@@ -143,6 +143,8 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 break;
 
             case "sign-up":
+                defaultFunc = respFuncs.newCaptcha(server, cookie);
+                loginFunc = respFuncs.newCaptcha(server, cookie);
                 break;
 
             case "challenges":
@@ -201,7 +203,7 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 break;
 
             case "sign-up_submission":
-                preFunc = respFuncs.signUpPreFunc(request, server);
+                preFunc = respFuncs.signUpPreFunc(request, server, cookie);
                 url = "index";
                 errorUrl = "sign-up";
                 errLoad = false;
@@ -256,7 +258,7 @@ function resolveUrl(url, request, userId, response, server, cookie) {
                 break;
 
             case "new_post_submission":
-                preFunc = respFuncs.newPostSubmission(request, userId, server);
+                preFunc = respFuncs.newPostSubmission(request, userId, server, cookie);
                 url = "forum";
                 errorUrl = "forum";
                 errLoad = false;
@@ -336,7 +338,7 @@ function handle(request, response) {
                     return;
 
                 }, function(err) {
-                    console.log("error occured during pre func: " + err);
+                    console.log(err, {depth: null});
                     url = errorUrl;
                     if (errLoad) {
                         loadEJS(request, url, respFuncs.errorFunc(err), respFuncs.errorFunc(err), response, cookie);

@@ -5,9 +5,6 @@ const files = require("./files.js")
 const fs = require("fs")
 const https = require("https");
 
-const secretKey = "6LcLE1kUAAAAAPoRl_vsA0abLIieJxQc1Rz-GkbQ"
-const captchaUrl = "https://www.google.com/recaptcha/api/siteverify"
-
 var nothingFunctionOut = function(request) {
     return new Promise(function(resolve, reject) {
         var data = {};
@@ -22,19 +19,34 @@ var nothingFunctionIn = function(request) {
     });
 };
 
+var newCaptcha = function(server, cookie) {
+    return new Promise(function(resolve, reject) {
+        var options = {
+            size: 8,
+            ignoreChars: '0o1i',
+            noise: 2,
+            color: true,
+            background:'#cc9966',
+        };
+
+        var captcha = server.offlineCaptcha.create(options);
+
+        if (server.UserSessions[cookie]) {
+            server.UserSessions[cookie].captcha = captcha.text;
+        } else {
+            server.UserSessions[cookie] = {captcha: captcha.text};
+        }
+
+        resolve(captcha.data);
+    });
+};
+
 var captcha = function(server, cookie) {
     return new Promise(function(resolve, reject) {
         if (server.UserSessions[cookie]) {
-            var options = {
-                size: 8,
-                ignoreChars: '0o1i',
-                noise: 2,
-                color: true,
-                background:'#cc9966',
-            };
-            var captcha = server.offlineCaptcha.create(options);
-            server.UserSessions[cookie].captcha = captcha.text;
-            resolve(captcha.data);
+            newCaptcha(server, cookie).then(function(captcha) {
+                resolve(captcha);
+            });
         } else {
             resolve();
         }
@@ -42,7 +54,7 @@ var captcha = function(server, cookie) {
     });
 };
 
-var newPostSubmission = function(request, userId, server) {
+var newPostSubmission = function(request, userId, server, cookie) {
     return new Promise(function(resolve, reject) {
         request.on('data', chunk => {
             var [subject, title, body, captcha] = chunk.toString().split('&');
@@ -125,7 +137,7 @@ var errorFunc = function(err) {
     });
 };
 
-var signUpPreFunc = function(request, server) {
+var signUpPreFunc = function(request, server, cookie) {
     return new Promise(function(resolve, reject) {
         request.on('data', chunk => {
             var [username, email, pass1, pass2, captcha] = chunk.toString().split('&');
@@ -135,36 +147,24 @@ var signUpPreFunc = function(request, server) {
             pass2 = pass2.split('=')[1];
             captcha = captcha.split('=')[1];
 
-            https.get(captchaUrl+"?secret="+secretKey+"&response="+captcha, (res) => {
-                res.on('data', (d) => {
-                    d = JSON.parse(d.toString());
-                    if (d.success) {
-                        server.userHandler.signUp(email, username, pass1, pass2).then(function(user) {
-                            var userCookie = request.headers["cookie"];
-                            if (userCookie.indexOf(';') > -1) {
-                                userCookie = userCookie.substr(0, userCookie.indexOf(';'));
-                            }
-                            user.cookie = userCookie;
-                            server.UserSessions[userCookie] = user;
-                            resolve(user);
-                            return;
+            if (captcha != server.UserSessions[cookie].captcha) {
+                reject({isErr: true, message:"Incorrect captcha.\n"});
+                return;
+            }
 
-                        }).catch((err) => {
-                            err.iserr = true;
-                            reject(err);
-                            return;
+            server.userHandler.signUp(email, username, pass1, pass2).then(function(user) {
+                user.cookie = cookie;
+                server.UserSessions[cookie] = user;
+                resolve(user);
+                return;
 
-                        });
-                    } else  {
-                        reject({message:"invalid captcha response from client", isErr:true});
-                        return;
-                    }
-                });
-
-            }).on('error', (err) => {
+            }).catch((err) => {
+                err.isErr = true;
                 reject(err);
                 return;
+
             });
+
         });
     });
 };
@@ -284,11 +284,12 @@ var replySubmission = function(request, userId, server, cookie) {
     return new Promise(function(resolve, reject) {
         request.on('data', data => {
             data = data.toString("utf-8");
-            var [reply, postId, captcha] = data.toString().split('&');
+            var [reply, postId, captcha, parent] = data.toString().split('&');
             // We need to format this reply with the special characters
             reply = reply.split('=')[1];
             postId = postId.split('=')[1];
             captcha = captcha.split('=')[1];
+            parent = parent.split('=')[1];
 
             var err = {isErr: false, message: ""};
             if (reply == "") {
@@ -306,7 +307,7 @@ var replySubmission = function(request, userId, server, cookie) {
                 return;
             }
 
-            server.forumHandler.newReply(postId, userId, reply).then(function(res) {
+            server.forumHandler.newReply(postId, userId, reply, parent).then(function(res) {
                 resolve(res);
             }, function(err) {
                 reject(err);
@@ -358,4 +359,5 @@ module.exports = {
     newPostSubmission: newPostSubmission,
     captcha: captcha,
     changeVote: changeVote,
+    newCaptcha: newCaptcha,
 }
