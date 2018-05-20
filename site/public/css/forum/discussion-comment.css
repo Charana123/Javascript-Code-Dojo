@@ -38,6 +38,7 @@
 
 .discussion-comment-header {
     height: 30px;
+    overflow: auto;
 }
 
 .discussion-comment-header > * {
@@ -66,7 +67,7 @@
 }
 
 .discussion-comment {
-    width: calc(430px - 10px);
+    width: calc(800px - 10px);
 
     /* Layout Styling */
     /* background-color: white; */
