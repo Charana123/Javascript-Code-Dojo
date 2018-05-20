@@ -1,0 +1,42 @@
+#reply-box-container {
+    margin-top: 10px;
+    overflow: auto;
+}
+
+#reply-box-container > textarea {
+    display: block;
+    width: calc(350px - 10px);
+    height: calc(150px - 10px);
+
+    /* Remove default css */
+    outline: none;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+
+    /* Styling */
+    font-size: 12px;
+    padding: 5px;
+    /* background-color: white; */
+}
+
+#post-reply, #cancel-reply {
+    width: 50px;
+    height: 20px;
+    margin-top: 7px;
+
+    /* Horizontal alignment */
+    float: left;
+
+    /* Styling */
+    border: 2px solid rgba(20, 20, 20, 0.6);
+    background: radial-gradient(closest-side, rgb(80, 195, 73), rgb(32, 100, 50));
+
+    /* Text Styling */
+    color: white;
+    line-height: 20px;
+    text-align: center; 
+}
+
+
+

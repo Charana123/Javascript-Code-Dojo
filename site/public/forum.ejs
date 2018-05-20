@@ -6,53 +6,49 @@
   <meta name="author" content="Joshua Van Leeuwen and Charana Nandasena" />
   <meta name="copyright" content="Copyright Goes Here" />
   <meta name="description" content="A website to learn JavaScript!" />
-  <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
-  <link rel="stylesheet" type="text/css" media="screen" href="css/forum.css" />
-  <script type="text/javascript" src="js/cookies.js" async="async"> </script>
-  <script type="text/javascript" src="js/forum_cookies.js" async="async"> </script>
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/home.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/forum.css" />
 </head>
 
 <body>
-
 <% include partials/header %>
-
 <div class="sidebar navigation">
   <ul>
     <li>
       <div id="select-container">
-        <select>
-          <option value="general" > General </option>
-          <option value="challenge1" > Challenge1 </option>
+        <select id="selectSubject" onchange="javascript:location.href = this.value;" >
+          <option id="all" value="/forum/all"> All </option>
+          <% data.subjects.forEach((s) => {  %>
+          <option id="<%= s %>" value="/forum/<%= s %>"> <%= s %> </option>
+          <% }) %>
         </select>
+        <script>
+          document.getElementById("<%= data.current %>").selected = true;
+          console.log("<%= data.current %>");
+        </script>
       </div>
     </li>
     <li><a href="new">New</a></li>
     <li><a href="top">Top</a></li>
-    <li><a href="hot">Hot</a></li>
-  </ul>
+    <% if (session_valid) { %>
+    <li><a href="new_post">[New Post]</a></li>
+    <% } %>
+</ul>
 </div>
 
-<div class="sidebar">
+<div class="topbar">
   <ul>
     <li id="question-title"> Title </li>
     <li id="question-category"> Category </li>
     <li id="question-comments"> Comments </li>
     <li id="question-views"> Views </li>
-    <li id="question-activity"> Activity </li>
+    <li id="question-activity"> Votes </li>
+    <li id="question-activity"> Date </li>
+    <li id="question-activity"> User </li>
   </ul>
 </div>
 
-<% forum_data.forEach(function(user){ %>
-  <div class="sidebar">
-    <ul>
-      <li id="question-title"> <%= user.title %> </li>
-      <li id="question-category"> <%= user.category %> </li>
-      <li id="question-comments"> <%= user.comments %> </li>
-      <li id="question-views"> <%= user.views %> </li>
-      <li id="question-activity"> <%= user.activity %> </li>
-    </ul>
-  </div>
-<% }) %>
+<% include partials/forum-list %>
 
 </body>
 </html>

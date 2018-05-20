@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="/css/profile.css" />
+<script type="text/javascript" src="/js/profile.js" async="async"></script>
+<script type="text/javascript" src="/js/http_requests.js" async="async"> </script>
+
+<div id="user-options-popup">
+    <% include transparent-black-background %>
+    <div id="user-options">
+        <a id="login-button">
+            <label for="fileUpload">Upload Profile Picture</label>
+            <input type='file' id="fileUpload" style="visibility:hidden">  </input>
+            <canvas id="canvas" width="512" height="512" style="visibility:hidden"></canvas>
+        </a>
+        <a id="login-button" href="logout"> Logout </a>
+    </div>
+</div>

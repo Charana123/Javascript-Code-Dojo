@@ -1,60 +1,44 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>Learn JavaScript!</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="author" content="Joshua Van Leeuwen and Charana Nandasena" />
+        <meta name="copyright" content="Copyright Goes Here" />
+        <meta name="description" content="A website to learn JavaScript!" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/login.css" />
+    </head>
+    <body>
+        <% include partials/header %>
+        <div id="wrapper">
+            <h4>Log In</h4>
 
-<head>
-    <title>Learn JavaScript!</title>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="author" content="Joshua Van Leeuwen and Charana Nandasena" />
-    <meta name="copyright" content="Copyright Goes Here" />
-    <meta name="description" content="A website to learn JavaScript!" />
-    <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="css/login.css" />
-    <script type="text/javascript" src="js/http_requests.js" async="async"> </script>
-    <script> 
-        var sendLoginForm = function(){
-            var email = document.getElementById("email").value;
-            var password = document.getElementById("password").value;
-            httpPostAsync("/login-user", `email=${email}&amp;password=${password}`)
-                .then(function(response){
-                    var responseJSON  = JSON.parse(response)
-                    //{ success: true/false, error: string }
-                    if(responseJSON.success) location.href = "/index"
-                    else {
-                        var errorDiv = document.getElementById("error-message")
-                        errorDiv.innerHTML = `${responseJSON.error}`
-                    }
-                    console.log(response)
-                })
-                .catch(function(err){
-                    console.log(err);
-                })
-        }
-    </script>    
-</head>
 
-<body>
-<% include partials/header %>
-<div id="wrapper">    
-    <div class="container">
-        <h4>Login In</h4> <br/>
-        <label for="email"><b>Email</b></label>
-        <input id="email" type="text" placeholder="Enter Email" name="email"></input>
+            <form id="signinForm" method="post" action="/sign-in_submission">
+                <div class="container">
 
-        <label for="password"><b>Password</b></label>
-        <input id="password" type="password" placeholder="Enter Password" name="password"></input>
+                    <label><b>Username</b></label>
+                    <input type="text" placeholder="Enter Username" name="uname"></input>
 
-        <button style="font-size: 24px" type="submit" onclick="sendLoginForm()"><b>Login</b></button>
-        <label>
-            <input style="float:left" type="checkbox" checked="checked" name="remember" />
-            <div style="margin-left: 20px; font-size: 15px; color: white;"> Remember me </div>
-        </label>
-        <div id="error-message"> </div>
-    </div>
-    <div class="container" style="background-color:#f1f1f1">
-        <button type="button" class="cancelbtn">Cancel</button>
-        <span class="psw"><a href="#">Forgot password?</a></span>
-    </div>
-</div>
-</body>
+                    <label><b>Password</b></label>
+                    <input type="password" placeholder="Enter Password" name="password"></input>
 
+                    <button type="submit" value="Submit">Log In</button>
+
+                    <div class="container">
+                        <% if (data.err) { %>
+                        <errorText> <%= data.err %> </errorText>
+                        <% } %>
+                    </div>
+
+                    <div class="container" style="background-color:#f1f1f1">
+                        <button type="button" class="cancelbtn">Cancel</button>
+                        <span class="psw"><a href="#">Forgot password?</a></span>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </body>
 </html>

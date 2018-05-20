@@ -1,12 +1,46 @@
-#header li {
-    margin-right: 20px;
+#header
+{
+    /* Layout style */
+    float: left;
+    width: 100%;
+    clear: both;
+
+    /* Padding and Margins */ 
+    margin: 0px;
+    padding: 0px;
+    padding-top: 10px;
+
+    /* Header style */
+    font-size: 20px;
+    background-color: #222222;
 }
 
-#header div {
+/* ==== LOGO of Navigation Bar =========================================================== */
+#header #header-logo {
     color: white;
     margin-right: 100px;
 }
 
+/* ==== Links of Navigation Bar =========================================================== */
+#header li {
+    /* border: 1px solid #222222; */
+}
+
+#header li:hover {
+    box-shadow: inset 0px 5px 5px #111111;
+}
+
+#header li > a {
+    color: #888888;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#header li:hover > a {
+    color: #FFFFFF;
+}
+
+/* === Header Icons ======================================================================= */
 #profile-image
 {
     border-radius: 50%;
@@ -14,14 +48,67 @@
     height: 30px;
 }
 
-#settings-image
-{
-    /* margin-left: 270px; */
-    border-radius: 00%;
+#header-site-logo-li {
+    padding-right: 0px;
+    margin-left: 0px;
+}
+
+#header-site-logo {
+    padding-right: 0px;
+    margin-right: 0px;
     width: 30px;
     height: 30px;
 }
 
-a:visited {
-    color: #888888;
+#settings-image
+{
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
 }
+
+/*==== DropDown =========================================================================== */
+.dropdown {
+    position: absolute;
+}
+
+/* Display dropdown content on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content {
+    /* Dropdown functionality */
+    display: none; /* Hides the dropdown content */
+    position: absolute; /* Overlays content (similar to z-index: 1) */
+    left: 0px;
+    top: 34px;
+
+    /* Dropdown style */
+    background-color: #222222;
+    min-width: 200px;
+    max-width: 200px;
+}
+
+.dropdown-content a {
+    /* Row-wise as opposed to inline */
+    display: block; /* display:block is required for width, height, padding and margin to work */
+
+    /* Dropdown element size */
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 50px;
+    max-height: 50px;
+    
+    /* Dropdown element style */
+    color: rgba(255, 255, 255, 0.8);
+    padding-left: 20px;
+    vertical-align: middle;
+    line-height: 50px;
+}
+
+.dropdown-content img {
+    max-width: 20px;
+    max-height: 20px;
+}
+

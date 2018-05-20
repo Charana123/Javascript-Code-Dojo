@@ -1,0 +1,31 @@
+.challenge-description-container p {
+    font-size: 15px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+}
+
+#challenge-title p{
+    /* margin: 5px; */
+    margin-top: 5px;
+    margin-bottom: 0px;
+    font-weight: normal;
+    font-size: 32px;
+
+    /* Linear gradient text color */
+    background: -webkit-linear-gradient(rgb(80, 195, 73), rgb(32, 100, 50));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#challenge-task p:first-child {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: normal;
+    font-size: 18px;
+
+    /* Linear gradient text color */
+    background: -webkit-linear-gradient(rgb(80, 195, 73), rgb(32, 100, 50));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* color: rgb(80, 195, 73); */
+}

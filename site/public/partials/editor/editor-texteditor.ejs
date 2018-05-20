@@ -1,0 +1,32 @@
+<link rel="stylesheet" type="text/css" media="screen" href="/css/editor/editor-texteditor.css" />
+<script type="text/javascript" src="/js/editor/ace.js" defer="defer" async="async"> </script>
+<script type="text/javascript" src="/js/editor.js" defer="defer" async="async"> </script>
+
+<div id="editor-page-container">
+    <div id="editor-texteditor-container">
+        <div id="editor-container">
+            <pre id="editor"> <%= data.start_code %> </pre>
+        </div>
+        <div id="output-container">
+            <pre id="output"></pre>
+            </div>
+    </div>
+
+    <div style="width: 1000px; height: 100px;">
+        <input id="upload-code" type="file" name="upload code" accept="text/javascript" onchange="uploadCode(this.files)" />
+        <div id="submit-button" class="button-load" onclick="submitCode(<%= data.id %>)">
+            Submit
+        </div>
+        <div id="loader" class="loader"></div>
+    </div>
+    <div id="answer-popup">
+        <% include ../transparent-black-background %>
+        <div id="answer-popup-container">
+            <div>
+                Your answer is ... 
+                <img id="cross-icon" src="/img/cross.svg"/>
+            </div>
+            <!-- <div id="answer"> Incorrect </div> -->
+        </div>
+    </div>
+</div>

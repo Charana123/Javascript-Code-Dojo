@@ -58,3 +58,19 @@ span.psw {
        width: 100%;
     }
 }
+
+#errorText {
+    /* Layout style */
+    float: left;
+    width: 100%;
+    clear: both;
+
+    /* Padding and Margins */
+    margin: 0px;
+    padding: 0px;
+    padding-top: 10px;
+
+    /* Header style */
+    font-size: 20px;
+    color: #FF8888;
+}

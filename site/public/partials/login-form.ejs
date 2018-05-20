@@ -1,0 +1,24 @@
+<link rel="stylesheet" href="/css/login-form.css" />
+<script type="text/javascript" src="/js/sign-in.js" async="async"> </script>
+<script type="text/javascript" src="/js/http_requests.js" async="async"> </script>
+
+<form onsubmit="return false;">
+<div id="login-form">
+    <div>
+    <div>
+        <img src="/img/username.svg"> </img>
+    </div>
+    <input type="text" id="unamelogin" placeholder="   username" name="unamelogin"></input>
+</div>
+<div>
+    <div>
+        <img src="/img/password.svg"> </img>
+    </div>
+    <input type="password" id="pass" placeholder="   password" name="password"></input>
+</div>
+<span id="login-form-error"> </span>
+<div>
+    <button type="submit" value="Submit" onclick="submitSignin()">Sign In</button>
+</div>
+</div>
+</form>

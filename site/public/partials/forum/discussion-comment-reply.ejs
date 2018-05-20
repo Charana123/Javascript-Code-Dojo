@@ -1,0 +1,63 @@
+<div class="reply-comment-container-wrapper">
+    <img id="discussion-comment-toggle" class="discussion-icon" src="/img/minus.svg" replyContainerID="child-container-<%= reply.id %>" onclick="toggleReplies(event, this)"> </img>
+    <% if(reply.userData.image) { %>
+        <img class="discussion-icon discussion-comment-user-icon" src="../<%= reply.userData.image %>"> </img>
+    <% } else { %>
+        <img class="discussion-icon discussion-comment-user-icon" src="/img/default-avatar.svg"> </img>
+    <% } %>
+    <div class="discussion-comment-container">
+        <div class="discussion-comment-header">
+            <div class="discussion-comment-user-name"> <%= reply.userData.username %> </div>
+            <img src="/img/clock.svg"> </img>
+            <div class="comment-timestamp"> <%= reply.time %> </div>
+        </div>
+        <div class="discussion-comment"> <%= reply.body %> </div>
+        <footer class="discussion-comment-footer">
+            <%= reply.votes %>
+            <% if (session_valid) { %>
+                <% if (reply.voted <= 0) { %>
+                    <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= reply.id %>, 'forum_reply')"> </img>
+                <% } %>
+                <% if (reply.voted >= 0) { %>
+                    <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= reply.id %>, 'forum_reply')"> </img>
+                <% } %>
+                <div class="add-reply-button" replyBoxID="reply-box-<%= reply.id %>" onclick="showReplyBox(event, this)"> reply </div>
+            <% } %>
+        </footer>
+        <div id="reply-box-<%= reply.id %>" class="reply-box-container-wrapper">
+            <% include reply-box.ejs %>
+        </div>
+
+        <div id="child-container-<%= reply.id %>">
+              <% reply.children.forEach(function(child){ %>
+                    <div class="reply-comment-container-wrapper">
+                        <% if(child.userData.image) { %>
+                            <img class="discussion-icon discussion-comment-user-icon" src="../<%= child.userData.image %>"> </img>
+                        <% } else { %>
+                            <img class="discussion-icon discussion-comment-user-icon" src="/img/default-avatar.svg"> </img>
+                        <% } %>
+                        <div class="discussion-comment-container">
+                            <div class="discussion-comment-header">
+                                <div class="discussion-comment-user-name"> <%= child.userData.username %> </div>
+                                <img src="/img/clock.svg"> </img>
+                                <div class="comment-timestamp"> <%= child.time %> </div>
+                            </div>
+                            <div class="discussion-comment"> <%= child.body %> </div>
+                            <footer class="discussion-comment-footer">
+                            <%= child.votes %>
+                            <% if (session_valid) { %>
+                            <% if (child.voted <= 0) { %>
+                                <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= child.id %>, 'forum_reply')"> </img>
+                            <% } %>
+                            <% if (child.voted >= 0) { %>
+                                <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= child.id %>, 'forum_reply')"> </img>
+                            <% } %>
+                            <div class="add-reply-button" replyBoxID="reply-box-<%= reply.id %>" onclick="showReplyBox(event, this)"> reply </div> 
+                            <% } %>
+                            </footer>
+                        </div>
+                    </div>
+              <% });  %>
+        </div>
+    </div>
+</div>

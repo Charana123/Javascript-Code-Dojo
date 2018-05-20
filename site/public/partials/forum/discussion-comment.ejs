@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="/css/forum/discussion-comment.css" />
+<script type="text/javascript" src="/js/forum/discussion-comment.js" async="async"> </script>
+
+<div class="discussion-comment-container-wrapper">
+    <% if(data.userData.image) { %>
+        <img class="discussion-icon discussion-comment-user-icon" src="../<%= data.userData.image %>"> </img>
+    <% } else { %>
+        <img class="discussion-icon discussion-comment-user-icon" src="/img/default-avatar.svg"> </img>
+
+    <% } %>
+    <div class="discussion-comment-container">
+
+        <div class="discussion-comment-header">
+            <div class="discussion-comment-user-name"> <%= data.userData.username %> </div>
+            <img src="/img/clock.svg"> </img>
+            <div class="comment-timestamp"> <%= data.time %> </div>
+            <div class="comment-timestamp"> <%= data.subject %> </div>
+            <div class="comment-timestamp"> <%= data.title %> </div>
+        </div>
+
+        <div class="discussion-comment">  <%= data.body %> </div>
+
+        <footer class="discussion-comment-footer">
+            <%= data.votes %>
+            <% if (session_valid) { %>
+                <% if (data.voted <= 0) { %>
+            <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= data.id %>, 'forum_post')"> </img>
+                <% } %>
+                <% if (data.voted >= 0) { %>
+            <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= data.id %>, 'forum_post')"> </img>
+                <% } %>
+            <% } %>
+        </footer>
+
+        <div id="reply-container-<%= data.id %>">
+            <% data.replys.forEach(function(reply){ %>
+            <% include discussion-comment-reply.ejs %>
+            <% });  %>
+        </div>
+
+    </div>
+</div>

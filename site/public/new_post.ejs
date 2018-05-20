@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>Learn JavaScript!</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="author" content="Joshua Van Leeuwen and Charana Nandasena" />
+        <meta name="copyright" content="Copyright Goes Here" />
+        <meta name="description" content="A website to learn JavaScript!" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="css/login.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/css/new-post-form.css" />
+        <script type="text/javascript" src="/js/new-post.js" defer="defer" async="async"> </script>
+        <script type="text/javascript" src="/js/http_requests.js" async="async"> </script>
+    </head>
+    <% include partials/header %>
+    <body>
+        <div id="wrapper">
+            <div id="content-wrapper">
+                <div id="content">
+
+                    <div id="new-post-form-wrapper">
+
+                            <form onsubmit="return false;">
+                            <div id="new-post-form-heading"> New Post! </div>
+                            <div class="column" id="label-column" >
+                                <div> Subject </div>
+                                <div> Title </div>
+                                <div> Body </div>
+                            </div>
+                            <div class="column" id="field-column">
+                                <input id="subject" class="short-field" type="text" placeholder="Subject" name="subject"></input> <br/>
+                                <input id="title" class="short-field" type="text" placeholder="Title" name="title"></input> <br/>
+                                <input id="body" class="long-field" type="text" placeholder="Body" name="body"></input> <br/>
+                                <input id="captcha" class="long-field" type="text" placeholder="Captcha" name="captcha"></input> <br/>
+
+
+                                <div id="captcha-error"></div>
+                                <div id="new-post-wrapper">
+                                    <%- data %>
+                                </div>
+                                    <button onclick="newCaptcha()"> New Captcha </button>
+                                    <button type="submit" value="submit" onclick="submitPost()"> Post </button>
+                            </div>
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </body>
+</html>

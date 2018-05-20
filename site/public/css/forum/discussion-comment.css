@@ -1,0 +1,101 @@
+.discussion-comment-container-wrapper, .reply-comment-container-wrapper {
+    margin-top: 10px;
+    overflow: auto;
+}
+
+.discussion-icon {
+    display: block;
+    
+    /* Remove default css */
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+
+    /* Placement */
+    float: left;
+}
+
+#discussion-comment-toggle {
+    width: 30px;
+    height: 30px;
+
+    margin-left: 5px;
+}   
+
+.discussion-comment-user-icon {
+    width: 30px;
+    height: 30px;
+
+    margin-right: 10px;
+    margin-left: 5px;
+}
+
+
+.discussion-comment-container {
+    /* Placement */
+    float: left;
+}
+
+.discussion-comment-header {
+    height: 30px;
+    overflow: auto;
+}
+
+.discussion-comment-header > * {
+    vertical-align: bottom;
+    margin: 0px;
+}
+
+.discussion-comment-header > img {
+    height: 15px;
+    width: 15px;
+    display: inline-block;
+    
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
+.discussion-comment-user-name, .comment-timestamp {
+    /* Align username text */
+    display: inline-block;
+    margin-left: 5px;
+
+    /* Text styling */
+    font-size: 12px;
+    text-decoration: underline;
+    text-align: left;
+}
+
+.discussion-comment {
+    width: calc(800px - 10px);
+
+    /* Layout Styling */
+    /* background-color: white; */
+    color: white;
+
+    /* Text Styling */
+    font-size: 14px;
+    padding: 5px;
+}
+
+.discussion-comment-footer {
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.discussion-comment-footer > img {
+    margin-left: 7px;
+    width: 12px;
+    height: 12px;
+}
+
+.add-reply-button {
+    display: inline;
+    margin-left: 5px;
+}
+
+.reply-box-container-wrapper {
+    display: none;
+}
+
+

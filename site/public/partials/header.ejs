@@ -1,21 +1,46 @@
-<link rel="stylesheet" href="../css/header.css" />
+<link rel="stylesheet" href="/css/header.css" />
 
+<% if(!session_valid) { %>
+<% include user-options.ejs %>
+<% } else { %>
+<% include profile.ejs %>
+<% } %>
 <div class="sidebar navigation" id="header" >
   <ul>
-    <li> <div> Learn Javascript </div> </li>
-    <li><a href="index">Home</a></li>
-    <li><a href="challenges">Challenges</a></li>
-    <li><a href="forum">Forum</a></li>
-    <li><a href="games">Games</a></li>
-    <li id="login" ></li>
+    <li id="header-site-logo-li"> <img id="header-site-logo" src="/img/emerald.svg"/> </li>
+    <li> <a id="header-logo" href="/index"> Scripter </a> </li>
+    <li> <a href="/index">Home</a></li>
+    <li> <a href="/challenges">Challenges</a></li>
+    <li> <a href="/forum">Forum</a></li>
 
+    <li class="dropdown">
+      <a href="#" > Games </a>
+      <div class="dropdown-content">
+        <a href="/snake">
+          <img src="/img/snake.png" />
+          Snake
+        </a>
+        <a href="/tetris">
+          <img src="/img/tetris.png" />
+          Tetris
+        </a>
+        <a href="/asteroids">
+          <img src="/img/asteroids.png" />
+          Asteroids
+        </a>
+      </div>
+    </li>
+
+    <li id="login" ></li>
     <% if(!session_valid) { %>
-    <li style="float: right"> <a href="sign-up">Sign Up</a> </li>
-      <li style="float: right"> <a href="login">Log In</a> </li>
-    <% } %>
-    <% if(session_valid) { %>
-      <li style="float: right"> <img  id="profile-image" src="img/death.jpg" /> </li>
-      <li style="float: right"  > <img id="settings-image" src="img/settings-cog.svg" /> </li>
+      <li style="float: right"> <img  id="profile-image" src="/img/default-avatar.svg" /> </li>
+    <% } else { %>
+        <% if(user.image) { %>
+            <li style="float: right"> <img  id="profile-image" src="/<%= user.image %>"/> </li>
+        <% } else { %>
+            <li style="float: right"> <img  id="profile-image" src="/img/default-avatar.svg" /> </li>
+        <% } %>
+        <li style="float: right"  > <img id="settings-image" src="/img/settings-cog.svg" /> </li>
     <% } %>
   </ul>
 

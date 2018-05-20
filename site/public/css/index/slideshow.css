@@ -1,0 +1,77 @@
+.slideshow {
+    margin-top: 0px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+.slide {
+    width: 100%;
+    height: 500px;
+}
+
+.gradient-div {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right top, rgb(65, 115, 142), rgb(255, 255, 255));
+}
+
+.welcome-slide-content {
+    margin-top: 7%;
+    margin-left: 8%;
+
+    float: left;
+    height: 80%;
+    width: 45%;
+    max-height: 80%;
+    max-width: 45%;
+
+    color: #222;
+    opacity: 0.8;
+}
+
+.welcome-slide-heading {
+    font-size: 15px;
+    border-width: 0px 0px 1px 0px;
+    border-style: solid;
+    border-color: grey;
+}
+
+.welcome-slide-paragraph {
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.welcome-slide-button {
+    width: 250px;
+    height: 50px;
+
+    border-width: 10px 10px;
+    border-radius: 10px;
+
+    line-height: 50px;
+    text-align: center;
+
+    font-size: 15px;
+
+    background-color: rgb(65, 115, 142)
+}
+
+.code-editor-image {
+    margin-top: 3%;
+    margin-right: 8%;
+
+    float: left;
+    height: 80%;
+    width: 35%;
+    max-height: 80%;
+    max-width: 35%;
+
+    border-radius: 20px;
+    border: 2px solid grey;
+}
+
+.collaborate-slide-content {
+    width: 100%;
+    height: 100%;
+    background-image: url("/img/team-work-image.jpg");
+    background-repeat: no-repeat;
+}

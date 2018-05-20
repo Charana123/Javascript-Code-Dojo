@@ -1,5 +1,4 @@
 var bluebird = require("bluebird")
-// var fs = bluebird.promisifyAll(require("fs"))
 var fs = require("fs")
 var ejs = require("ejs")
 
@@ -8,16 +7,9 @@ var files = function(){
 }
 
 files.writeFile = function(filename, data){
-    // fs.writeFileAsync(filename, data)
-    //     .then(value => {
-            
-    //     })
-    //     .catch(err => {
-    //         console.log(err.message)
-    //     })
     fs.writeFile(filename, data, function(err){
         if(err){
-            console.log(err.message)
+            console.log(err)
         }
     })
 }
@@ -31,21 +23,41 @@ files.readFile = function(file){
     })
 }
 
-files.readEJSFile = function(uri, getDataFunction, response){
+files.readEJSFile = function(uri, getDataFunction, response, user){
     var EJSfile = "./public" + uri + ".ejs";
-    return function(user_id){
-        console.log("user_id: " + user_id)
-        //use user_id to query from database
-        var renderEJS = function(data){
-            return new Promise(function(resolve, reject){
-                ejs.renderFile(EJSfile, data, function(err, contentHTML){
-                    if(!err) resolve(contentHTML)
-                    else reject(err)
-                })
-            })
-        }
-        return getDataFunction().then(renderEJS)
-    }
+    return new Promise(function(resolve, reject) {
+
+        getDataFunction.then(function(data) {
+            var clientData = {};
+            clientData.data = data;
+            if (user) {
+                clientData.session_valid = true;
+                clientData.user = {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    image: user.image
+                };
+            } else {
+            clientData.session_valid = false;
+                clientData.user = {};
+            }
+
+
+            console.log("clientData: " + JSON.stringify(clientData));
+            ejs.renderFile(EJSfile, clientData, function(err, contentHTML){
+                if(!err) {
+                    resolve(contentHTML);
+                    return;
+                }
+
+                reject(err);
+            });
+
+        }, function(err) {
+            reject(err);
+        });
+    });
 }
 
 files.readHTMLFile = function(uri){

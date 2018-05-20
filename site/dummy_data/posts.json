@@ -1,0 +1,32 @@
+[ {
+    "id": 1,
+    "user": 1,
+    "title": "A title 1",
+    "body": "This is some text for the body",
+    "subject": "Subject 1",
+    "views": 132
+},
+{
+    "id": 2,
+    "user": 1,
+    "title": "A title 2",
+    "body": "This is some text for the body",
+    "subject": "Subject 1",
+    "views": 60
+},
+{
+    "id": 3,
+    "user": 2,
+    "title": "A title 3",
+    "body": "This is some text for the body",
+    "subject": "Subject 2",
+    "views": 14
+},
+{
+    "id": 4,
+    "user": 2,
+    "title": "A title 4",
+    "body": "This is some text for the body",
+    "subject": "Subject 2",
+    "views": 85
+} ]

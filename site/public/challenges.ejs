@@ -7,64 +7,21 @@
 <meta name="copyright" content="Copyright Goes Here" />
 <meta name="description" content="A website to learn JavaScript!" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/home.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/challenges.css" />
 <script type="text/javascript" src="js/http_requests.js" async="async"> </script>
 <script type="text/javascript" src="js/challenges.js" async="async"> </script>
-<script>
-  window.document.onload = function(){
-    var user_script_container = document.getElementById("user-script-container")
-    user_script_container.selectionIndex = 0
-  }
-
-  var submitCode = function(){
-    document.getElementById("submitButton").style.visibility = "hidden";
-    document.getElementById("loader").style.visibility = "visible";
-    var user_script_container = ace.edit("editor");
-    httpPostAsync("/challenge_request", user_script_container.getValue())
-      .then(json_response => {
-        console.log("response!" + json_response);
-        document.getElementById("loader").style.visibility = "hidden";
-        document.getElementById("submitButton").style.visibility = "visible";
-        document.getElementById("response").innerHTML = "This answer is: " + json_response;
-      })
-  }
-
-  function onkd(e) {
-    var tab_keycode = 9
-    if (e.keyCode == tab_keycode){
-        e.preventDefault();
-        e.stopPropagation();
-    }
-  }
-</script>
 </head>
 <body>
 <% include partials/header %>
-Challenge 3 - Fibonacci
-<p> Calculate the first 100 Fibonacci numbers, print them out to console, each
-number on a new line.
-</p>
 <div id="wrapper">
   <div id="content-wrapper">
     <div id="content">
-        <pre id="editor">var a = "Hello";
-var b = "World!";
-console.log(a + " " + b);</pre>
-
-        <script src="js/editor/ace.js" type="text/javascript" charset="utf-8"></script>
-        <script>
-            var editor = ace.edit("editor");
-            editor.setTheme("ace/theme/gruvbox");
-            editor.session.setMode("ace/mode/javascript");
-            editor.renderer.setCursorStyle("smooth");
-            editor.session.setUseWrapMode(true);
-            editor.session.setWrapLimitRange(80, 80);
-        </script>
-
-        <button id="submitButton" class="buttonload" onclick="submitCode()">
-            --Submit--
-        </button>
-        <div id="loader" class="loader"></div>
-        <div id="response"> </div>
+      <div id="challenges-left-col" class="column">
+          <% include partials/challenges/tree-view %>
+      </div>
+      <div id="challenges-right-col" class="column">
+          <% include partials/challenges/challenge-element %>
+      </div>
     </div>
   </div>
 </div>

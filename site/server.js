@@ -1,18 +1,72 @@
 "use strict"
 
-var port = 8080;
-var verbose = true;
+const https = require("https");
+const fs = require("fs")
+const files = require("./js/files.js")
+const cookies = require("./js/cookies.js").Cookies();
+const respFuncs = require("./js/response.js");
+const dbName = "./secrets/db.sqlite3";
+const db = require("./database/database_api.js").newDatabase(dbName);
 
-var http = require("http");
-var fs = require("fs")
-var forum = require("./database/forum.js")
-var files = require("./js/files.js")
-var cookies = require("./js/cookies.js")
-var dock= require("./docker/check_answer.js")
-var OK = 200, NotFound = 404, BadType = 415, Error = 500;
+const port = 8080;
+const verbose = true;
+const OK = 200, NotFound = 404, BadType = 415, Error = 500;
+const options = {
+    key: fs.readFileSync("./secrets/server.key"),
+    cert: fs.readFileSync("./secrets/server.crt"),
+};
+
 var types, banned;
+var server = {UserSessions: {}};
 
-var docker = dock.newDockerChecker();
+function sleep (time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+db.ensureTables().then((value) => {
+    sleep(500).then(() => {
+        db.ensureQuestions().then((value) => {
+            db.dummyForum().then((value) => {
+                server.userHandler = require("./database/user.js").UserHandler(db);
+                server.challengeHandler = require("./database/challenges.js").ChallengesHandler(db);
+                server.forumHandler = require("./database/forum.js").ForumHandler(db);
+                server.questionsHandler = require("./database/questions.js").QuestionsHandler(db);
+                server.docker = require("./docker/docker.js").newDockerChecker();
+                server.offlineCaptcha = require('svg-captcha');
+
+                console.log("Database ensured");
+                console.log("Building docker image");
+                server.docker.build("docker/.").then(function(res) {
+                    console.log("Docker image built successfully");
+                }, function(err) {
+                    err = "Error building docker image: "+err
+                          + "\x1b[41m\x1b[36m\n>> --------------- Ian Please Read. --------------- <<"
+                          + "\n>> Docker will not be used to evalutate challenges. <<"
+                          + "\n>> Challenges will be checked in LOCAL FILE         <<"
+                          + "\n>> userspace. Node will not be isolated and is NOT  <<"
+                          + "\n>> recomended but we have included this option if   <<"
+                          + "\n>> you do not have docker installed.                <<\x1b[0m"
+                    console.error("\x1b[31m", err);
+                    server.docker = require("./docker/file.js").newFileChecker();
+                });
+
+                var dir = './public/profile_pics';
+
+                if (!fs.existsSync(dir)){
+                    fs.mkdirSync(dir);
+                }
+
+            }).catch((err) => {
+                console.dir("error: "+err);
+            });
+
+        }).catch((err) => {
+            console.dir("error: "+ err);
+        });
+    });
+}).catch((err) => {
+    console.dir("error: "+ err);
+});
 
 start();
 
@@ -22,10 +76,10 @@ function start() {
     types = defineTypes();
     banned = [];
     banUpperCase("./public/", "");
-    var service = http.createServer(handle);
+    var service = https.createServer(options, handle);
     service.listen(port, "localhost");
-    var address = "http://localhost";
-    if (port != 80) address = address + ":" + port;
+    var address = "https://localhost";
+    if (port != 8080) address = address + ":" + port;
     console.log("Server running at", address);
 }
 
@@ -37,134 +91,275 @@ function checkSite() {
 }
 
 
-// var loadEJSelseHTML = function(request, uri, EJSData, response){
-//     cookies.getCookie(request, "session")
-//         .then(files.readEJSFile(uri, EJSData, response))
-//         .catch(files.readHTMLFile(uri))
-//         .then(function(contentHTML){
-//             var type = types["html"]
-//             deliver(response, type, contentHTML)
-//         })
-//         .catch(function(err){
-//             fail(response, NotFound, err.message)
-//         })
-// }
+function loadEJS(request, uri, loginFunction, defaultFunction, response, cookie) {
+    uri = "/" + uri;
+    var readEJSFile = function(uri, dataFunction, response, userObject){
+        files.readEJSFile(uri, dataFunction, response, userObject)
+            .then(function(contentHTML) {
+                var type = types["html"]
+                cookies.setCookie(response, cookie).then(function(response) {
+                    deliver(response, type, contentHTML)
+                });
+            })
+            .catch(function(err) {
+                console.log("failed to read ejs file: "+err);
+            });
+    };
 
-var loadEJS = function(request, uri, EJSDataFunction, defaultDefaultFunction, response){
-    cookies.getCookie(request, "x")
-        .then(files.readEJSFile(uri, EJSDataFunction, response))
-        .catch(files.readEJSFile(uri, defaultDefaultFunction, response))
-        .then(function(contentHTML){
-            var type = types["html"]
-            deliver(response, type, contentHTML)
-        })
-        .catch(function(err){
-            console.log("error failure")
-            fail(response, NotFound, err.message)
-        })
+
+    if (cookie.indexOf(';') > -1) {
+        cookie = cookie.substr(0, cookie.indexOf(';'));
+    }
+
+
+    if (server.UserSessions[cookie]) {
+        console.dir(JSON.stringify(server.UserSessions));
+        readEJSFile(uri, loginFunction, response, server.UserSessions[cookie]);
+        return;
+    } else {
+        readEJSFile(uri, defaultFunction, response);
+        return;
+    }
 }
+
+function resolveUrl(url, request, userId, response, server, cookie) {
+    return new Promise(function(resolve) {
+        var loginFunc = respFuncs.nothingFunctionIn(request);
+        var defaultFunc = respFuncs.nothingFunctionOut(request);
+        var preFunc = false;
+        var errorUrl = "";
+        var doLoad = true;
+        var errLoad = true;
+
+        if (url[0] == '/') {
+            url=url.substring(1);
+        }
+
+        var rest;
+        [url, rest] = url.split("/");
+
+        switch (url) {
+            case "index":
+                break;
+
+            case "sign-up":
+                defaultFunc = respFuncs.newCaptcha(server, cookie);
+                loginFunc = respFuncs.newCaptcha(server, cookie);
+                break;
+
+            case "challenges":
+                loginFunc = respFuncs.questionsAndUserProgress(userId, server);
+                defaultFunc = server.questionsHandler.getAllQuestions();
+                break;
+
+            case "snake":
+                break;
+
+            case "tetris":
+                break;
+
+            case "asteroids":
+                break;
+
+
+            case "login":
+                url = "index";
+                break;
+
+            case "forum":
+                if (rest && !(rest == "all")) {
+                    if (server.UserSessions[cookie]) {
+                        loginFunc = server.forumHandler.getForumsBySubject(rest, userId);
+                    } else {
+                        defaultFunc = server.forumHandler.getForumsBySubject(rest, null);
+                    }
+                } else {
+                    if (server.UserSessions[cookie]) {
+                        loginFunc = server.forumHandler.getAllPosts(null, userId);
+                    } else {
+                        defaultFunc = server.forumHandler.getAllPosts(null, null);
+                    }
+                }
+                url = "forum";
+                errorUrl = "forum";
+                break;
+
+            case "new":
+                url = "forum";
+                loginFunc = server.forumHandler.getAllPosts("time", userId);
+                defaultFunc = server.forumHandler.getAllPosts("time", null);
+                break;
+
+            case "top":
+                url = "forum";
+                loginFunc = server.forumHandler.getAllPosts("views", userId);
+                defaultFunc = server.forumHandler.getAllPosts("views", null);
+                break;
+
+            case "editor":
+                loginFunc = server.questionsHandler.getQuestion(rest);
+                defaultFunc = server.questionsHandler.getQuestion(rest);
+                url="editor";
+                break;
+
+            case "sign-up_submission":
+                preFunc = respFuncs.signUpPreFunc(request, server, cookie);
+                url = "index";
+                errorUrl = "sign-up";
+                errLoad = false;
+                break;
+
+            case "sign-in_submission":
+                preFunc = respFuncs.signInPreFunc(request, server);
+                url = "index";
+                errorUrl = "index";
+                errLoad = false;
+                doLoad = true;
+                break;
+
+            case "challenge_request":
+                preFunc = respFuncs.challengeRequest(server, userId, rest, request, response);
+                doLoad = false;
+                break;
+
+            case "image_submission":
+                preFunc = respFuncs.uploadUserImage(userId, request, server);
+                url = "index";
+                errorUrl = "index";
+                break;
+
+            case "forum_post":
+                loginFunc = respFuncs.postRequest(rest, server, cookie, userId);
+                defaultFunc = respFuncs.postRequest(rest, server, cookie);
+                url = "forum_post";
+                break;
+
+            case "reply_submission":
+                preFunc = respFuncs.replySubmission(request, userId, server, cookie);
+                loginFunc = respFuncs.postRequest(rest, server, cookie, userId);
+                url = "forum_post";
+                errorUrl = "forum_post";
+                errLoad = false;
+                break;
+
+            case "new_post":
+                loginFunc = respFuncs.captcha(server, cookie);
+                break;
+
+            case "new_captcha":
+                preFunc = respFuncs.captcha(server, cookie);
+                errLoad = false;
+                doLoad = false;
+                break;
+
+            case "logout":
+                delete server.UserSessions[cookie];
+                url = "index";
+                break;
+
+            case "new_post_submission":
+                preFunc = respFuncs.newPostSubmission(request, userId, server, cookie);
+                url = "forum";
+                errorUrl = "forum";
+                errLoad = false;
+                loginFunc = server.forumHandler.getAllPosts(null, userId);
+                defaultFunc = server.forumHandler.getAllPosts(null, null);
+                break;
+
+            case "decrease_vote":
+                preFunc  = respFuncs.changeVote(request, server, userId, "decrease");
+                errLoad = false;
+                doLoad = false;
+                break;
+
+            case "increase_vote":
+                preFunc = respFuncs.changeVote(request, server, userId, "increase");
+                errLoad = false;
+                doLoad = false;
+                break;
+
+            default:
+                url = "index";
+        }
+
+        resolve([url, loginFunc, defaultFunc, preFunc, errorUrl, doLoad, errLoad]);
+    });
+};
+
 
 // Serve a request by delivering a file.
 function handle(request, response) {
-    var url = request.url.toLowerCase();
+
+    var url = decodeURIComponent(request.url.toString('utf-8'));
+
     if (url.endsWith("/") || url == "localhost:8080" || url == "127.0.0.1:8080") {
         url = "/index";
-        loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        return;
     }
 
     //Handles file that are EJS or HTML
-    if(url.lastIndexOf(".") == -1){
-        //Forum URIs
-        if(url == "/forum") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/top") loadEJS(request, "/forum", forum.getTopPostsData, forum.getDefault, response)
-        if(url === "/new") loadEJS(request, "/forum", forum.getNewPostsData, forum.getDefault, response)
-        if(url === "/hot") loadEJS(request, "/forum", forum.getHotPostsData, forum.getDefault, response)
+    if(url.lastIndexOf(".") != -1){
+        //Handling files that are NOT EJS or HTML (.js, .svg etc.)
+        if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
+        var type = findType(url);
+        if (type == null) return fail(response, BadType, "File type unsupported");
+        var file = "./public" + url;
 
-        if(url === "/general") loadEJS(request, "/forum", forum.getAllPostsData, forum.getDefault, response)
-        if(url === "/challenge1") loadEJS(request, "/forum", forum.getAllPostsData, forum.getDefault, response)
+        files.readFile(file)
+            .then(function(content){
+                deliver(response, type, content);
+            })
+            .catch(function(err){
+                if (err) return fail(response, NotFound, "File not found");
+            })
 
-        //Page URIs
-        if(url === "/login") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/index") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/sign-up") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/challenges") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/games") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/snake") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/tetris") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
-        if(url === "/asteroids") loadEJS(request, url, forum.getAllPostsData, forum.getDefault, response);
+        return;
+    }
 
-        //Login & Signup POST Requests
-        if(url === "/login-user" && request.method === "POST"){
-            request.on("data", (data) => {
-
-                //decode buffer into URI, decode URI into String
-                // data = decodeURIComponent(data.toString('utf-8'))
-                data = data.toString('utf-8')
-                console.log("DATA: " + data.toString())
-
-                var keyValuePairs = data.split("&");
-                var dictionary = {};
-                for(var keyValuePair of keyValuePairs){
-                    var key = keyValuePair.split("=")[0];
-                    var value = keyValuePair.split("=")[1];
-                    dictionary[key] = value;
-                }
-
-                //Get Email and Password fields
-                var email = dictionary["email"];
-                var password = dictionary["password"];
-
-                //Check again DB and successful login sets session cookie
-                forum.login(email, password)
-                    .then((value) => {
-                        cookies.setCookie(response, "x", "YES", 1);
-                        var content = { success: true }
-                        var contentJSON = JSON.stringify(content);
-                        deliver(response, types["json"], contentJSON)
-                    })
-                    .catch((err) => {
-                        var content = { success: false, error: err.message }
-                        var contentJSON = JSON.stringify(content);
-                        deliver(response, types["json"], contentJSON)
-                    })
-            });
+    cookies.getCookie(request).then(function(cookie) {
+        var userId = 0;
+        if (cookie.indexOf(';') > -1) {
+            cookie = cookie.substr(0, cookie.indexOf(';'));
+        }
+        if (server.UserSessions[cookie]) {
+            userId = server.UserSessions[cookie].id;
         }
 
-        if(url === "/challenge_request" && request.method === "POST"){
-            request.on("data", (data) => {
-                data = data.toString("utf-8");
-                files.writeFile("docker/task.js", data);
-                docker.tryAnswer("docker/.", "docker/task.js", "docker/output", "docker/answers/fib100").then(function(ans) {
-                    console.log("server got: " + ans);
-                    if (ans == true) {
-                        ans = "correct!";
+        resolveUrl(url, request, userId, response, server, cookie).then(function(res) {
+            var [url, loginFunc, defaultFunc, preFunc, errorUrl, doLoad, errLoad] = res;
+
+            if (preFunc) {
+                preFunc.then(function(res) {
+                    if (doLoad) {
+                        loadEJS(request, url, loginFunc, defaultFunc, response, cookie);
                     } else {
-                        ans = "incorrect!";
+                        var type = types["json"]
+                        deliver(response, type, JSON.stringify(res));
                     }
-                    deliver(response, types["json"], ans);
+                    return;
+
                 }, function(err) {
-                    deliver(response, types["json"], ("error from docker: " + err));
-                })
-            });
-        }
-        return
-}
+                    console.log(err, {depth: null});
+                    url = errorUrl;
+                    if (errLoad) {
+                        loadEJS(request, url, respFuncs.errorFunc(err), respFuncs.errorFunc(err), response, cookie);
+                    } else {
+                        var type = types["json"]
+                        deliver(response, type, JSON.stringify(err));
+                    }
+                    return;
+                });
 
-//Handling files that are NOT EJS or HTML (.js, .svg etc.)
-if (isBanned(url)) return fail(response, NotFound, "URL has been banned");
-var type = findType(url);
-if (type == null) return fail(response, BadType, "File type unsupported");
-var file = "./public" + url;
+            } else {
+                loadEJS(request, url, loginFunc, defaultFunc, response, cookie);
+                return;
+            }
+        }, function(err) {
+            console.log("failed to load EJS: " + err);
+            return;
+        });
+    });
 
-files.readFile(file)
-    .then(function(content){
-        deliver(response, type, content);
-    })
-    .catch(function(err){
-        console.log(file)
-        if (err) return fail(response, NotFound, "File not found");
-    })
+    return
 }
 
 // Forbid any resources which shouldn't be delivered to the browser.
@@ -190,7 +385,6 @@ function deliver(response, type, content) {
     response.write(content);
     response.end();
 }
-
 
 // Give a minimal failure response to the browser
 function fail(response, code, text) {
@@ -244,8 +438,4 @@ function defineTypes() {
         docx : undefined,      // non-standard, platform dependent, use .pdf
     }
     return types;
-}
-
-function hello() {
-    console.log("Hello");
 }

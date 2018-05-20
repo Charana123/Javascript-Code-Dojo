@@ -1,0 +1,12 @@
+1: Output "Hello World!"
+
+2: Output array of [1, 2, 3]
+
+3: Count from 0 -> 99 and output each number on a new line
+
+4: Find area of triangle with side 5, 6, 7
+
+5: Output the years the 1st January is a Sunday between 2000 to 2050 each on a
+new line
+
+6: Fibonacci sequence for 100 lines

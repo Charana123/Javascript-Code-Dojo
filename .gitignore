@@ -8,3 +8,5 @@ report-prelim*
 !report-prelim.tex
 !report-prelim.pdf
 site.zip
+node_modules
+site/secrets/db.sqlite3

@@ -1,0 +1,65 @@
+<link rel="stylesheet" type="text/css" media="screen" href="/css/signup-form.css" />
+<script type="text/javascript" src="/js/sign-up.js" defer="defer" async="async"> </script>
+<script type="text/javascript" src="/js/http_requests.js" async="async"> </script>
+
+<div id="signup-wrapper-wrapper" style="background-color: white;" >
+    <div id="signup-wrapper" >
+    <div id="signup-container">
+        <div id="signup-reasons" >
+            <div id="signup-header">
+                why <b> Scripter? </b>
+            </div>
+            <ul id="signup-list">
+                <li>
+                    <span class="span2">
+                        <img src="/img/node-logo.png"> </img>
+                    </span>
+                    <span> Node.JS </span> <br/>
+                    Learn node.js in a week!
+                 </li>
+                <li>
+                    <span class="span2">
+                        <img src="/img/collaborate.svg"> </img>
+                    </span>
+                    <span> Collaborate </span> <br/>
+                    Collaborate with users to find better solutions!
+                </li>
+                <li>
+                    <span class="span2">
+                        <img src="/img/score.svg"> </img>
+                    </span>
+                    <span> Points </span> <br/>
+                    Score points and win achievements!
+                </li>
+            </ul>
+        </div>
+
+        <div id="signup-form-wrapper">
+    <form onsubmit="return false;">
+                <div id="signup-form-heading"> Join for free! </div>
+                <div class="column" id="label-column" >
+                    <div> Username </div>
+                    <div> Email </div>
+                    <div> Password </div>
+                    <div> Reenter Password </div>
+                </div>
+                <div class="column" id="field-column">
+                    <input class="short-field" type="text" id="uname" placeholder="   Enter Username" name="uname"></input> <br/>
+                    <input class="long-field" type="text" id="email" placeholder="   Enter Email" name="email"></input> <br/>
+                    <input class="long-field" type="password" id="pass1" placeholder="   Enter Password" name="psw1"></input> <br/>
+                    <input class="long-field" type="password" id="pass2" placeholder="   Reenter Password" name="psw2"></input> <br/>
+                    <input class="long-field" type="text" id="captcha" placeholder="Captcha" name="captcha"></input> <br/>
+
+                    <div id="signup-error"></div>
+                    <div>
+                    <%- data %>
+                    </div>
+
+                    <button type="submit" value="submit" onclick="submitSignup()"> Sign Up </button>
+                    <button onclick="newCaptcha()"> New Captcha </button>
+                </div>
+        </form>
+        </div>
+    </div>
+    </div>
+</div>
