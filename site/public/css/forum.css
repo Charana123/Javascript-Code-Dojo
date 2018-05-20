@@ -1,51 +1,113 @@
-#question-title {
-    font-weight: bold;
-    width: 400px;
-}
-
-#question-category {
-    width: 200px
-}
-
-#question-comments {
-    width: 150px
-}
-
-#question-views {
-    width: 150px
-}
-
-#question-activity {
-    width: 200px
-}
-
 .forum-container {
     padding: 5px;
     border-style: solid;
     border-width: 1px;
     border-bottom:1px solid #444444;
-    border:2px solid #444444;
+    /* border: 2px solid #444444; */
     margin-bottom: 5px;
 }
 
 .topbar {
     width: 100%;
     color: black;
-    background-color: grey;
-    margin-bottom: 7px;
+    /* background-color: rgba(128, 128, 128, 0.8); */
+
+    /* background-color: rgba(255, 255, 255, 0.1); */
+    background: linear-gradient(to left, rgb(80, 195, 73), rgb(32, 100, 50));
+
+    margin-bottom: 10px;
 }
 
 .topbar ul {
+    /* Remove default CSS */
     list-style-type: none;
-    margin: 0;
-    padding: 0;
-    background: none;
-    border-width: 0;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
 }
 
-.topbar li {
+.topbar ul > li {
     display: inline-block;
-    vertical-align: middle;
-
+    width: 150px;
     padding: 5px 20px 5px 10px;
+}
+
+.forum-container {
+    background: radial-gradient(ellipse, rgb(80, 195, 73), rgb(32, 100, 50));;
+}
+
+.forum-container > a > ul > li {
+    display: inline-block;
+    width: 150px;
+    padding: 5px 20px 5px 10px;
+
+    vertical-align: middle;
+}
+
+.forum-container > a {
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+}
+
+.forum-container > a > ul {
+    /* Remove default CSS */
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+
+    color: black;
+}
+
+#forum-navigation {
+    background: linear-gradient(to left, rgb(80, 195, 73), rgb(32, 100, 50));
+}
+
+#forum-navigation a {
+    color: black;
+}
+
+
+/* ==== SELECT ==================================================== */
+#select-container {
+    /* Offset in sidebar */
+    margin: 4px;
+
+    /* Float to top left */
+    float: left;
+    /* background: radial-gradient(closest-side, rgb(80, 195, 73), rgb(32, 100, 50)); */
+    background: rgba(0, 0, 0, 0.3);
+
+    width: 120px;
+}
+
+
+#select-container > select {
+    /* Remove select border */
+    border: none;
+    outline: 0px;
+
+    /* Remove default CSS */
+    -webkit-appearance: none;
+    padding: 3px 20px;
+
+    /* Make underling div element color noticable */
+    background: transparent;
+
+    font-size: 15px;
+}
+
+#select-container > select > option {
+    /* Remove select border */
+    border: none;
+    outline: 0px;
+
+    /* Remove default CSS */
+    -webkit-appearance: none;
+
+    /* Make underling div element color noticable */
+    background: transparent;
+
+    font-size: 15px;
 }

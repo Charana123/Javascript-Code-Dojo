@@ -26,7 +26,7 @@
     /* border: 1px solid #222222; */
 }
 
-#header li:hover {
+.hoverable:hover {
     box-shadow: inset 0px 5px 5px #111111;
 }
 
@@ -43,6 +43,7 @@
 /* === Header Icons ======================================================================= */
 #profile-image
 {
+    cursor: pointer;
     border-radius: 50%;
     width: 30px;
     height: 30px;
@@ -69,7 +70,7 @@
 
 /*==== DropDown =========================================================================== */
 .dropdown {
-    position: absolute;
+    position: relative;
 }
 
 /* Display dropdown content on hover */
@@ -81,6 +82,7 @@
     /* Dropdown functionality */
     display: none; /* Hides the dropdown content */
     position: absolute; /* Overlays content (similar to z-index: 1) */
+    z-index: 1;
     left: 0px;
     top: 34px;
 

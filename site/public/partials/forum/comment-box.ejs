@@ -8,13 +8,13 @@
     <% } %>
 
     <div id="postId" name="postId" type="hidden" value="<%= data.id %>"> </div>
-    <textarea id="reply" ></textarea>
-    <input style="margin-left:60px;" id="captcha" class="long-field" type="text" placeholder="Captcha" name="captcha"></input> <br/>
+    <textarea id="comment-reply" ></textarea>
+    <input style="margin-left:60px;" id="comment-captcha" class="long-field" type="text" placeholder="Captcha" name="captcha"></input> <br/>
     <div style="width:600px;">
-    <div style="margin-left:270px;"  id="captcha-error"></div>
+    <div style="margin-left:270px;"  id="comment-captcha-error"></div>
     <div style="margin-left:60px;margin-right:30px" id="new-post-wrapper">
         <%- data.captcha %>
-        <div style="width:100px;" id="post-comment" onclick="submitReply('<%= data.id %>', 0)" name="Post Comment"> Post Comment </div>
+        <div style="width:100px;" id="post-comment" onclick="submitReplyComment('<%= data.id %>', 0)" name="Post Comment"> Post Comment </div>
         <div style="width:100px;" id="post-comment" onclick="newCaptcha()"> New Captcha </div>
     </div>
     </div>

@@ -7,29 +7,26 @@
         <meta name="copyright" content="Copyright Goes Here" />
         <meta name="description" content="A website to learn JavaScript!" />
         <link rel="stylesheet" type="text/css" media="screen" href="/css/home.css" />
-        <link rel="stylesheet" type="text/css" media="screen" href="/css/asteroids.css" />
-        <script src="/games/tetris/libraries/p5.js" type="text/javascript" async="async"></script>
-        <script src="/games/tetris/libraries/p5.dom.js" type="text/javascript" async="async"></script>
-        <script src="/games/tetris/libraries/p5.sound.js" type="text/javascript" async="async"></script>
-        <script src="/games/tetris/sketch.js" type="text/javascript" async="async"></script>
-        <script src="/games/tetris/square.js" type="text/javascript" async="async"></script>
-        <script src="/games/tetris/lineShape.js" type="text/javascript" async="async"></script>
-        <script src="/games/tetris/tShape.js" type="text/javascript" async="async"></script>
-        <script src="/games/tetris/boxShape.js" type="text/javascript" async="async"></script>
-        <script src="/games/tetris/zShape.js" type="text/javascript" async="async"></script>
-        <script src="/games/tetris/sShape.js" type="text/javascript" async="async"></script>
-        <script src="/games/tetris/lShape.js" type="text/javascript" async="async"></script>
-        <script src="/games/tetris/lOpShape.js" type="text/javascript" async="async"></script>
-        <script src="/games/tetris/board.js" type="text/javascript" async="async"></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="/css/games.css" />
+        <script src="/games/tetris/libraries/p5.js" type="text/javascript"></script>
+        <script src="/games/tetris/libraries/p5.dom.js" type="text/javascript" ></script>
+        <script src="/games/tetris/libraries/p5.sound.js" type="text/javascript"></script>
+        <script src="/games/tetris/sketch.js" type="text/javascript"></script>
+        <script src="/games/tetris/square.js" type="text/javascript"></script>
+        <script src="/games/tetris/lineshape.js" type="text/javascript"></script>
+        <script src="/games/tetris/tshape.js" type="text/javascript"></script>
+        <script src="/games/tetris/boxshape.js" type="text/javascript"></script>
+        <script src="/games/tetris/zshape.js" type="text/javascript"></script>
+        <script src="/games/tetris/sshape.js" type="text/javascript"></script>
+        <script src="/games/tetris/lshape.js" type="text/javascript"></script>
+        <script src="/games/tetris/lopshape.js" type="text/javascript"></script>
+        <script src="/games/tetris/board.js" type="text/javascript"></script>
     </head>
-    <body onload="startGame()">
+    <body>
         <% include partials/header %>
-        <div id="game-rules-div" class="column">
-            Content
-        </div>
-        <div id="game-stage-div" class="column">
+        <div id="game-stage-div">
             <canvas id="game-canvas"></canvas>
         </div>
-    </body>  
+    </body>
 </html>
 

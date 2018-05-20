@@ -13,7 +13,7 @@
 <body>
 <% include partials/header %>
 <div class="sidebar navigation">
-  <ul>
+  <ul id="forum-navigation">
     <li>
       <div id="select-container">
         <select id="selectSubject" onchange="javascript:location.href = this.value;" >
@@ -38,13 +38,13 @@
 
 <div class="topbar">
   <ul>
-    <li id="question-title"> Title </li>
-    <li id="question-category"> Category </li>
-    <li id="question-comments"> Comments </li>
-    <li id="question-views"> Views </li>
-    <li id="question-activity"> Votes </li>
-    <li id="question-activity"> Date </li>
-    <li id="question-activity"> User </li>
+    <li> User </li>
+    <li> Title </li>
+    <li> Category </li>
+    <li> Comments </li>
+    <li> Views </li>
+    <li> Votes </li>
+    <li> Date </li>
   </ul>
 </div>
 
