@@ -14,7 +14,6 @@
                 <% if (reply.voted <= 0) { %>
                 <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= reply.id %>, 'forum_reply')"> </img>
                 <% } %>
-                <% console.dir(reply); %>
                 <% if (reply.voted >= 0) { %>
                 <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= reply.id %>, 'forum_reply')"> </img>
                 <div class="add-reply-button" replyBoxID="reply-box-<%= reply.id %>" onclick="showReplyBox(event, this)"> reply </div> 
