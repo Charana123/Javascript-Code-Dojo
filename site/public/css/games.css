@@ -1,4 +1,8 @@
 #game-stage-div {
+    position: absolute;
+    top: 54px;
+    margin: 10px;
+    
     width: 500px;
     height: 500px;
 }
