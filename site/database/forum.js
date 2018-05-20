@@ -21,10 +21,11 @@ function ForumHandler(database) {
                         promises.push(db.rowsByField("users", "id", r.user));
                     });
 
+
                     var sortReplys = function(replys, users) {
                         users.forEach(function(u) {
                             replys.forEach((r, i) => {
-                                if (r.user == u[0].id) {
+                                if (u[0] && r.user == u[0].id) {
                                     replys[i].userData = {
                                         id: u[0].id,
                                         username: u[0].username,
@@ -160,9 +161,9 @@ function ForumHandler(database) {
             });
         };
 
-        var newReply = function(db, postId, userId, body) {
+        var newReply = function(db, postId, userId, body, parent) {
             return new Promise(function(resolve, reject) {
-                db.newForumReply(postId, userId, body).then(function(res) {
+                db.newForumReply(postId, parent, userId, body).then(function(res) {
                     resolve(res);
                     return;
                 }, function(err) {
@@ -464,8 +465,8 @@ function ForumHandler(database) {
             newPost:function(userId, title, body, subject){
                 return newPost(db, userId, title, body, subject);
             },
-            newReply:function(postId, userId, body){
-                return newReply(db, postId, userId, body);
+            newReply:function(postId, userId, body, parent){
+                return newReply(db, postId, userId, body, parent);
             },
             getForumsByUser:function(userId){
                 return getForumsByUser(db, userId);

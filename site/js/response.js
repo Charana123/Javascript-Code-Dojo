@@ -284,11 +284,12 @@ var replySubmission = function(request, userId, server, cookie) {
     return new Promise(function(resolve, reject) {
         request.on('data', data => {
             data = data.toString("utf-8");
-            var [reply, postId, captcha] = data.toString().split('&');
+            var [reply, postId, captcha, parent] = data.toString().split('&');
             // We need to format this reply with the special characters
             reply = reply.split('=')[1];
             postId = postId.split('=')[1];
             captcha = captcha.split('=')[1];
+            parent = parent.split('=')[1];
 
             var err = {isErr: false, message: ""};
             if (reply == "") {
@@ -306,7 +307,7 @@ var replySubmission = function(request, userId, server, cookie) {
                 return;
             }
 
-            server.forumHandler.newReply(postId, userId, reply).then(function(res) {
+            server.forumHandler.newReply(postId, userId, reply, parent).then(function(res) {
                 resolve(res);
             }, function(err) {
                 reject(err);

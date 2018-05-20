@@ -30,6 +30,7 @@ window.addEventListener("load", function(){
                         ctx.drawImage(img, 0, 0, 512, 512);
 
                         httpPostAsync("/image_submission", img.src).then(json_response => {
+                            location.reload();
                         })
                     };
                 };

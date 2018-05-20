@@ -399,6 +399,7 @@ function newDatabase(dbName) {
 
         var newForumReply = function(db, postId, parent, userId, body, id) {
             return new Promise(function(resolve, reject) {
+                console.dir(insertReplyStr(postId, parent, userId, body, id));
                 db.all(insertReplyStr(postId, parent, userId, body, id), [], (err, post) => {
                     if (err) {
                         reject("failed to create forum reply record " + userId + ": " + err);
