@@ -12,12 +12,12 @@
             <%= reply.votes %>
             <% if (session_valid) { %>
                 <% if (reply.voted <= 0) { %>
-                <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= reply.id %>, 'forum_reply')"> </img>
+                    <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= reply.id %>, 'forum_reply')"> </img>
                 <% } %>
                 <% if (reply.voted >= 0) { %>
-                <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= reply.id %>, 'forum_reply')"> </img>
-                <div class="add-reply-button" replyBoxID="reply-box-<%= reply.id %>" onclick="showReplyBox(event, this)"> reply </div> 
+                    <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= reply.id %>, 'forum_reply')"> </img>
                 <% } %>
+                <div class="add-reply-button" replyBoxID="reply-box-<%= reply.id %>" onclick="showReplyBox(event, this)"> reply </div> 
             <% } %>
         </footer>
         <div id="reply-box-<%= reply.id %>" class="reply-box-container-wrapper">
@@ -39,11 +39,12 @@
                             <%= child.votes %>
                             <% if (session_valid) { %>
                             <% if (child.voted <= 0) { %>
-                            <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= child.id %>, 'forum_reply')"> </img>
+                                <img id="up-arrow" src="/img/up-arrow.svg" onclick="increaseVote(<%= child.id %>, 'forum_reply')"> </img>
                             <% } %>
                             <% if (child.voted >= 0) { %>
-                            <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= child.id %>, 'forum_reply')"> </img>
+                                <img id="down-arrow" src="/img/down-arrow.svg" onclick="decreaseVote(<%= child.id %>, 'forum_reply')"> </img>
                             <% } %>
+                            <div class="add-reply-button" replyBoxID="reply-box-<%= reply.id %>" onclick="showReplyBox(event, this)"> reply </div> 
                             <% } %>
                             </footer>
                         </div>
