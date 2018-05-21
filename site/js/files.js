@@ -30,7 +30,7 @@ files.readEJSFile = function(uri, getDataFunction, response, user){
         getDataFunction.then(function(data) {
             var clientData = {};
             clientData.data = data;
-            if (user) {
+            if (user && user.id) {
                 clientData.session_valid = true;
                 clientData.user = {
                     id: user.id,
