@@ -18,12 +18,12 @@
 
 \section{Prerequisites}
 \begin{itemize}
-  \item{We are using secure HTTP through use of a self-signed certificate and as
+  \item{We are using secure HTTP (HTTPS) through use of a self-signed certificate and as
     such, our personal certificate authority must be added to you chosen
     browser. This root CA can be found here `\textit{site/secrets/rootCA.pem}'.}
-  \item{We are utilising docker containers in our website to isolate nodejs
+  \item{We are utilising Docker containers in our website to isolate nodejs
     jobs, and although not required, it is recommended that this is installed
-    and running. If installed, ensure docker is running by checking the
+    and running. If installed, ensure Docker is running by checking the
     systemd unit it running `\textit{systemctl start docker}' on Linux or that the
     `\textit{Docker.app}' process is running on MacOS. Failing this, the server
     will fall back to utilising the local userspace however, this is not the
@@ -58,8 +58,11 @@ challenges.
 \end {itemize}
 
 \section{JavaScript}
-JOSH - Basic javascript work. Some API calls, calling docker, reading 
-writing files, a few simple games.
+Client-side JavaScript has been used to create 3 games that the user can play.
+These being Snake, Tetris and Asteroids. Whilst Snake and Asteroids have been created
+without the use of a library, Tetris has been developed using the P5.js open
+source library.
+
 CHARANA - 
 
 \section{PNG - A}
@@ -146,13 +149,13 @@ The server has been expanded upon from the original server.js file given.
     sessions.}
   \item{Passwords stored using a salted hash preventing storing passwords as
     plain text in the database.}
-  \item{In order to isolate code given by the client, the use of docker
+  \item{In order to isolate code given by the client, the use of Docker
     containers have been used to execute the code, preventing malicious code being
-    run in the server namespace. The code will be run in a docker container
+    run in the server namespace. The code will be run in a Docker container
     whereby it's stdout/err will be captured and saved to file. This file is
     copied out of the container and is checked against the relevant solution
     file. As described in the perquisites, the use of the local userspace will
-    be used instead, in the event of the docker image failing to build, preventing this
+    be used instead, in the event of the Docker image failing to build, preventing this
     feature.}
 \end{itemize}
 
@@ -162,13 +165,13 @@ The SQLite relational database has been used as our database.
 \begin{itemize}
   \item{A number of tables are used to store user data, user voting data,
       user challenge progress data, challenge data as well as forum data.}
-  \item{Each group of associated tables are accessed by through use of separate
+  \item{Each group of associated tables are accessed through use of separate
     modules, acting as APIs, all in turn interacting with the main database\_api
     module that manipulates data in the database.}
   \item{Tables are created relational so to provide extensibility to data such
-    as the forum replies table relating the forum post table.}
+    as the forum replies table relating to the forum post table.}
   \item{Passwords are stored as a salted hash along with the salt in the users
-    tables to prevent storing as plain text.}
+    table to prevent storing as plain text.}
   \item{Modular tables have been used in an effort to reduce read and write
     access of the database.}
 \end{itemize}
@@ -177,13 +180,32 @@ The SQLite relational database has been used as our database.
 \begin{itemize}
   \item{Use of the EJS templating framework to build HTML pages based upon
     delivery data from the server.}
-  \item{Delivery data is made from database query data as well as non sensitive
+  \item{Delivery data is made from database query data as well as non-sensitive
     user data based on the session.}
   \item{The use of Asynchronous JavaScript + XML (AJAX) to create dynamic
-    changes to the web page}
+    changes to the web page such as error response to invalid form data or
+    changing the current captcha and voting on posts and replies.}
 \end{itemize}
 
-\section{Depth - X}
+\section{Depth}
+The goal of this website was to investigate and implement various technologies
+such as Docker, AJAX, SQLite, and EJS, that when paired together, create an
+iterative, interesting user experience for users aiming to lean how to program
+in JavaScript.
+
+A focus was taken on security to ensure that user data has been protected in the
+form of reducing user data leakage, storing passwords as a salted hash as well
+as protecting the server itself, by means of isolating user submitted code and
+with use of captchas.
+
+The forum has been created whereby replies on posts are display in a tree like
+structure, facilitating different discussion threads in a single forum post.
+These posts and replies are then able to be voted on by others in the website
+community. Users are also able to sort these posts through subject, top and new.
+
+An extensive API and matching backend database has been developed to create a
+feature rich frontend whilst organised as such to ensure ease of extensibility
+for future development.
 
 \appendix
 
