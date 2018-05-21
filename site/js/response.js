@@ -3,7 +3,6 @@
 const CHALLENGES_NUM = 6;
 const files = require("./files.js")
 const fs = require("fs")
-const https = require("https");
 
 var nothingFunctionOut = function(request) {
     return new Promise(function(resolve, reject) {

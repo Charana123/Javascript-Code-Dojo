@@ -183,7 +183,7 @@ function getRandom(min,max) {
 var loader = new THREE.FontLoader();
 loader.load( 'js/font/Roboto_Regular.json', function ( font ) {
 
-    var textGeo = new THREE.TextGeometry("One stop shop to learning Javascript!", {
+    var textGeo = new THREE.TextGeometry("One stop shop to learning JavaScript!", {
 
         font: font,
 
