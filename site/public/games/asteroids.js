@@ -1,5 +1,5 @@
 var board = {
-    canvas : document.querySelector("canvas"),
+    canvas : document.getElementById("game-canvas"),
     start : function() {
         this.canvas.width = 450;
         this.canvas.height = 450;
